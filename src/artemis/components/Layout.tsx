@@ -165,31 +165,31 @@ function Nav() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const navGroups = [
+  // Primary pages shown directly in the bar — no longer hidden behind hover
+  const primaryLinks = [
+    { name: "Ventures", path: "/ventures" },
+    { name: "Programs", path: "/programs" },
+    { name: "Capital", path: "/capital" },
+  ];
+
+  // Secondary pages grouped inside a single "More" mega-panel
+  const moreGroups = [
     {
       label: "Company",
       links: [
         { name: "About", path: "/about" },
         { name: "How We Work", path: "/approach" },
         { name: "Manifesto", path: "/manifesto" },
+        { name: "Careers", path: "/careers" },
       ],
     },
     {
-      label: "Platform",
+      label: "Platform & Network",
       links: [
         { name: "Infrastructure", path: "/infrastructure" },
         { name: "Routes", path: "/routes" },
-        { name: "Ventures", path: "/ventures" },
-      ],
-    },
-    {
-      label: "Network",
-      links: [
-        { name: "Capital", path: "/capital" },
-        { name: "Programs", path: "/programs" },
         { name: "Community", path: "/community" },
         { name: "Insights", path: "/insights" },
-        { name: "Careers", path: "/careers" },
       ],
     },
   ];
@@ -237,42 +237,67 @@ function Nav() {
             </span>
           </Link>
 
-          {/* Desktop nav — mega menu dropdowns */}
-          <div className="hidden lg:flex items-center gap-0.5">
-            {navGroups.map((group) => (
-              <div key={group.label} className="relative group/dropdown">
-                <button
-                  className="flex items-center gap-1.5 px-4 py-2 text-[12px] tracking-[0.05em] font-semibold text-[#111111]/70 hover:text-[#111111] transition-colors rounded-full hover:bg-[#111111]/5"
+          {/* Desktop nav — direct primary links + single "More" mega-panel */}
+          <div className="hidden md:flex items-center gap-0.5">
+            {/* Primary pages — always visible, never hidden behind a hover */}
+            {primaryLinks.map((item) => {
+              const isActive = path === item.path;
+              return (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className={`px-4 py-2 text-[12px] tracking-[0.05em] font-semibold rounded-full transition-colors ${
+                    isActive
+                      ? "text-[#FF4D00] bg-[#FF4D00]/5"
+                      : "text-[#111111]/70 hover:text-[#111111] hover:bg-[#111111]/5"
+                  }`}
                 >
-                  {group.label}
-                  <ChevronDown className="w-3 h-3 transition-transform duration-300 group-hover/dropdown:rotate-180 text-[#111111]/40" />
-                </button>
-                {/* Dropdown panel — card style with shadow */}
-                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all duration-200 -translate-y-2 group-hover/dropdown:translate-y-0">
-                  <div className="bg-white border border-[#111111]/8 shadow-2xl rounded-2xl min-w-[220px] py-2 overflow-hidden">
-                    {/* Subtle top accent */}
-                    <div className="h-[2px] bg-gradient-to-r from-transparent via-[#FF4D00] to-transparent" />
-                    {group.links.map((item) => {
-                      const isActive = path === item.path;
-                      return (
-                        <Link
-                          key={item.name}
-                          to={item.path}
-                          className={`flex items-center gap-2.5 px-5 py-2.5 text-[13px] tracking-[0.02em] font-medium transition-all duration-200 ${
-                            isActive
-                              ? "text-[#FF4D00] bg-[#FF4D00]/5"
-                              : "text-[#111111]/60 hover:text-[#111111] hover:bg-[#FAFAFA] hover:pl-6"
-                          }`}
-                        >
-                          {isActive && <span className="w-1 h-1 rounded-full bg-[#FF4D00]" />}
-                          {item.name}
-                        </Link>
-                      );
-                    })}
-                  </div>
+                  {item.name}
+                </Link>
+              );
+            })}
+
+            {/* More — single mega-panel grouping every secondary page */}
+            <div className="relative group/dropdown">
+              <button
+                className="flex items-center gap-1.5 px-4 py-2 text-[12px] tracking-[0.05em] font-semibold text-[#111111]/70 hover:text-[#111111] transition-colors rounded-full hover:bg-[#111111]/5"
+              >
+                More
+                <ChevronDown className="w-3 h-3 transition-transform duration-300 group-hover/dropdown:rotate-180 text-[#111111]/40" />
+              </button>
+              {/* Mega-panel — two columns, all pages visible at once */}
+              <div className="absolute top-full right-0 pt-3 opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all duration-200 -translate-y-2 group-hover/dropdown:translate-y-0">
+                <div className="bg-white border border-[#111111]/8 shadow-2xl rounded-2xl p-3 w-[440px] grid grid-cols-2 gap-x-5 gap-y-1 overflow-hidden relative">
+                  <div className="h-[2px] absolute top-0 left-0 right-0 bg-gradient-to-r from-transparent via-[#FF4D00] to-transparent" />
+                  {moreGroups.map((group) => (
+                    <div key={group.label}>
+                      <div className="text-[10px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/30 mb-1.5 px-2 pt-1">
+                        {group.label}
+                      </div>
+                      <div className="flex flex-col">
+                        {group.links.map((item) => {
+                          const isActive = path === item.path;
+                          return (
+                            <Link
+                              key={item.name}
+                              to={item.path}
+                              className={`flex items-center gap-2 px-2 py-2 text-[13px] font-medium rounded-lg transition-all duration-200 ${
+                                isActive
+                                  ? "text-[#FF4D00] bg-[#FF4D00]/5"
+                                  : "text-[#111111]/60 hover:text-[#111111] hover:bg-[#FAFAFA]"
+                              }`}
+                            >
+                              {isActive && <span className="w-1 h-1 rounded-full bg-[#FF4D00]" />}
+                              {item.name}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
+            </div>
           </div>
 
           {/* Right side actions */}
@@ -308,10 +333,10 @@ function Nav() {
               <ArrowRight className="w-3 h-3" />
             </Link>
 
-            {/* Hamburger — mobile/tablet only */}
+            {/* Hamburger — mobile only */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-full hover:bg-[#111111]/5 transition-colors"
+              className="md:hidden p-2 rounded-full hover:bg-[#111111]/5 transition-colors"
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             >
               <motion.div

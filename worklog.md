@@ -25,3 +25,25 @@ Stage Summary:
 - 22 pages, hash router, 17 API routes, 9 Prisma models all functional; DB seeded with example data + forum seeded via API.
 - Single dependency added: remark-gfm. No source code changes required — the imported source ran as-is on the existing stack.
 - Browser-verified: rendering, hash navigation, DB reads/writes, admin auth, mobile responsiveness, sticky footer, zero runtime errors.
+
+---
+Task ID: nav-nowfuture
+Agent: main
+Task: (1) Fix navigation bar where pages were hidden behind hover-only dropdowns; (2) Add a modern animated "Now × Future" section on the home page above Upcoming Events
+
+Work Log:
+- Diagnosed nav issue: desktop nav hid ALL 11 pages inside 3 hover-only dropdowns (Company/Platform/Network), so pages were invisible until hover. Tablet (768-1023px) got the hamburger (everything hidden).
+- Rewrote Layout.tsx nav: replaced 3 dropdowns with 3 direct top-level links (Ventures · Programs · Capital) + a single "More" mega-panel (2-column, 440px) grouping all 8 secondary pages (About, How We Work, Manifesto, Careers, Infrastructure, Routes, Community, Insights). Changed desktop-nav breakpoint from lg→md so tablet now gets the real nav; hamburger is now md:hidden (mobile only).
+- Built NowFutureSection in Home.tsx (inserted between LocationsSection and UpcomingEventsSection): dark #0A0A0A section, "Now × Future" mono label, headline "The world as it is. / The world we're building." (orange accent), ambient orange glows. 5 domain rows (Energy/Water/Food/Capital/Knowledge) each as a 3-col grid [Now stat+caption | animated orange transform bar + arrow button | Future stat+caption + venture tag]. Stats derived from real venture bottlenecks (600M off-grid→10,000+ microgrid nodes; 500M water-stressed→$0.01/L AWG; 40% post-harvest loss→2hr farmer-to-consumer; <15% to smallholder→$500 entry; locked talent→190 hubs). Framer Motion scroll-triggered staggered row reveals (0.12s stagger), scaleX transform-bar animation, hover lifts the orange arrow (x:3, scale:1.12). CTA links to /ventures + /manifesto. Responsive: captions hide on mobile (sm:block) with mobile caption fallback; stats use whitespace-nowrap to prevent wrapping.
+- Fixed a duplicate `const EASE` declaration (line 78 already defined it; removed my duplicate). Added icon imports (Droplets, Sprout, GraduationCap).
+- Lint passes clean (0 errors). Browser-verified:
+  - Desktop (1440px): Ventures/Programs/Capital visible as direct links + "More" button; hovering More reveals 2-col mega-panel with all 8 secondary pages. Zero console errors.
+  - Tablet (820px): direct links + More visible (previously hamburger) — pages no longer hidden.
+  - Mobile (iPhone 14, 390px): hamburger present; mobile menu opens with all links. NowFuture 3-col grid fits (342px < 390px), no overflow.
+  - VLM visual confirmation (desktop + mobile screenshots): section is "modern, polished, cohesive orange accents, side-by-side Now/Future comparison works, no overlap/cut-off, orange arrow visible".
+  - Section order verified: NowFuture (h2 idx 18) renders ABOVE Upcoming Events (idx 19) — correct.
+  - dev.log: all GET / 200, no runtime errors (Fast Refresh warnings were transient mid-edit HMR artifacts, not present in final state).
+
+Stage Summary:
+- Navigation: pages are no longer hidden. 3 primary pages (Ventures/Programs/Capital) are always visible as direct links at md+ widths; all 8 secondary pages surface in a single "More" mega-panel. Tablet users now get the real nav. Mobile keeps the hamburger with full link list.
+- New "Now × Future" animated section on the home page, positioned directly above Upcoming Events. Scroll-triggered staggered animations compare current-world bottlenecks (the problems ventures solve) against the future being built, with per-row orange transform bars and hover-reactive arrows. Fully responsive and browser-verified.
