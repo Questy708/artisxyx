@@ -74,3 +74,38 @@ Work Log:
 Stage Summary:
 - Navigation: Community and Routes promoted to primary top-level links (5 direct links now visible: Ventures, Routes, Programs, Capital, Community). Nothing important is hidden behind hover.
 - Now × Future: rebuilt as a full-bleed cinematic slideshow at humanity's scale (6 domains: Energy, Water, Food, Climate, Health, Knowledge). "The Now" auto-plays as a slideshow of bottlenecks; a glowing "IMAGINE WHAT'S POSSIBLE" prompt invites the viewer to transition; "The Future" reveals the painted picture of what can be (same domains, reimagined). Same size as the hero, fully responsive, zero errors. Browser- and VLM-verified.
+
+---
+Task ID: nowfuture-v3
+Agent: main
+Task: (1) Fix alignment where header/CTA weren't full-width aligned with the slideshow frame; (2) Add evocative subtext under the "The world as it is. The world we're painting." header; (3) Expand to 10 domains covering all pillars of civilization (drop climate; add Education, Finance, Transport, Industry, Space)
+
+Work Log:
+- Alignment fix: diagnosed that the intro header div used `max-w-[1400px] mx-auto px-20` (centers container at 1400 then pads 80px → text at 100px) while the slideshow frame wrapper used `w-full px-20` containing inner `max-w-[1400px] mx-auto` (full width then pads → frame at 80px). 20px mismatch. Restructured both header and CTA divs to match the frame's pattern exactly: outer `w-full px-6 md:px-12 lg:px-20` + inner `max-w-[1400px] mx-auto` wrapper. Verified: headerLeft=80, subtextLeft=80, frameLeft=80, aligned=true.
+- Added subtext paragraph under the h2: "The future isn't forecast — it's built. Domain by domain, these are the pillars a civilization stands on, where humanity stands today, and the picture we are engineering into being." (motion.p, white/45, scroll-triggered fade-up, max-w-2xl).
+- Expanded from 6 → 10 domains, dropping Climate and adding the foundational pillars of civilization the user named:
+  1. Energy — 600M → 10,000+
+  2. Water — 500M → $0.01/L
+  3. Food — 40% → 2 hours
+  4. Education (new) — 617M youth without basic literacy → 1:1 AI tutor for every child
+  5. Finance (new) — 1.4B unbanked → Universal digital wallet
+  6. Transport (new) — 75% of product cost to logistics → 1 system multimodal transit
+  7. Health — 1 in 5 → Distributed
+  8. Industry (new) — 10× import-dependence markup → Local micro-factories
+  9. Space (new) — 0.04% of GDP reaches orbit → Open launch access
+  10. Knowledge — Locked → 190 hubs
+- Verified all 20 Unsplash image URLs return HTTP 200 (curl-tested each). Found 1 broken image from the original set (Water future photo-1541252260730...) and replaced with working photo-1559825481-12a05cc00344.
+- Lint passes clean (0 errors). dev.log: zero runtime errors, all GET / 200.
+- Browser-verified (desktop 1440px + mobile iPhone 14):
+  - Alignment: header/subtext/frame/CTA all flush at 80px left edge.
+  - Subtext: "pillars a civilization stands on" visible under header.
+  - 10 domains: all 10 slide indicators present (Energy→Knowledge), counter shows "01/10"–"10/10".
+  - New domains verified: Education (617M, image loads 1920px), Finance, Transport, Industry, Space (0.04%/orbit/Open all visible).
+  - Zero broken images (0/45).
+  - Now→Future transition: clicked "See the future" toggle → future mode confirmed (toggle shows "BACK TO THE NOW", orange stat "$0.01/L", "THE FUTURE · REVEAL" badge, "02/10" counter).
+  - VLM confirmed (Now + Future + mobile): full-bleed image, large stat, orange future stats, slide indicators fit, subtext visible, no cramping, no horizontal overflow on mobile (scrollW=innerW=390).
+
+Stage Summary:
+- Alignment fixed: header, subtext, slideshow frame, and CTA now all share the same left edge (full-width aligned).
+- Subtext added under the header, framing the section as civilization-scale engineering.
+- Now × Future expanded to 10 domains covering the full span of what builds a civilization: Energy, Water, Food, Education, Finance, Transport, Health, Industry, Space, Knowledge. Climate dropped per user direction. All 20 images verified loading. Sliding cinematic Now→Future mechanism intact and browser-verified across desktop and mobile.

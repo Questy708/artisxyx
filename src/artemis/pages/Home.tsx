@@ -960,7 +960,7 @@ const nowFutureSlides = [
     future: {
       stat: "$0.01/L",
       caption: "Solar atmospheric water kiosks in every off-grid town, billed through a USSD phone.",
-      image: "https://images.unsplash.com/photo-1541252260730-0412e8e2108e?auto=format&fit=crop&w=1920&q=80",
+      image: "https://images.unsplash.com/photo-1559825481-12a05cc00344?auto=format&fit=crop&w=1920&q=80",
       position: "center 40%",
     },
   },
@@ -980,18 +980,48 @@ const nowFutureSlides = [
     },
   },
   {
-    domain: "Climate",
+    domain: "Education",
     now: {
-      stat: "+1.5°C",
-      caption: "The bill is already here — floods, fire, and displacement, paid by those who emitted the least.",
-      image: "https://images.unsplash.com/photo-1602491453631-e6a1a9d4b9ad?auto=format&fit=crop&w=1920&q=80",
-      position: "center 40%",
+      stat: "617M",
+      caption: "Youth without basic literacy. A child's zip code still decides their ceiling — and the syllabus is a century behind.",
+      image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
     },
     future: {
-      stat: "Net-positive",
-      caption: "Regenerative systems that restore the carbon balance and repay the atmospheric debt.",
-      image: "https://images.unsplash.com/photo-1444930694458-01babe71870e?auto=format&fit=crop&w=1920&q=80",
+      stat: "1:1",
+      caption: "An AI tutor for every child — the best teacher on earth, free, in any language, on a $20 phone.",
+      image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1920&q=80",
+      position: "center 40%",
+    },
+  },
+  {
+    domain: "Finance",
+    now: {
+      stat: "1.4B",
+      caption: "Adults locked out of banking. Capital routes through everyone except the people who actually need it.",
+      image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1920&q=80",
+      position: "center 50%",
+    },
+    future: {
+      stat: "Universal",
+      caption: "A digital wallet on every phone — credit, savings, and markets without a bank branch in sight.",
+      image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=1920&q=80",
       position: "center 45%",
+    },
+  },
+  {
+    domain: "Transport",
+    now: {
+      stat: "75%",
+      caption: "Of product cost eaten by logistics across emerging markets. Goods wait weeks at broken borders.",
+      image: "https://images.unsplash.com/photo-1494412651409-8963ce7935a7?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+    future: {
+      stat: "1 system",
+      caption: "Seamless multimodal transit — rail, drone, and river routed by a single operating system.",
+      image: "https://images.unsplash.com/photo-1473042904451-00171c69419d?auto=format&fit=crop&w=1920&q=80",
+      position: "center 40%",
     },
   },
   {
@@ -1006,6 +1036,36 @@ const nowFutureSlides = [
       stat: "Distributed",
       caption: "Diagnostics in every ward. Therapeutics designed, manufactured, and priced locally.",
       image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1920&q=80",
+      position: "center 40%",
+    },
+  },
+  {
+    domain: "Industry",
+    now: {
+      stat: "10×",
+      caption: "Import-dependent economies ship raw materials out and buy finished goods back at ten times the price.",
+      image: "https://images.unsplash.com/photo-1565043666747-69f6646db940?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+    future: {
+      stat: "Local",
+      caption: "Distributed micro-factories turning local inputs into local products — the end of the cargo cult.",
+      image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1920&q=80",
+      position: "center 40%",
+    },
+  },
+  {
+    domain: "Space",
+    now: {
+      stat: "0.04%",
+      caption: "Of global GDP reaches orbit. The off-world economy is closed to ninety-five percent of humanity.",
+      image: "https://images.unsplash.com/photo-1517976547714-720226b864c1?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+    future: {
+      stat: "Open",
+      caption: "Launch access for every nation, in-situ resource utilization, and industry built beyond gravity's well.",
+      image: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1920&q=80",
       position: "center 40%",
     },
   },
@@ -1061,7 +1121,8 @@ function NowFutureSection() {
   return (
     <section className="bg-[#0A0A0A] text-white relative">
       {/* Section intro */}
-      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-10 lg:px-14 pt-24 md:pt-32 pb-10 md:pb-14">
+      <div className="w-full px-6 md:px-12 lg:px-20 pt-24 md:pt-32 pb-10 md:pb-14">
+        <div className="max-w-[1400px] mx-auto">
         <div className="flex items-center gap-3 mb-6">
           <motion.span
             initial={{ opacity: 0 }}
@@ -1083,6 +1144,15 @@ function NowFutureSection() {
           <span className="text-white/35">The world we&apos;re </span>
           <span className="text-[#FF4D00]">painting.</span>
         </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2, ease: EASE }}
+          className="text-white/45 text-[15px] md:text-[17px] font-medium leading-[1.6] max-w-2xl mt-7"
+        >
+          The future isn&apos;t forecast — it&apos;s built. Domain by domain, these are the pillars a civilization stands on, where humanity stands today, and the picture we are engineering into being.
+        </motion.p>
+        </div>
       </div>
 
       {/* Full-bleed cinematic slideshow — same size as the hero */}
@@ -1267,7 +1337,8 @@ function NowFutureSection() {
       </div>
 
       {/* CTA strip */}
-      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-10 lg:px-14 pb-24 md:pb-32">
+      <div className="w-full px-6 md:px-12 lg:px-20 pb-24 md:pb-32">
+        <div className="max-w-[1400px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -1288,6 +1359,7 @@ function NowFutureSection() {
             Read the manifesto <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
         </motion.div>
+        </div>
       </div>
     </section>
   );
