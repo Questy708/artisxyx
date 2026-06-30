@@ -128,3 +128,48 @@ Work Log:
 
 Stage Summary:
 - Now × Future dark background is now contained within a centered max-w-[1400px] block (rounded-sm) sitting on the white page — matching the Hero and OperatingBeliefs sections. No more full-bleed dark band. Header, slideshow, toggle, and CTA all live inside the single contained dark block. Slideshow + Now→Future transition still fully functional. Browser- and VLM-verified.
+
+---
+Task ID: townsquare-scale-assessment + remove-X
+Agent: main
+Task: (1) Remove the X/exit button from TownSquare immersive view; (2) Assess whether the TownSquare/feed can handle 1M+ users and what's needed for a Reddit/LinkedIn-class platform
+
+Work Log:
+- Removed the floating orange X close button from the immersive /townsquare layout (Layout.tsx L68-75). Verified X_REMOVED via browser; lint clean; X import retained (still used 3× in mobile menu/close). Users exit TownSquare via the site nav/footer or the forum's own internal links.
+- Conducted full technical audit of the forum via Explore agent: read TownSquare.tsx (2,523 lines), all 7 forum API routes, prisma schema (Forum models), lib/auth.ts, and the Layout immersive block.
+
+Stage Summary — Can it handle 1M+ users today? NO. Here's the honest assessment:
+
+═══ CURRENT STATE (what works) ═══
+- Posts, threaded comments, upvote/downvote, heart — all functional with transactional, race-safe counter updates.
+- Communities filter, category tabs (home/popular/explore/network), member directory, post detail drawer, markdown rendering, avatar upload.
+- Good DB indexes on ForumPost (community+createdAt, community+upvotes, upvotes, createdAt, authorId).
+- "Explore" uses DB-side groupBy aggregation (thoughtful).
+- 6 of 7 API routes are fully open (no auth, no rate limit); only /seed has admin auth + rate limit.
+
+═══ 12 CRITICAL BLOCKERS for 1M+ / Reddit-LinkedIn-class ═══
+1. SQLite — single-writer, file-based, no replicas. MUST migrate to Postgres. (Schema already has a schema.postgres.prisma draft.)
+2. No real authentication — identity is a localStorage cuid the server trusts blindly. Anyone can post/vote as anyone. Need email/password + OAuth + sessions/JWT.
+3. No rate limiting on 6/7 routes (and the one limiter is in-memory, single-instance only). Need Redis-backed distributed rate limiting.
+4. No caching layer — no Redis, no HTTP cache headers, no SWR/React Query on client. Every nav re-fetches everything.
+5. Offset pagination, no cursor strategy — deep pages degrade at scale.
+6. No full-text search — uses LIKE/contains, table-scans. Need Postgres FTS or Elastic/Meilisearch.
+7. Comments load in full per post (no pagination) + in-memory tree build — viral posts with 10k comments = OOM risk.
+8. No real-time updates — no WebSocket/SSE/polling. New posts only appear on manual refetch.
+9. No moderation system — no reports/flags, no soft-delete, no bans, no automated content moderation.
+10. No notifications — the bell icon is decorative. Need a notifications model + delivery (push/in-app/email).
+11. communities stored as comma-separated string on ForumUser — unqueryable relationally. Need ForumCommunity + join model.
+12. Frontend has broken/decorative features: search input not wired (backend supports ?search=), share buttons have no onClick, comment vote buttons not wired (PATCH endpoint exists but never called), optimistic UI undermined by full refetch, no pagination/infinite scroll (silently truncates at 50 posts), no image upload in composer.
+
+═══ WHAT'S NEEDED (Reddit/LinkedIn-class feature set) ═══
+Posts & comments: ✓ mostly there — add image/media, edit/delete, save/bookmark, pin, lock.
+Social sharing: wire navigator.share + copy-link + OG meta tags (currently decorative).
+AI-assisted posting: add /api/forum/ai-assist route using the LLM skill (z-ai-web-dev-sdk) — title suggestions, content drafting, tone/grammar, summarization, tag extraction. Composer needs an "AI assist" button + streaming.
+Real-time: WebSocket mini-service (socket.io) for live posts/comments/votes/typing indicators.
+Search: Postgres FTS or Meilisearch — wire the frontend search input.
+Notifications: model + SSE/push delivery + in-app feed.
+Moderation: reports, soft-delete, bans, automated spam/toxicity filtering (LLM or dedicated service), moderator dashboard.
+Caching: Redis + HTTP cache headers + TanStack Query/SWR on client.
+Auth: real identity (email/password, OAuth, magic link), email verification, sessions, CSRF.
+Pagination: cursor-based throughout, infinite scroll on frontend.
+Quick wins (low effort, high value): wire search input, use PATCH response instead of refetch, wire comment vote buttons, add Cache-Control headers, add per-IP rate limiting to the 6 open routes, denormalize commentCount.

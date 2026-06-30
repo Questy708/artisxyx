@@ -65,14 +65,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
   if (isImmersive) {
     return (
       <div className="min-h-screen bg-white text-[#111111] font-sans selection:bg-[#FF4D00]/20 selection:text-[#111111]">
-        {/* Floating close button for immersive mode */}
-        <Link
-          to="/"
-          className="fixed top-4 left-4 z-[100] w-10 h-10 rounded-full bg-[#FF4D00] text-white flex items-center justify-center shadow-lg hover:bg-[#FF4D00]/90 transition-colors"
-          aria-label="Close and return to home"
-        >
-          <X className="w-5 h-5" />
-        </Link>
         <AnimatePresence mode="wait">
           <motion.div
             key={path}

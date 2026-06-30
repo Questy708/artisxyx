@@ -1,0 +1,2002 @@
+     1→"use client";
+     2→
+     3→import React, { useState, useMemo, useEffect, useCallback } from "react";
+     4→import ReactMarkdown from "react-markdown";
+     5→import remarkGfm from "remark-gfm";
+     6→import { motion, AnimatePresence } from "framer-motion";
+     7→import { useRouter } from "@/artemis/router";
+     8→import {
+     9→  MessageSquare,
+    10→  Share2,
+    11→  Search,
+    12→  MoreHorizontal,
+    13→  Plus,
+    14→  Home,
+    15→  TrendingUp,
+    16→  Newspaper,
+    17→  Compass,
+    18→  ArrowUp,
+    19→  ArrowDown,
+    20→  Bell,
+    21→  PlusCircle,
+    22→  X,
+    23→  ArrowLeft,
+    24→  Heart,
+    25→  Menu,
+    26→  LogOut,
+    27→  ArrowRight,
+    28→  Check,
+    29→  User,
+    30→  MapPin,
+    31→  Mail,
+    32→  Users,
+    33→  Briefcase,
+    34→  ExternalLink,
+    35→  Loader2,
+    36→  Camera,
+    37→  Pencil,
+    38→  Save,
+    39→} from "lucide-react";
+    40→
+    41→/* ── Types (matching API responses) ── */
+    42→interface ForumUser {
+    43→  id: string;
+    44→  name: string;
+    45→  email: string;
+    46→  bio: string | null;
+    47→  role: string;
+    48→  location: string | null;
+    49→  communities: string; // comma-separated from DB
+    50→  avatarColor: string;
+    51→  avatarUrl?: string;
+    52→  company: string | null;
+    53→  title: string | null;
+    54→  lastActiveAt: string;
+    55→  createdAt: string;
+    56→  updatedAt: string;
+    57→}
+    58→
+    59→interface ForumPost {
+    60→  id: string;
+    61→  authorId: string;
+    62→  community: string;
+    63→  title: string;
+    64→  content: string | null;
+    65→  upvotes: number;
+    66→  hearts: number;
+    67→  imageUrl: string | null;
+    68→  createdAt: string;
+    69→  updatedAt: string;
+    70→  author: ForumUser;
+    71→  commentCount: number;
+    72→  userVote: "up" | "down" | null;
+    73→  userHearted: boolean;
+    74→}
+    75→
+    76→interface ForumComment {
+    77→  id: string;
+    78→  postId: string;
+    79→  authorId: string;
+    80→  parentId: string | null;
+    81→  content: string;
+    82→  likes: number;
+    83→  createdAt: string;
+    84→  updatedAt: string;
+    85→  author: { id: string; name: string; avatarColor: string; avatarUrl?: string; role: string };
+    86→  replies: ForumComment[];
+    87→}
+    88→
+    89→/* ── Role Colors ── */
+    90→const ROLE_COLORS: Record<string, string> = {
+    91→  Founder: "#FF4D00",
+    92→  Operator: "#111111",
+    93→  Investor: "#059669",
+    94→  Mentor: "#7c3aed",
+    95→  Other: "#6b7280",
+    96→};
+    97→
+    98→const ROLES = ["Founder", "Operator", "Investor", "Mentor", "Other"];
+    99→
+   100→/* ── xCelero Communities ── */
+   101→const COMMUNITIES = [
+   102→  { name: "Energy & Infrastructure", color: "bg-[#FF4D00]" },
+   103→  { name: "Life Sciences", color: "bg-emerald-600" },
+   104→  { name: "Digital Finance", color: "bg-amber-600" },
+   105→  { name: "Route Operations", color: "bg-sky-600" },
+   106→  { name: "Capital & Deals", color: "bg-rose-600" },
+   107→  { name: "Founders Corner", color: "bg-violet-600" },
+   108→];
+   109→
+   110→/* ── Relative Time Formatter ── */
+   111→function formatRelativeTime(dateStr: string): string {
+   112→  try {
+   113→    const date = new Date(dateStr);
+   114→    const now = new Date();
+   115→    const diffMs = now.getTime() - date.getTime();
+   116→    const diffSec = Math.floor(diffMs / 1000);
+   117→    const diffMin = Math.floor(diffSec / 60);
+   118→    const diffHr = Math.floor(diffMin / 60);
+   119→    const diffDay = Math.floor(diffHr / 24);
+   120→
+   121→    if (diffSec < 60) return "Just now";
+   122→    if (diffMin < 60) return `${diffMin} min. ago`;
+   123→    if (diffHr < 24) return `${diffHr} hr. ago`;
+   124→    if (diffDay === 1) return "1 day ago";
+   125→    if (diffDay < 30) return `${diffDay} days ago`;
+   126→    return date.toLocaleDateString();
+   127→  } catch {
+   128→    return dateStr;
+   129→  }
+   130→}
+   131→
+   132→/* ── Recently Active Helper ── */
+   133→function isRecentlyActive(dateStr: string): boolean {
+   134→  try {
+   135→    const date = new Date(dateStr);
+   136→    const now = new Date();
+   137→    const diffMs = now.getTime() - date.getTime();
+   138→    const diffHr = diffMs / (1000 * 60 * 60);
+   139→    return diffHr <= 12;
+   140→  } catch {
+   141→    return false;
+   142→  }
+   143→}
+   144→
+   145→/* ── Helper: parse communities string ── */
+   146→function parseCommunities(communities: string): string[] {
+   147→  if (!communities) return [];
+   148→  return communities.split(",").map((c) => c.trim()).filter(Boolean);
+   149→}
+   150→
+   151→/* ── Helper: get initials from name ── */
+   152→function getInitials(name: string): string {
+   153→  return name
+   154→    .split(" ")
+   155→    .map((n) => n[0])
+   156→    .join("")
+   157→    .slice(0, 2);
+   158→}
+   159→
+   160→/* ── Skeleton Components ── */
+   161→function PostSkeleton() {
+   162→  return (
+   163→    <div className="bg-white border border-[#111111]/10 p-4 animate-pulse">
+   164→      <div className="flex items-center gap-2 mb-3">
+   165→        <div className="w-5 h-5 rounded-full bg-[#111111]/10" />
+   166→        <div className="h-3 w-32 bg-[#111111]/10 rounded" />
+   167→        <div className="h-3 w-20 bg-[#111111]/10 rounded" />
+   168→      </div>
+   169→      <div className="h-4 w-3/4 bg-[#111111]/10 rounded mb-2" />
+   170→      <div className="h-3 w-full bg-[#111111]/10 rounded mb-1" />
+   171→      <div className="h-3 w-2/3 bg-[#111111]/10 rounded" />
+   172→      <div className="flex items-center gap-2 mt-4">
+   173→        <div className="h-8 w-20 bg-[#111111]/10 rounded" />
+   174→        <div className="h-8 w-16 bg-[#111111]/10 rounded" />
+   175→        <div className="h-8 w-16 bg-[#111111]/10 rounded" />
+   176→      </div>
+   177→    </div>
+   178→  );
+   179→}
+   180→
+   181→function MemberCardSkeleton() {
+   182→  return (
+   183→    <div className="bg-white border border-[#111111]/10 overflow-hidden animate-pulse">
+   184→      <div className="h-10 bg-[#111111]/5" />
+   185→      <div className="pt-7 px-4 pb-4">
+   186→        <div className="h-3 w-24 bg-[#111111]/10 rounded mb-2" />
+   187→        <div className="h-2.5 w-32 bg-[#111111]/10 rounded mb-2" />
+   188→        <div className="h-2.5 w-full bg-[#111111]/10 rounded" />
+   189→      </div>
+   190→    </div>
+   191→  );
+   192→}
+   193→
+   194→/* ── Comment Node ── */
+   195→function CommentNode({
+   196→  comment,
+   197→  postId,
+   198→  replyingToCommentId,
+   199→  setReplyingToCommentId,
+   200→  replyContent,
+   201→  setReplyContent,
+   202→  handleAddReply,
+   203→}: {
+   204→  comment: ForumComment;
+   205→  postId: string;
+   206→  replyingToCommentId: string | null;
+   207→  setReplyingToCommentId: (id: string | null) => void;
+   208→  replyContent: string;
+   209→  setReplyContent: (content: string) => void;
+   210→  handleAddReply: (postId: string, commentId: string) => void;
+   211→}) {
+   212→  return (
+   213→    <div className="group mt-1 pt-2">
+   214→      <div className="flex">
+   215→        <div className="flex flex-col items-center mr-2 relative group/line cursor-pointer shrink-0">
+   216→          <div
+   217→            className="w-[28px] h-[28px] rounded-full overflow-hidden flex items-center justify-center font-bold text-white text-[10px] z-10"
+   218→            style={{ backgroundColor: comment.author.avatarColor }}
+   219→          >
+   220→            {comment.author.avatarUrl ? (
+   221→              <img src={comment.author.avatarUrl} alt="" className="w-full h-full object-cover" />
+   222→            ) : (
+   223→              comment.author.name[0]
+   224→            )}
+   225→          </div>
+   226→          {comment.replies && comment.replies.length > 0 && (
+   227→            <div className="w-[2px] bg-[#111111]/10 group-hover/line:bg-[#111111]/20 transition-colors absolute top-8 bottom-[-8px] sm:bottom-[-16px]" />
+   228→          )}
+   229→        </div>
+   230→
+   231→        <div className="flex-1 min-w-0 pb-1 sm:pb-3">
+   232→          <div className="flex items-center gap-2 text-[12px] mb-1">
+   233→            <span className="font-bold text-[#111111]">{comment.author.name}</span>
+   234→            <span className="text-[#111111]/40">• {formatRelativeTime(comment.createdAt)}</span>
+   235→          </div>
+   236→          <div className="text-[14px] text-[#111111]/70 leading-relaxed prose prose-slate max-w-none mb-0.5">
+   237→            <ReactMarkdown remarkPlugins={[remarkGfm]}>{comment.content}</ReactMarkdown>
+   238→          </div>
+   239→
+   240→          <div className="flex flex-wrap items-center gap-0.5 sm:gap-1.5 mt-1 -ml-2">
+   241→            <div className="flex items-center">
+   242→              <button className="flex items-center justify-center p-1.5 hover:bg-[#111111]/5 rounded text-[#111111]/40 hover:text-[#FF4D00] transition-colors">
+   243→                <ArrowUp className="w-4 h-4" />
+   244→              </button>
+   245→              <span className="text-xs font-bold text-[#111111]/40 px-0.5">
+   246→                {comment.likes || "Vote"}
+   247→              </span>
+   248→              <button className="flex items-center justify-center p-1.5 hover:bg-[#111111]/5 rounded text-[#111111]/40 hover:text-[#111111]/60 transition-colors">
+   249→                <ArrowDown className="w-4 h-4" />
+   250→              </button>
+   251→            </div>
+   252→
+   253→            <button
+   254→              onClick={() =>
+   255→                setReplyingToCommentId(replyingToCommentId === comment.id ? null : comment.id)
+   256→              }
+   257→              className="flex items-center gap-1.5 px-2 py-1.5 text-[#111111]/40 hover:bg-[#111111]/5 rounded-full transition-colors"
+   258→            >
+   259→              <MessageSquare className="w-4 h-4" />
+   260→              <span className="text-xs font-bold leading-none">Reply</span>
+   261→            </button>
+   262→            <button className="hidden sm:flex items-center gap-1.5 px-2 py-1.5 text-[#111111]/40 hover:bg-[#111111]/5 rounded transition-colors">
+   263→              <Share2 className="w-4 h-4" />
+   264→              <span className="text-xs font-bold leading-none">Share</span>
+   265→            </button>
+   266→          </div>
+   267→
+   268→          {replyingToCommentId === comment.id && (
+   269→            <div className="mt-3 flex gap-2 items-start mb-3">
+   270→              <textarea
+   271→                value={replyContent}
+   272→                onChange={(e) => setReplyContent(e.target.value)}
+   273→                placeholder="What are your thoughts?"
+   274→                rows={3}
+   275→                className="flex-1 bg-[#FAFAFA] border border-[#111111]/10 focus:border-[#FF4D00]/30 focus:ring-1 focus:ring-[#FF4D00]/20 rounded px-3 py-2 text-sm text-[#111111] outline-none transition resize-y"
+   276→              />
+   277→              <div className="flex flex-col gap-2">
+   278→                <button
+   279→                  onClick={() => handleAddReply(postId, comment.id)}
+   280→                  disabled={!replyContent.trim()}
+   281→                  className="px-4 py-1.5 bg-[#FF4D00] text-white font-bold rounded text-xs disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#FF4D00]/90 transition"
+   282→                >
+   283→                  Reply
+   284→                </button>
+   285→                <button
+   286→                  onClick={() => setReplyingToCommentId(null)}
+   287→                  className="px-4 py-1.5 bg-transparent text-[#111111]/50 hover:bg-[#111111]/5 font-bold rounded text-xs transition"
+   288→                >
+   289→                  Cancel
+   290→                </button>
+   291→              </div>
+   292→            </div>
+   293→          )}
+   294→
+   295→          {comment.replies && comment.replies.length > 0 && (
+   296→            <div className="mt-0">
+   297→              {comment.replies.map((reply) => (
+   298→                <CommentNode
+   299→                  key={reply.id}
+   300→                  comment={reply}
+   301→                  postId={postId}
+   302→                  replyingToCommentId={replyingToCommentId}
+   303→                  setReplyingToCommentId={setReplyingToCommentId}
+   304→                  replyContent={replyContent}
+   305→                  setReplyContent={setReplyContent}
+   306→                  handleAddReply={handleAddReply}
+   307→                />
+   308→              ))}
+   309→            </div>
+   310→          )}
+   311→        </div>
+   312→      </div>
+   313→    </div>
+   314→  );
+   315→}
+   316→
+   317→/* ══════════════════════════════════════════════════════════════════════════
+   318→   ONBOARDING FLOW
+   319→   ══════════════════════════════════════════════════════════════════════════ */
+   320→function OnboardingFlow({ onComplete }: { onComplete: (user: ForumUser) => void }) {
+   321→  const [step, setStep] = useState(0);
+   322→  const [direction, setDirection] = useState(1);
+   323→  const [displayName, setDisplayName] = useState("");
+   324→  const [email, setEmail] = useState("");
+   325→  const [bio, setBio] = useState("");
+   326→  const [role, setRole] = useState("");
+   327→  const [location, setLocation] = useState("");
+   328→  const [selectedCommunities, setSelectedCommunities] = useState<string[]>([]);
+   329→  const [isSubmitting, setIsSubmitting] = useState(false);
+   330→  const [avatarUrl, setAvatarUrl] = useState<string>("");
+   331→  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+   332→
+   333→  const goNext = () => { setDirection(1); setStep((s) => s + 1); };
+   334→  const goBack = () => { setDirection(-1); setStep((s) => s - 1); };
+   335→
+   336→  const toggleCommunity = (name: string) => {
+   337→    setSelectedCommunities((prev) =>
+   338→      prev.includes(name) ? prev.filter((c) => c !== name) : [...prev, name]
+   339→    );
+   340→  };
+   341→
+   342→  const handleComplete = async () => {
+   343→    setIsSubmitting(true);
+   344→    try {
+   345→      const avatarColor = ROLE_COLORS[role] || "#6b7280";
+   346→      let finalAvatarUrl = avatarUrl;
+   347→
+   348→      // Upload avatar file if selected (skip gracefully if /api/upload doesn't exist)
+   349→      if (avatarFile) {
+   350→        try {
+   351→          const formData = new FormData();
+   352→          formData.append("file", avatarFile);
+   353→          const uploadRes = await fetch("/api/upload", {
+   354→            method: "POST",
+   355→            body: formData,
+   356→          });
+   357→          if (uploadRes.ok) {
+   358→            const uploadData = await uploadRes.json();
+   359→            finalAvatarUrl = uploadData.url;
+   360→          }
+   361→        } catch (uploadErr) {
+   362→          console.warn("Avatar upload skipped:", uploadErr);
+   363→        }
+   364→      }
+   365→
+   366→      // Create user via API
+   367→      const res = await fetch("/api/forum/users", {
+   368→        method: "POST",
+   369→        headers: { "Content-Type": "application/json" },
+   370→        body: JSON.stringify({
+   371→          name: displayName,
+   372→          email,
+   373→          bio: bio || undefined,
+   374→          role,
+   375→          location: location || undefined,
+   376→          communities: selectedCommunities,
+   377→          avatarColor,
+   378→          avatarUrl: finalAvatarUrl || undefined,
+   379→        }),
+   380→      });
+   381→
+   382→      if (!res.ok) {
+   383→        let err;
+   384→        try { err = await res.json(); } catch { err = { error: `Server returned ${res.status}` }; }
+   385→        console.error("Failed to create user:", err);
+   386→        setIsSubmitting(false);
+   387→        return;
+   388→      }
+   389→
+   390→      const user: ForumUser = await res.json();
+   391→
+   392→      // Store user ID in localStorage
+   393→      localStorage.setItem("xcelero_townsquare_user_id", user.id);
+   394→
+   395→      // Seed the database with sample data (use public init route, not admin-gated seed)
+   396→      await fetch("/api/forum/init").catch(() => {});
+   397→
+   398→      onComplete(user);
+   399→    } catch (err) {
+   400→      console.error("Onboarding error:", err);
+   401→      setIsSubmitting(false);
+   402→    }
+   403→  };
+   404→
+   405→  return (
+   406→    <div className="flex flex-col min-h-screen bg-white text-[#111111] font-sans">
+   407→      {/* Header bar */}
+   408→      <header className="h-[56px] bg-white border-b border-[#111111]/10 px-4 md:px-8 flex items-center justify-between shrink-0">
+   409→        <div className="flex items-center gap-2.5">
+   410→          <div className="w-8 h-8 bg-[#FF4D00] flex items-center justify-center">
+   411→            <MessageSquare className="w-4 h-4 text-white" />
+   412→          </div>
+   413→          <span className="text-lg font-display font-medium tracking-tight text-[#111111]">
+   414→            Town<span className="text-[#111111]/30 font-normal"> Square</span>
+   415→          </span>
+   416→        </div>
+   417→        {/* Step indicator */}
+   418→        <div className="flex items-center gap-2">
+   419→          {[0, 1, 2, 3].map((i) => (
+   420→            <div
+   421→              key={i}
+   422→              className={`h-1 rounded-full transition-all duration-300 ${
+   423→                i === step ? "w-8 bg-[#FF4D00]" : i < step ? "w-4 bg-[#FF4D00]/40" : "w-4 bg-[#111111]/10"
+   424→              }`}
+   425→            />
+   426→          ))}
+   427→        </div>
+   428→        <div className="w-[100px]" />
+   429→      </header>
+   430→
+   431→      {/* Step content */}
+   432→      <div className="flex-1 flex items-center justify-center px-4 py-12">
+   433→        <div className="w-full max-w-[520px]">
+   434→            {step === 0 && (
+   435→              <div className="flex flex-col items-center text-center">
+   436→                <div className="w-20 h-20 bg-[#FF4D00] flex items-center justify-center mb-8">
+   437→                  <MessageSquare className="w-10 h-10 text-white" />
+   438→                </div>
+   439→                <h1 className="text-3xl md:text-4xl font-display font-medium tracking-tight text-[#111111] mb-4">
+   440→                  Welcome to Town Square
+   441→                </h1>
+   442→                <p className="text-[15px] text-[#111111]/50 leading-relaxed max-w-[400px] mb-10">
+   443→                  The XCitizen forum. Real-time discussions on deals, infrastructure, regulations,
+   444→                  hiring, and hard-won lessons from the Route.
+   445→                </p>
+   446→                <button
+   447→                  onClick={goNext}
+   448→                  className="flex items-center gap-2 px-8 py-3 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-[0.1em] hover:bg-[#FF4D00]/90 transition-colors"
+   449→                >
+   450→                  Get Started
+   451→                  <ArrowRight className="w-4 h-4" />
+   452→                </button>
+   453→              </div>
+   454→            )}
+   455→
+   456→            {step === 1 && (
+   457→              <div className="flex flex-col">
+   458→                <h2 className="text-2xl font-display font-medium tracking-tight text-[#111111] mb-2">
+   459→                  Your Details
+   460→                </h2>
+   461→                <p className="text-[14px] text-[#111111]/40 mb-8">
+   462→                  Tell the community who you are.
+   463→                </p>
+   464→
+   465→                <div className="space-y-5">
+   466→                  {/* Display Name */}
+   467→                  <div>
+   468→                    <label className="flex items-center gap-1.5 text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/40 mb-2">
+   469→                      <User className="w-3.5 h-3.5" />
+   470→                      Display Name *
+   471→                    </label>
+   472→                    <input
+   473→                      type="text"
+   474→                      value={displayName}
+   475→                      onChange={(e) => setDisplayName(e.target.value)}
+   476→                      placeholder="Your name"
+   477→                      className="w-full bg-white border border-[#111111]/10 focus:border-[#FF4D00]/30 focus:ring-1 focus:ring-[#FF4D00]/20 rounded px-4 py-3 text-[14px] text-[#111111] placeholder-[#111111]/30 outline-none transition"
+   478→                    />
+   479→                  </div>
+   480→
+   481→                  {/* Email */}
+   482→                  <div>
+   483→                    <label className="flex items-center gap-1.5 text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/40 mb-2">
+   484→                      <Mail className="w-3.5 h-3.5" />
+   485→                      Email *
+   486→                    </label>
+   487→                    <input
+   488→                      type="email"
+   489→                      value={email}
+   490→                      onChange={(e) => setEmail(e.target.value)}
+   491→                      placeholder="you@example.com"
+   492→                      className="w-full bg-white border border-[#111111]/10 focus:border-[#FF4D00]/30 focus:ring-1 focus:ring-[#FF4D00]/20 rounded px-4 py-3 text-[14px] text-[#111111] placeholder-[#111111]/30 outline-none transition"
+   493→                    />
+   494→                  </div>
+   495→
+   496→                  {/* Role */}
+   497→                  <div>
+   498→                    <label className="text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/40 mb-3 block">
+   499→                      Role *
+   500→                    </label>
+   501→                    <div className="flex flex-wrap gap-2">
+   502→                      {ROLES.map((r) => (
+   503→                        <button
+   504→                          key={r}
+   505→                          onClick={() => setRole(r)}
+   506→                          className={`flex items-center gap-2 px-4 py-2.5 border text-[12px] font-bold uppercase tracking-[0.05em] transition-all ${
+   507→                            role === r
+   508→                              ? "border-[#FF4D00] bg-[#FF4D00]/5 text-[#FF4D00]"
+   509→                              : "border-[#111111]/10 text-[#111111]/40 hover:border-[#111111]/20 hover:text-[#111111]/60"
+   510→                          }`}
+   511→                        >
+   512→                          {role === r && <Check className="w-3.5 h-3.5" />}
+   513→                          {r}
+   514→                        </button>
+   515→                      ))}
+   516→                    </div>
+   517→                  </div>
+   518→
+   519→                  {/* Bio */}
+   520→                  <div>
+   521→                    <label className="text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/40 mb-2 block">
+   522→                      Bio (optional)
+   523→                    </label>
+   524→                    <textarea
+   525→                      value={bio}
+   526→                      onChange={(e) => setBio(e.target.value)}
+   527→                      placeholder="A short bio about yourself"
+   528→                      rows={3}
+   529→                      className="w-full bg-white border border-[#111111]/10 focus:border-[#FF4D00]/30 focus:ring-1 focus:ring-[#FF4D00]/20 rounded px-4 py-3 text-[14px] text-[#111111] placeholder-[#111111]/30 outline-none transition resize-y"
+   530→                    />
+   531→                  </div>
+   532→
+   533→                  {/* Location */}
+   534→                  <div>
+   535→                    <label className="flex items-center gap-1.5 text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/40 mb-2">
+   536→                      <MapPin className="w-3.5 h-3.5" />
+   537→                      Location (optional)
+   538→                    </label>
+   539→                    <input
+   540→                      type="text"
+   541→                      value={location}
+   542→                      onChange={(e) => setLocation(e.target.value)}
+   543→                      placeholder="Lagos, Nairobi, Accra..."
+   544→                      className="w-full bg-white border border-[#111111]/10 focus:border-[#FF4D00]/30 focus:ring-1 focus:ring-[#FF4D00]/20 rounded px-4 py-3 text-[14px] text-[#111111] placeholder-[#111111]/30 outline-none transition"
+   545→                    />
+   546→                  </div>
+   547→                </div>
+   548→
+   549→                <div className="flex items-center justify-between mt-8">
+   550→                  <button
+   551→                    onClick={goBack}
+   552→                    className="px-5 py-2 text-sm font-bold text-[#111111]/50 hover:bg-[#111111]/5 rounded transition"
+   553→                  >
+   554→                    Back
+   555→                  </button>
+   556→                  <button
+   557→                    onClick={goNext}
+   558→                    disabled={!displayName.trim() || !email.trim() || !role}
+   559→                    className="flex items-center gap-2 px-6 py-2.5 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-[0.1em] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#FF4D00]/90 transition-colors"
+   560→                  >
+   561→                    Continue
+   562→                    <ArrowRight className="w-4 h-4" />
+   563→                  </button>
+   564→                </div>
+   565→              </div>
+   566→            )}
+   567→
+   568→            {step === 2 && (
+   569→              <div className="flex flex-col items-center text-center">
+   570→                <h2 className="text-2xl font-display font-medium tracking-tight text-[#111111] mb-2">
+   571→                  Profile Picture
+   572→                </h2>
+   573→                <p className="text-[14px] text-[#111111]/40 mb-8">
+   574→                  Add a photo so others can recognize you.
+   575→                </p>
+   576→
+   577→                <input
+   578→                  type="file"
+   579→                  accept="image/*"
+   580→                  id="avatar-upload-onboarding"
+   581→                  className="hidden"
+   582→                  onChange={(e) => {
+   583→                    const file = e.target.files?.[0];
+   584→                    if (file) {
+   585→                      setAvatarFile(file);
+   586→                      setAvatarUrl(URL.createObjectURL(file));
+   587→                    }
+   588→                  }}
+   589→                />
+   590→
+   591→                <button
+   592→                  onClick={() => document.getElementById("avatar-upload-onboarding")?.click()}
+   593→                  className="relative group mb-6"
+   594→                >
+   595→                  <div
+   596→                    className="w-[120px] h-[120px] rounded-full overflow-hidden flex items-center justify-center border-2 border-dashed border-[#111111]/20 group-hover:border-[#FF4D00]/40 transition-colors"
+   597→                    style={avatarUrl ? {} : { backgroundColor: ROLE_COLORS[role] || "#6b7280" }}
+   598→                  >
+   599→                    {avatarUrl ? (
+   600→                      <img src={avatarUrl} alt="Avatar preview" className="w-full h-full object-cover" />
+   601→                    ) : (
+   602→                      <Camera className="w-10 h-10 text-white/70" />
+   603→                    )}
+   604→                  </div>
+   605→                  {avatarUrl && (
+   606→                    <div className="absolute inset-0 rounded-full bg-[#111111]/0 group-hover:bg-[#111111]/30 flex items-center justify-center transition-colors">
+   607→                      <Camera className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+   608→                    </div>
+   609→                  )}
+   610→                </button>
+   611→
+   612→                {avatarUrl && (
+   613→                  <button
+   614→                    onClick={() => {
+   615→                      setAvatarUrl("");
+   616→                      setAvatarFile(null);
+   617→                    }}
+   618→                    className="text-[11px] font-mono font-bold tracking-[0.1em] uppercase text-[#111111]/30 hover:text-[#FF4D00] transition-colors mb-4"
+   619→                  >
+   620→                    Remove photo
+   621→                  </button>
+   622→                )}
+   623→
+   624→                <div className="flex items-center justify-between w-full mt-4">
+   625→                  <button
+   626→                    onClick={goBack}
+   627→                    className="px-5 py-2 text-sm font-bold text-[#111111]/50 hover:bg-[#111111]/5 rounded transition"
+   628→                  >
+   629→                    Back
+   630→                  </button>
+   631→                  <div className="flex items-center gap-3">
+   632→                    <button
+   633→                      onClick={goNext}
+   634→                      className="px-5 py-2 text-sm font-bold text-[#111111]/30 hover:text-[#111111]/50 transition"
+   635→                    >
+   636→                      Skip
+   637→                    </button>
+   638→                    <button
+   639→                      onClick={goNext}
+   640→                      className="flex items-center gap-2 px-6 py-2.5 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-[0.1em] hover:bg-[#FF4D00]/90 transition-colors"
+   641→                    >
+   642→                      Continue
+   643→                      <ArrowRight className="w-4 h-4" />
+   644→                    </button>
+   645→                  </div>
+   646→                </div>
+   647→              </div>
+   648→            )}
+   649→
+   650→            {step === 3 && (
+   651→              <div className="flex flex-col">
+   652→                <h2 className="text-2xl font-display font-medium tracking-tight text-[#111111] mb-2">
+   653→                  Choose Your Communities
+   654→                </h2>
+   655→                <p className="text-[14px] text-[#111111]/40 mb-8">
+   656→                  Select at least one community to join. You can always change these later.
+   657→                </p>
+   658→
+   659→                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+   660→                  {COMMUNITIES.map((c) => {
+   661→                    const isSelected = selectedCommunities.includes(c.name);
+   662→                    return (
+   663→                      <button
+   664→                        key={c.name}
+   665→                        onClick={() => toggleCommunity(c.name)}
+   666→                        className={`flex items-center gap-3 p-4 border text-left transition-all ${
+   667→                          isSelected
+   668→                            ? "border-[#FF4D00] bg-[#FF4D00]/5"
+   669→                            : "border-[#111111]/10 hover:border-[#111111]/20"
+   670→                        }`}
+   671→                      >
+   672→                        <div
+   673→                          className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${c.color} relative`}
+   674→                        >
+   675→                          <span className="text-[10px] font-bold text-white uppercase">
+   676→                            {c.name[0]}
+   677→                          </span>
+   678→                          {isSelected && (
+   679→                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#FF4D00] rounded-full flex items-center justify-center">
+   680→                              <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
+   681→                            </div>
+   682→                          )}
+   683→                        </div>
+   684→                        <div className="flex-1 min-w-0">
+   685→                          <span
+   686→                            className={`text-[13px] font-medium block truncate ${
+   687→                              isSelected ? "text-[#111111]" : "text-[#111111]/60"
+   688→                            }`}
+   689→                          >
+   690→                            {c.name}
+   691→                          </span>
+   692→                        </div>
+   693→                      </button>
+   694→                    );
+   695→                  })}
+   696→                </div>
+   697→
+   698→                <div className="flex items-center justify-between mt-8">
+   699→                  <button
+   700→                    onClick={goBack}
+   701→                    className="px-5 py-2 text-sm font-bold text-[#111111]/50 hover:bg-[#111111]/5 rounded transition"
+   702→                  >
+   703→                    Back
+   704→                  </button>
+   705→                  <button
+   706→                    onClick={handleComplete}
+   707→                    disabled={selectedCommunities.length === 0 || isSubmitting}
+   708→                    className="flex items-center gap-2 px-6 py-2.5 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-[0.1em] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#FF4D00]/90 transition-colors"
+   709→                  >
+   710→                    {isSubmitting ? (
+   711→                      <Loader2 className="w-4 h-4 animate-spin" />
+   712→                    ) : (
+   713→                      <ArrowRight className="w-4 h-4" />
+   714→                    )}
+   715→                    {isSubmitting ? "Creating..." : "Enter Town Square"}
+   716→                  </button>
+   717→                </div>
+   718→              </div>
+   719→            )}
+   720→          </div>
+   721→      </div>
+   722→    </div>
+   723→  );
+   724→}
+   725→
+   726→/* ══════════════════════════════════════════════════════════════════════════
+   727→   EDIT PROFILE MODAL
+   728→   ══════════════════════════════════════════════════════════════════════════ */
+   729→function EditProfileModal({
+   730→  user,
+   731→  onClose,
+   732→  onSave,
+   733→}: {
+   734→  user: ForumUser;
+   735→  onClose: () => void;
+   736→  onSave: (updatedUser: ForumUser) => void;
+   737→}) {
+   738→  const [name, setName] = useState(user.name);
+   739→  const [bio, setBio] = useState(user.bio || "");
+   740→  const [location, setLocation] = useState(user.location || "");
+   741→  const [role, setRole] = useState(user.role);
+   742→  const [selectedCommunities, setSelectedCommunities] = useState<string[]>(
+   743→    parseCommunities(user.communities)
+   744→  );
+   745→  const [avatarUrl, setAvatarUrl] = useState<string>(user.avatarUrl || "");
+   746→  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+   747→  const [isSaving, setIsSaving] = useState(false);
+   748→
+   749→  const toggleCommunity = (c: string) => {
+   750→    setSelectedCommunities((prev) =>
+   751→      prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]
+   752→    );
+   753→  };
+   754→
+   755→  const handleSave = async () => {
+   756→    setIsSaving(true);
+   757→    try {
+   758→      let finalAvatarUrl = avatarUrl;
+   759→
+   760→      // Upload new avatar if a file was selected
+   761→      if (avatarFile) {
+   762→        const formData = new FormData();
+   763→        formData.append("file", avatarFile);
+   764→        const uploadRes = await fetch("/api/upload", {
+   765→          method: "POST",
+   766→          body: formData,
+   767→        });
+   768→        if (uploadRes.ok) {
+   769→          const uploadData = await uploadRes.json();
+   770→          finalAvatarUrl = uploadData.url;
+   771→        }
+   772→      }
+   773→
+   774→      const res = await fetch("/api/forum/users", {
+   775→        method: "PUT",
+   776→        headers: { "Content-Type": "application/json" },
+   777→        body: JSON.stringify({
+   778→          id: user.id,
+   779→          name,
+   780→          bio: bio || null,
+   781→          role,
+   782→          location: location || null,
+   783→          avatarUrl: finalAvatarUrl || null,
+   784→          communities: selectedCommunities,
+   785→        }),
+   786→      });
+   787→
+   788→      if (res.ok) {
+   789→        const updatedUser: ForumUser = await res.json();
+   790→        onSave(updatedUser);
+   791→        onClose();
+   792→      }
+   793→    } catch (err) {
+   794→      console.error("Failed to save profile:", err);
+   795→    } finally {
+   796→      setIsSaving(false);
+   797→    }
+   798→  };
+   799→
+   800→  return (
+   801→    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#111111]/50" onClick={onClose}>
+   802→      <motion.div
+   803→        initial={{ opacity: 0, scale: 0.95 }}
+   804→        animate={{ opacity: 1, scale: 1 }}
+   805→        exit={{ opacity: 0, scale: 0.95 }}
+   806→        className="bg-white w-full max-w-[520px] max-h-[90vh] overflow-y-auto mx-4 shadow-xl"
+   807→        onClick={(e) => e.stopPropagation()}
+   808→      >
+   809→        {/* Header */}
+   810→        <div className="flex items-center justify-between px-6 py-4 border-b border-[#111111]/10">
+   811→          <h2 className="text-lg font-display font-medium tracking-tight text-[#111111]">
+   812→            Edit Profile
+   813→          </h2>
+   814→          <button onClick={onClose} className="p-1 hover:bg-[#111111]/5 rounded transition-colors">
+   815→            <X className="w-5 h-5 text-[#111111]/40" />
+   816→          </button>
+   817→        </div>
+   818→
+   819→        {/* Body */}
+   820→        <div className="p-6 space-y-5">
+   821→          {/* Avatar */}
+   822→          <div className="flex flex-col items-center">
+   823→            <input
+   824→              type="file"
+   825→              accept="image/*"
+   826→              id="avatar-upload-edit"
+   827→              className="hidden"
+   828→              onChange={(e) => {
+   829→                const file = e.target.files?.[0];
+   830→                if (file) {
+   831→                  setAvatarFile(file);
+   832→                  setAvatarUrl(URL.createObjectURL(file));
+   833→                }
+   834→              }}
+   835→            />
+   836→            <button
+   837→              onClick={() => document.getElementById("avatar-upload-edit")?.click()}
+   838→              className="relative group mb-3"
+   839→            >
+   840→              <div
+   841→                className="w-[80px] h-[80px] rounded-full overflow-hidden flex items-center justify-center border-2 border-dashed border-[#111111]/20 group-hover:border-[#FF4D00]/40 transition-colors"
+   842→                style={avatarUrl ? {} : { backgroundColor: user.avatarColor }}
+   843→              >
+   844→                {avatarUrl ? (
+   845→                  <img src={avatarUrl} alt="Avatar preview" className="w-full h-full object-cover" />
+   846→                ) : (
+   847→                  <Camera className="w-7 h-7 text-white/70" />
+   848→                )}
+   849→              </div>
+   850→              {avatarUrl && (
+   851→                <div className="absolute inset-0 rounded-full bg-[#111111]/0 group-hover:bg-[#111111]/30 flex items-center justify-center transition-colors">
+   852→                  <Camera className="w-5 h-5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+   853→                </div>
+   854→              )}
+   855→            </button>
+   856→            <span className="text-[11px] text-[#111111]/30">Click to change photo</span>
+   857→          </div>
+   858→
+   859→          {/* Name */}
+   860→          <div>
+   861→            <label className="flex items-center gap-1.5 text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/40 mb-2">
+   862→              <User className="w-3.5 h-3.5" />
+   863→              Display Name
+   864→            </label>
+   865→            <input
+   866→              type="text"
+   867→              value={name}
+   868→              onChange={(e) => setName(e.target.value)}
+   869→              className="w-full bg-white border border-[#111111]/10 focus:border-[#FF4D00]/30 focus:ring-1 focus:ring-[#FF4D00]/20 rounded px-4 py-3 text-[14px] text-[#111111] outline-none transition"
+   870→            />
+   871→          </div>
+   872→
+   873→          {/* Role */}
+   874→          <div>
+   875→            <label className="text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/40 mb-3 block">
+   876→              Role
+   877→            </label>
+   878→            <div className="flex flex-wrap gap-2">
+   879→              {ROLES.map((r) => (
+   880→                <button
+   881→                  key={r}
+   882→                  onClick={() => setRole(r)}
+   883→                  className={`flex items-center gap-2 px-4 py-2.5 border text-[12px] font-bold uppercase tracking-[0.05em] transition-all ${
+   884→                    role === r
+   885→                      ? "border-[#FF4D00] bg-[#FF4D00]/5 text-[#FF4D00]"
+   886→                      : "border-[#111111]/10 text-[#111111]/40 hover:border-[#111111]/20 hover:text-[#111111]/60"
+   887→                  }`}
+   888→                >
+   889→                  {role === r && <Check className="w-3.5 h-3.5" />}
+   890→                  {r}
+   891→                </button>
+   892→              ))}
+   893→            </div>
+   894→          </div>
+   895→
+   896→          {/* Bio */}
+   897→          <div>
+   898→            <label className="text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/40 mb-2 block">
+   899→              Bio
+   900→            </label>
+   901→            <textarea
+   902→              value={bio}
+   903→              onChange={(e) => setBio(e.target.value)}
+   904→              placeholder="A short bio about yourself"
+   905→              rows={3}
+   906→              className="w-full bg-white border border-[#111111]/10 focus:border-[#FF4D00]/30 focus:ring-1 focus:ring-[#FF4D00]/20 rounded px-4 py-3 text-[14px] text-[#111111] placeholder-[#111111]/30 outline-none transition resize-y"
+   907→            />
+   908→          </div>
+   909→
+   910→          {/* Location */}
+   911→          <div>
+   912→            <label className="flex items-center gap-1.5 text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/40 mb-2">
+   913→              <MapPin className="w-3.5 h-3.5" />
+   914→              Location
+   915→            </label>
+   916→            <input
+   917→              type="text"
+   918→              value={location}
+   919→              onChange={(e) => setLocation(e.target.value)}
+   920→              placeholder="Lagos, Nairobi, Accra..."
+   921→              className="w-full bg-white border border-[#111111]/10 focus:border-[#FF4D00]/30 focus:ring-1 focus:ring-[#FF4D00]/20 rounded px-4 py-3 text-[14px] text-[#111111] placeholder-[#111111]/30 outline-none transition"
+   922→            />
+   923→          </div>
+   924→
+   925→          {/* Communities */}
+   926→          <div>
+   927→            <label className="text-[11px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/40 mb-3 block">
+   928→              Communities
+   929→            </label>
+   930→            <div className="grid grid-cols-2 gap-2">
+   931→              {COMMUNITIES.map((c) => {
+   932→                const isSelected = selectedCommunities.includes(c.name);
+   933→                return (
+   934→                  <button
+   935→                    key={c.name}
+   936→                    onClick={() => toggleCommunity(c.name)}
+   937→                    className={`flex items-center gap-2 p-3 border text-left transition-all ${
+   938→                      isSelected
+   939→                        ? "border-[#FF4D00] bg-[#FF4D00]/5"
+   940→                        : "border-[#111111]/10 hover:border-[#111111]/20"
+   941→                    }`}
+   942→                  >
+   943→                    <div
+   944→                      className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${c.color} relative`}
+   945→                    >
+   946→                      <span className="text-[8px] font-bold text-white uppercase">
+   947→                        {c.name[0]}
+   948→                      </span>
+   949→                    </div>
+   950→                    <span
+   951→                      className={`text-[11px] font-medium block truncate ${
+   952→                        isSelected ? "text-[#111111]" : "text-[#111111]/60"
+   953→                      }`}
+   954→                    >
+   955→                      {c.name}
+   956→                    </span>
+   957→                  </button>
+   958→                );
+   959→              })}
+   960→            </div>
+   961→          </div>
+   962→        </div>
+   963→
+   964→        {/* Footer */}
+   965→        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-[#111111]/10">
+   966→          <button
+   967→            onClick={onClose}
+   968→            className="px-5 py-2 text-sm font-bold text-[#111111]/50 hover:bg-[#111111]/5 rounded transition"
+   969→          >
+   970→            Cancel
+   971→          </button>
+   972→          <button
+   973→            onClick={handleSave}
+   974→            disabled={!name.trim() || isSaving}
+   975→            className="flex items-center gap-2 px-6 py-2.5 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-[0.1em] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#FF4D00]/90 transition-colors"
+   976→          >
+   977→            {isSaving ? (
+   978→              <Loader2 className="w-4 h-4 animate-spin" />
+   979→            ) : (
+   980→              <Save className="w-4 h-4" />
+   981→            )}
+   982→            {isSaving ? "Saving..." : "Save Changes"}
+   983→          </button>
+   984→        </div>
+   985→      </motion.div>
+   986→    </div>
+   987→  );
+   988→}
+   989→
+   990→/* ══════════════════════════════════════════════════════════════════════════
+   991→   FORUM CONTENT (separated to avoid hooks-after-return issues)
+   992→   ══════════════════════════════════════════════════════════════════════════ */
+   993→function ForumContent({ user: initialUser }: { user: ForumUser }) {
+   994→  const { navigate } = useRouter();
+   995→  const [user, setUser] = useState<ForumUser>(initialUser);
+   996→  const userId = user.id;
+   997→  const userName = user.name;
+   998→  const userAvatarColor = user.avatarColor;
+   999→
+  1000→  const [posts, setPosts] = useState<ForumPost[]>([]);
+  1001→  const [postsLoading, setPostsLoading] = useState(true);
+  1002→  const [activeCommunity, setActiveCommunity] = useState<string>("all");
+  1003→  const [activeCategory, setActiveCategory] = useState<string>("home");
+  1004→  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+  1005→  const [selectedPost, setSelectedPost] = useState<(ForumPost & { comments: ForumComment[] }) | null>(null);
+  1006→  const [postDetailLoading, setPostDetailLoading] = useState(false);
+  1007→  const [commentText, setCommentText] = useState("");
+  1008→  const [replyingToCommentId, setReplyingToCommentId] = useState<string | null>(null);
+  1009→  const [replyContent, setReplyContent] = useState("");
+  1010→  const [newTitle, setNewTitle] = useState("");
+  1011→  const [newContent, setNewContent] = useState("");
+  1012→  const [isComposing, setIsComposing] = useState(false);
+  1013→  const [submittingPost, setSubmittingPost] = useState(false);
+  1014→  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  1015→  const [showProfile, setShowProfile] = useState(false);
+  1016→  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
+  1017→  const [selectedMember, setSelectedMember] = useState<(ForumUser & { posts: ForumPost[]; commentCount: number }) | null>(null);
+  1018→  const [memberDetailLoading, setMemberDetailLoading] = useState(false);
+  1019→  const [networkMembers, setNetworkMembers] = useState<ForumUser[]>([]);
+  1020→  const [networkLoading, setNetworkLoading] = useState(false);
+  1021→  const [networkSearch, setNetworkSearch] = useState("");
+  1022→  const [newCommunity, setNewCommunity] = useState<string>(
+  1023→    COMMUNITIES[0].name
+  1024→  );
+  1025→  const [actionLoading, setActionLoading] = useState<Record<string, boolean>>({});
+  1026→  const [showEditProfile, setShowEditProfile] = useState(false);
+  1027→
+  1028→  // Fetch posts from API
+  1029→  const fetchPosts = useCallback(async () => {
+  1030→    try {
+  1031→      const params = new URLSearchParams();
+  1032→      if (activeCommunity !== "all") params.set("community", activeCommunity);
+  1033→      if (activeCategory !== "network") params.set("category", activeCategory);
+  1034→      params.set("userId", userId);
+  1035→      params.set("limit", "50");
+  1036→
+  1037→      const res = await fetch(`/api/forum/posts?${params.toString()}`);
+  1038→      if (res.ok) {
+  1039→        const data = await res.json();
+  1040→        setPosts(data.posts || []);
+  1041→      }
+  1042→    } catch (err) {
+  1043→      console.error("Failed to fetch posts:", err);
+  1044→    } finally {
+  1045→      setPostsLoading(false);
+  1046→    }
+  1047→  }, [activeCommunity, activeCategory, userId]);
+  1048→
+  1049→  // Initial seed + fetch
+  1050→  useEffect(() => {
+  1051→    const init = async () => {
+  1052→      // Seed on first load (public init route, not admin-gated seed)
+  1053→      await fetch("/api/forum/init").catch(() => {});
+  1054→      await fetchPosts();
+  1055→    };
+  1056→    init();
+  1057→  }, []);
+  1058→
+  1059→  // Re-fetch when filters change
+  1060→  useEffect(() => {
+  1061→    if (activeCategory !== "network") {
+  1062→      setPostsLoading(true);
+  1063→      fetchPosts();
+  1064→    }
+  1065→  }, [activeCommunity, activeCategory, fetchPosts]);
+  1066→
+  1067→  // Fetch network members when category is network
+  1068→  useEffect(() => {
+  1069→    if (activeCategory === "network") {
+  1070→      const fetchMembers = async () => {
+  1071→        setNetworkLoading(true);
+  1072→        try {
+  1073→          const res = await fetch("/api/forum/users");
+  1074→          if (res.ok) {
+  1075→            const data = await res.json();
+  1076→            setNetworkMembers(data.users || []);
+  1077→          }
+  1078→        } catch (err) {
+  1079→          console.error("Failed to fetch members:", err);
+  1080→        } finally {
+  1081→          setNetworkLoading(false);
+  1082→        }
+  1083→      };
+  1084→      fetchMembers();
+  1085→    }
+  1086→  }, [activeCategory]);
+  1087→
+  1088→  // Fetch selected post detail when selectedPostId changes
+  1089→  useEffect(() => {
+  1090→    if (!selectedPostId) {
+  1091→      setSelectedPost(null);
+  1092→      return;
+  1093→    }
+  1094→    const fetchPostDetail = async () => {
+  1095→      setPostDetailLoading(true);
+  1096→      try {
+  1097→        const res = await fetch(`/api/forum/posts/${selectedPostId}?userId=${userId}`);
+  1098→        if (res.ok) {
+  1099→          const data = await res.json();
+  1100→          setSelectedPost(data);
+  1101→        }
+  1102→      } catch (err) {
+  1103→        console.error("Failed to fetch post detail:", err);
+  1104→      } finally {
+  1105→        setPostDetailLoading(false);
+  1106→      }
+  1107→    };
+  1108→    fetchPostDetail();
+  1109→  }, [selectedPostId, userId]);
+  1110→
+  1111→  // Fetch selected member detail
+  1112→  useEffect(() => {
+  1113→    if (!selectedMemberId) {
+  1114→      setSelectedMember(null);
+  1115→      return;
+  1116→    }
+  1117→    const fetchMemberDetail = async () => {
+  1118→      setMemberDetailLoading(true);
+  1119→      try {
+  1120→        const res = await fetch(`/api/forum/users/${selectedMemberId}`);
+  1121→        if (res.ok) {
+  1122→          const data = await res.json();
+  1123→          setSelectedMember(data);
+  1124→        }
+  1125→      } catch (err) {
+  1126→        console.error("Failed to fetch member detail:", err);
+  1127→      } finally {
+  1128→        setMemberDetailLoading(false);
+  1129→      }
+  1130→    };
+  1131→    fetchMemberDetail();
+  1132→  }, [selectedMemberId]);
+  1133→
+  1134→  // Close profile dropdown when clicking outside
+  1135→  useEffect(() => {
+  1136→    if (!showProfile) return;
+  1137→    const handleClickOutside = () => setShowProfile(false);
+  1138→    document.addEventListener("click", handleClickOutside);
+  1139→    return () => document.removeEventListener("click", handleClickOutside);
+  1140→  }, [showProfile]);
+  1141→
+  1142→  // Create post
+  1143→  const handleCreatePost = async (e: React.FormEvent) => {
+  1144→    e.preventDefault();
+  1145→    if (!newTitle.trim() || submittingPost) return;
+  1146→    setSubmittingPost(true);
+  1147→    try {
+  1148→      const res = await fetch("/api/forum/posts", {
+  1149→        method: "POST",
+  1150→        headers: { "Content-Type": "application/json" },
+  1151→        body: JSON.stringify({
+  1152→          authorId: userId,
+  1153→          community: newCommunity,
+  1154→          title: newTitle,
+  1155→          content: newContent || undefined,
+  1156→        }),
+  1157→      });
+  1158→      if (res.ok) {
+  1159→        setNewTitle("");
+  1160→        setNewContent("");
+  1161→        setIsComposing(false);
+  1162→        await fetchPosts();
+  1163→      }
+  1164→    } catch (err) {
+  1165→      console.error("Failed to create post:", err);
+  1166→    } finally {
+  1167→      setSubmittingPost(false);
+  1168→    }
+  1169→  };
+  1170→
+  1171→  // Vote
+  1172→  const handleVote = async (id: string, dir: "up" | "down", e: React.MouseEvent) => {
+  1173→    e.stopPropagation();
+  1174→    if (actionLoading[`vote-${id}`]) return;
+  1175→    setActionLoading((prev) => ({ ...prev, [`vote-${id}`]: true }));
+  1176→
+  1177→    // Optimistic update
+  1178→    setPosts((prev) =>
+  1179→      prev.map((p) => {
+  1180→        if (p.id !== id) return p;
+  1181→        let diff = 0;
+  1182→        let nextVote: "up" | "down" | null = dir;
+  1183→        if (p.userVote === dir) {
+  1184→          diff = dir === "up" ? -1 : 1;
+  1185→          nextVote = null;
+  1186→        } else if (p.userVote === null) {
+  1187→          diff = dir === "up" ? 1 : -1;
+  1188→        } else {
+  1189→          diff = dir === "up" ? 2 : -2;
+  1190→        }
+  1191→        return { ...p, userVote: nextVote, upvotes: p.upvotes + diff };
+  1192→      })
+  1193→    );
+  1194→
+  1195→    try {
+  1196→      await fetch(`/api/forum/posts/${id}`, {
+  1197→        method: "PATCH",
+  1198→        headers: { "Content-Type": "application/json" },
+  1199→        body: JSON.stringify({ action: "vote", userId, direction: dir }),
+  1200→      });
+  1201→      // Refetch to get accurate counts
+  1202→      await fetchPosts();
+  1203→      // Also refresh detail view if this is the selected post
+  1204→      if (selectedPostId === id) {
+  1205→        const res = await fetch(`/api/forum/posts/${id}?userId=${userId}`);
+  1206→        if (res.ok) setSelectedPost(await res.json());
+  1207→      }
+  1208→    } catch (err) {
+  1209→      console.error("Failed to vote:", err);
+  1210→      await fetchPosts();
+  1211→    } finally {
+  1212→      setActionLoading((prev) => ({ ...prev, [`vote-${id}`]: false }));
+  1213→    }
+  1214→  };
+  1215→
+  1216→  // Heart
+  1217→  const handleHeart = async (id: string, e: React.MouseEvent) => {
+  1218→    e.stopPropagation();
+  1219→    if (actionLoading[`heart-${id}`]) return;
+  1220→    setActionLoading((prev) => ({ ...prev, [`heart-${id}`]: true }));
+  1221→
+  1222→    // Optimistic update
+  1223→    setPosts((prev) =>
+  1224→      prev.map((p) => {
+  1225→        if (p.id !== id) return p;
+  1226→        return { ...p, userHearted: !p.userHearted, hearts: p.hearts + (p.userHearted ? -1 : 1) };
+  1227→      })
+  1228→    );
+  1229→
+  1230→    try {
+  1231→      await fetch(`/api/forum/posts/${id}`, {
+  1232→        method: "PATCH",
+  1233→        headers: { "Content-Type": "application/json" },
+  1234→        body: JSON.stringify({ action: "heart", userId }),
+  1235→      });
+  1236→      await fetchPosts();
+  1237→      if (selectedPostId === id) {
+  1238→        const res = await fetch(`/api/forum/posts/${id}?userId=${userId}`);
+  1239→        if (res.ok) setSelectedPost(await res.json());
+  1240→      }
+  1241→    } catch (err) {
+  1242→      console.error("Failed to heart:", err);
+  1243→      await fetchPosts();
+  1244→    } finally {
+  1245→      setActionLoading((prev) => ({ ...prev, [`heart-${id}`]: false }));
+  1246→    }
+  1247→  };
+  1248→
+  1249→  // Add comment
+  1250→  const handleAddComment = async (postId: string) => {
+  1251→    if (!commentText.trim()) return;
+  1252→    try {
+  1253→      const res = await fetch(`/api/forum/posts/${postId}/comments`, {
+  1254→        method: "POST",
+  1255→        headers: { "Content-Type": "application/json" },
+  1256→        body: JSON.stringify({ authorId: userId, content: commentText }),
+  1257→      });
+  1258→      if (res.ok) {
+  1259→        setCommentText("");
+  1260→        // Refresh post detail
+  1261→        const detailRes = await fetch(`/api/forum/posts/${postId}?userId=${userId}`);
+  1262→        if (detailRes.ok) setSelectedPost(await detailRes.json());
+  1263→        await fetchPosts();
+  1264→      }
+  1265→    } catch (err) {
+  1266→      console.error("Failed to add comment:", err);
+  1267→    }
+  1268→  };
+  1269→
+  1270→  // Add reply
+  1271→  const handleAddReply = async (postId: string, commentId: string) => {
+  1272→    if (!replyContent.trim()) return;
+  1273→    try {
+  1274→      const res = await fetch(`/api/forum/posts/${postId}/comments`, {
+  1275→        method: "POST",
+  1276→        headers: { "Content-Type": "application/json" },
+  1277→        body: JSON.stringify({ authorId: userId, content: replyContent, parentId: commentId }),
+  1278→      });
+  1279→      if (res.ok) {
+  1280→        setReplyContent("");
+  1281→        setReplyingToCommentId(null);
+  1282→        // Refresh post detail
+  1283→        const detailRes = await fetch(`/api/forum/posts/${postId}?userId=${userId}`);
+  1284→        if (detailRes.ok) setSelectedPost(await detailRes.json());
+  1285→        await fetchPosts();
+  1286→      }
+  1287→    } catch (err) {
+  1288→      console.error("Failed to add reply:", err);
+  1289→    }
+  1290→  };
+  1291→
+  1292→  const filteredPosts = useMemo(() => {
+  1293→    let result = posts;
+  1294→    // The API already filters by community and category, but for client-side "all" we need the full set
+  1295→    return result;
+  1296→  }, [posts]);
+  1297→
+  1298→  const userCommunities = parseCommunities(user.communities);
+  1299→
+  1300→  // Edit Profile Modal
+  1301→  const editProfileModal = showEditProfile && (
+  1302→    <EditProfileModal
+  1303→      user={user}
+  1304→      onClose={() => setShowEditProfile(false)}
+  1305→      onSave={(updatedUser) => setUser(updatedUser)}
+  1306→    />
+  1307→  );
+  1308→
+  1309→  return (
+  1310→    <>
+  1311→    {editProfileModal}
+  1312→    <div className="flex flex-col h-screen bg-white text-[#111111] font-sans text-sm">
+  1313→      {/* ── TOP HEADER ── */}
+  1314→      <header className="h-[56px] bg-white border-b border-[#111111]/10 px-4 md:px-8 flex items-center justify-between shrink-0 z-50">
+  1315→        <div className="flex items-center gap-4 min-w-0">
+  1316→          <button
+  1317→            onClick={() => navigate("/")}
+  1318→            className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#111111]/40 hover:text-[#FF4D00] transition-colors flex items-center gap-1.5"
+  1319→          >
+  1320→            <LogOut className="w-3.5 h-3.5" />
+  1321→            <span className="hidden sm:inline">Exit</span>
+  1322→          </button>
+  1323→          <button
+  1324→            className="xl:hidden p-2 hover:bg-[#111111]/5 rounded text-[#111111]/60"
+  1325→            onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+  1326→          >
+  1327→            <Menu className="w-5 h-5" />
+  1328→          </button>
+  1329→          <div className="flex items-center gap-2.5 cursor-pointer select-none">
+  1330→            <div className="w-8 h-8 bg-[#FF4D00] flex items-center justify-center">
+  1331→              <MessageSquare className="w-4 h-4 text-white" />
+  1332→            </div>
+  1333→            <div>
+  1334→              <span className="text-lg font-display font-medium tracking-tight text-[#111111]">
+  1335→                Town<span className="text-[#111111]/30 font-normal"> Square</span>
+  1336→              </span>
+  1337→              <span className="hidden md:inline text-[10px] font-mono font-bold tracking-[0.15em] uppercase text-[#FF4D00] ml-3">
+  1338→                XCitizen Forum
+  1339→              </span>
+  1340→            </div>
+  1341→          </div>
+  1342→        </div>
+  1343→
+  1344→        <div className="flex-1 max-w-[500px] px-4 md:px-8 relative hidden sm:block">
+  1345→          <div className="relative flex items-center bg-[#FAFAFA] hover:bg-[#F5F5F5] focus-within:bg-white focus-within:border-[#FF4D00]/30 focus-within:ring-1 focus-within:ring-[#FF4D00]/20 border border-[#111111]/10 rounded px-3 py-1.5 transition-colors">
+  1346→            <Search className="w-4 h-4 text-[#111111]/30 shrink-0" />
+  1347→            <input
+  1348→              type="text"
+  1349→              placeholder="Search discussions"
+  1350→              className="flex-1 bg-transparent border-none text-sm text-[#111111] placeholder-[#111111]/30 outline-none ml-2 min-w-0"
+  1351→            />
+  1352→          </div>
+  1353→        </div>
+  1354→
+  1355→        <div className="flex items-center gap-2 justify-end">
+  1356→          <button
+  1357→            onClick={() => {
+  1358→              setNewCommunity(activeCommunity === "all" ? COMMUNITIES[0].name : activeCommunity);
+  1359→              setIsComposing(true);
+  1360→            }}
+  1361→            className="flex items-center gap-1.5 px-4 py-1.5 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-[0.1em] hover:bg-[#FF4D00]/90 transition-colors"
+  1362→          >
+  1363→            <PlusCircle className="w-4 h-4" />
+  1364→            <span className="hidden md:inline">New Post</span>
+  1365→          </button>
+  1366→          <button className="p-2 hover:bg-[#111111]/5 rounded text-[#111111]/40">
+  1367→            <Bell className="w-5 h-5" />
+  1368→          </button>
+  1369→          <div className="relative">
+  1370→            <button
+  1371→              onClick={(e) => { e.stopPropagation(); setShowProfile(!showProfile); }}
+  1372→              className="w-8 h-8 flex items-center justify-center font-bold text-white text-xs ml-1 hover:ring-2 hover:ring-[#FF4D00]/30 transition-all overflow-hidden"
+  1373→              style={{ backgroundColor: userAvatarColor }}
+  1374→            >
+  1375→              {user.avatarUrl ? (
+  1376→                <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
+  1377→              ) : (
+  1378→                userName[0]
+  1379→              )}
+  1380→            </button>
+  1381→
+  1382→            {/* Profile dropdown */}
+  1383→            <AnimatePresence>
+  1384→              {showProfile && (
+  1385→                <motion.div
+  1386→                  initial={{ opacity: 0, y: -8, scale: 0.95 }}
+  1387→                  animate={{ opacity: 1, y: 0, scale: 1 }}
+  1388→                  exit={{ opacity: 0, y: -8, scale: 0.95 }}
+  1389→                  transition={{ duration: 0.15, ease: "easeOut" }}
+  1390→                  className="absolute right-0 top-[44px] w-[280px] bg-white border border-[#111111]/10 shadow-lg z-50"
+  1391→                  onClick={(e) => e.stopPropagation()}
+  1392→                >
+  1393→                  {/* Profile header */}
+  1394→                  <div className="p-4 border-b border-[#111111]/10">
+  1395→                    <div className="flex items-center gap-3">
+  1396→                      <div
+  1397→                        className="w-10 h-10 flex items-center justify-center font-bold text-white text-sm overflow-hidden"
+  1398→                        style={{ backgroundColor: userAvatarColor }}
+  1399→                      >
+  1400→                        {user.avatarUrl ? (
+  1401→                          <img src={user.avatarUrl} alt="" className="w-full h-full object-cover" />
+  1402→                        ) : (
+  1403→                          userName[0]
+  1404→                        )}
+  1405→                      </div>
+  1406→                      <div className="flex-1 min-w-0">
+  1407→                        <div className="text-[14px] font-display font-medium text-[#111111] truncate">
+  1408→                          {userName}
+  1409→                        </div>
+  1410→                        <div className="text-[11px] text-[#111111]/40 font-medium truncate">
+  1411→                          {user.email}
+  1412→                        </div>
+  1413→                      </div>
+  1414→                    </div>
+  1415→                  </div>
+  1416→
+  1417→                  {/* Profile details */}
+  1418→                  <div className="p-4 space-y-3">
+  1419→                    {user.role && (
+  1420→                      <div className="flex items-center gap-2">
+  1421→                        <span
+  1422→                          className="text-[9px] font-mono font-bold tracking-[0.1em] uppercase px-2 py-0.5 text-white"
+  1423→                          style={{
+  1424→                            backgroundColor: ROLE_COLORS[user.role] || "#6b7280",
+  1425→                          }}
+  1426→                        >
+  1427→                          {user.role}
+  1428→                        </span>
+  1429→                      </div>
+  1430→                    )}
+  1431→
+  1432→                    {user.location && (
+  1433→                      <div className="flex items-center gap-2 text-[12px] text-[#111111]/50">
+  1434→                        <MapPin className="w-3.5 h-3.5 shrink-0" />
+  1435→                        <span>{user.location}</span>
+  1436→                      </div>
+  1437→                    )}
+  1438→
+  1439→                    {user.bio && (
+  1440→                      <p className="text-[12px] text-[#111111]/50 leading-relaxed">
+  1441→                        {user.bio}
+  1442→                      </p>
+  1443→                    )}
+  1444→
+  1445→                    {userCommunities.length > 0 && (
+  1446→                      <div>
+  1447→                        <div className="text-[9px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/30 mb-1.5">
+  1448→                          Communities
+  1449→                        </div>
+  1450→                        <div className="flex flex-wrap gap-1">
+  1451→                          {userCommunities.map((c) => {
+  1452→                            return (
+  1453→                              <span
+  1454→                                key={c}
+  1455→                                className="text-[9px] font-mono font-bold tracking-[0.05em] uppercase px-2 py-0.5 bg-[#111111]/5 text-[#111111]/50"
+  1456→                              >
+  1457→                                {c}
+  1458→                              </span>
+  1459→                            );
+  1460→                          })}
+  1461→                        </div>
+  1462→                      </div>
+  1463→                    )}
+  1464→                  </div>
+  1465→
+  1466→                  {/* Actions */}
+  1467→                  <div className="border-t border-[#111111]/10">
+  1468→                    <button
+  1469→                      onClick={() => {
+  1470→                        setShowProfile(false);
+  1471→                        setShowEditProfile(true);
+  1472→                      }}
+  1473→                      className="w-full flex items-center gap-2.5 px-4 py-3 text-[11px] font-bold uppercase tracking-[0.1em] text-[#111111]/40 hover:bg-[#111111]/5 hover:text-[#FF4D00] transition-colors"
+  1474→                    >
+  1475→                      <Pencil className="w-3.5 h-3.5" />
+  1476→                      Edit Profile
+  1477→                    </button>
+  1478→                    <button
+  1479→                      onClick={() => {
+  1480→                        localStorage.removeItem("xcelero_townsquare_user_id");
+  1481→                        window.location.reload();
+  1482→                      }}
+  1483→                      className="w-full flex items-center gap-2.5 px-4 py-3 text-[11px] font-bold uppercase tracking-[0.1em] text-[#111111]/40 hover:bg-[#111111]/5 hover:text-[#FF4D00] transition-colors"
+  1484→                    >
+  1485→                      <LogOut className="w-3.5 h-3.5" />
+  1486→                      Sign Out
+  1487→                    </button>
+  1488→                  </div>
+  1489→                </motion.div>
+  1490→              )}
+  1491→            </AnimatePresence>
+  1492→          </div>
+  1493→        </div>
+  1494→      </header>
+  1495→
+  1496→      {/* ── MAIN CONTENT ── */}
+  1497→      <div className="flex flex-1 overflow-hidden relative">
+  1498→        {/* LEFT SIDEBAR */}
+  1499→        {(!selectedPostId || typeof window !== "undefined") && (
+  1500→          <aside
+  1501→            className={`w-[260px] shrink-0 border-r border-[#111111]/10 overflow-y-auto hidden xl:block p-4 h-[calc(100vh-56px)] ${
+  1502→              mobileSidebarOpen ? "!block absolute z-40 bg-white h-[calc(100vh-56px)] shadow-lg" : ""
+  1503→            }`}
+  1504→          >
+  1505→            <nav className="space-y-0.5 mb-6 pb-6 border-b border-[#111111]/10">
+  1506→              {[
+  1507→                { key: "home", icon: Home, label: "Home" },
+  1508→                { key: "popular", icon: TrendingUp, label: "Popular" },
+  1509→                { key: "news", icon: Newspaper, label: "Latest" },
+  1510→                { key: "explore", icon: Compass, label: "Explore" },
+  1511→                { key: "network", icon: Users, label: "My Network" },
+  1512→              ].map(({ key, icon: Icon, label }) => (
+  1513→                <button
+  1514→                  key={key}
+  1515→                  onClick={() => {
+  1516→                    setActiveCategory(key);
+  1517→                    setActiveCommunity("all");
+  1518→                  }}
+  1519→                  className={`w-full flex items-center gap-3 px-3 py-2 rounded transition-colors ${
+  1520→                    activeCategory === key && activeCommunity === "all"
+  1521→                      ? "bg-[#111111]/5 text-[#111111]"
+  1522→                      : "hover:bg-[#111111]/5 text-[#111111]/60"
+  1523→                  }`}
+  1524→                >
+  1525→                  <Icon className="w-4 h-4" />
+  1526→                  <span className="font-medium text-[13px]">{label}</span>
+  1527→                </button>
+  1528→              ))}
+  1529→            </nav>
+  1530→
+  1531→            <div className="mb-6">
+  1532→              <h3 className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#111111]/30 mb-3 px-3">
+  1533→                Communities
+  1534→              </h3>
+  1535→              <div className="space-y-0.5">
+  1536→                {COMMUNITIES.map((c) => (
+  1537→                  <button
+  1538→                    key={c.name}
+  1539→                    onClick={() => {
+  1540→                      setActiveCommunity(c.name);
+  1541→                      setMobileSidebarOpen(false);
+  1542→                    }}
+  1543→                    className={`w-full flex items-center gap-3 px-3 py-2 rounded transition-colors ${
+  1544→                      activeCommunity === c.name
+  1545→                        ? "bg-[#111111]/5 text-[#111111]"
+  1546→                        : "hover:bg-[#111111]/5 text-[#111111]/60"
+  1547→                    }`}
+  1548→                  >
+  1549→                    <div
+  1550→                      className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${c.color}`}
+  1551→                    >
+  1552→                      <span className="text-[8px] font-bold text-white uppercase">
+  1553→                        {c.name[0]}
+  1554→                      </span>
+  1555→                    </div>
+  1556→                    <span className="text-[13px] font-medium truncate">{c.name}</span>
+  1557→                  </button>
+  1558→                ))}
+  1559→              </div>
+  1560→            </div>
+  1561→
+  1562→            {/* My Network */}
+  1563→            <div className="mb-6">
+  1564→              <button
+  1565→                onClick={() => setActiveCategory("network")}
+  1566→                className="w-full flex items-center justify-between px-3 mb-3 group"
+  1567→              >
+  1568→                <h3 className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#111111]/30">
+  1569→                  My Network
+  1570→                </h3>
+  1571→                <span className="text-[10px] font-mono text-[#FF4D00]/60 group-hover:text-[#FF4D00] transition-colors flex items-center gap-0.5">
+  1572→                  View all
+  1573→                  <ArrowRight className="w-2.5 h-2.5" />
+  1574→                </span>
+  1575→              </button>
+  1576→              <div className="space-y-1 px-1">
+  1577→                {networkMembers.length > 0
+  1578→                  ? networkMembers.slice(0, 5).map((member) => (
+  1579→                      <button
+  1580→                        key={member.id}
+  1581→                        onClick={() => { setActiveCategory("network"); setSelectedMemberId(member.id); }}
+  1582→                        className="w-full flex items-center gap-2.5 px-2 py-2 rounded hover:bg-[#111111]/5 transition-colors text-left"
+  1583→                      >
+  1584→                        <div className="relative shrink-0">
+  1585→                          <div
+  1586→                            className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-[10px] overflow-hidden"
+  1587→                            style={{ backgroundColor: member.avatarColor }}
+  1588→                          >
+  1589→                            {member.avatarUrl ? (
+  1590→                              <img src={member.avatarUrl} alt="" className="w-full h-full object-cover" />
+  1591→                            ) : (
+  1592→                              getInitials(member.name)
+  1593→                            )}
+  1594→                          </div>
+  1595→                          {isRecentlyActive(member.lastActiveAt) && (
+  1596→                            <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-white" />
+  1597→                          )}
+  1598→                        </div>
+  1599→                        <div className="flex-1 min-w-0">
+  1600→                          <div className="text-[12px] font-medium text-[#111111] truncate">{member.name}</div>
+  1601→                          <div className="text-[10px] text-[#111111]/40 truncate">{member.title || ""}{member.company ? ` at ${member.company}` : ""}</div>
+  1602→                        </div>
+  1603→                      </button>
+  1604→                    ))
+  1605→                  : // Placeholder skeletons for sidebar network
+  1606→                    Array.from({ length: 5 }).map((_, i) => (
+  1607→                      <div key={i} className="flex items-center gap-2.5 px-2 py-2">
+  1608→                        <div className="w-8 h-8 rounded-full bg-[#111111]/10 animate-pulse" />
+  1609→                        <div className="flex-1">
+  1610→                          <div className="h-2.5 w-20 bg-[#111111]/10 rounded animate-pulse mb-1" />
+  1611→                          <div className="h-2 w-28 bg-[#111111]/10 rounded animate-pulse" />
+  1612→                        </div>
+  1613→                      </div>
+  1614→                    ))
+  1615→                }
+  1616→              </div>
+  1617→            </div>
+  1618→          </aside>
+  1619→        )}
+  1620→
+  1621→        {/* CENTER FEED */}
+  1622→        <div className="flex-1 overflow-y-auto w-full flex justify-center pt-6 px-0 sm:px-4 md:px-6 pb-12">
+  1623→          <div className="flex max-w-[1040px] w-full gap-6 items-start justify-center">
+  1624→            <main className="flex-1 min-w-0 max-w-[700px] w-full flex flex-col gap-4">
+  1625→              {activeCategory === "network" ? (
+  1626→                /* ── MY NETWORK VIEW ── */
+  1627→                <div className="flex flex-col gap-4">
+  1628→                  {/* Network Header */}
+  1629→                  <div className="bg-white border border-[#111111]/10 p-4 md:p-6">
+  1630→                    <div className="flex items-center justify-between mb-4">
+  1631→                      <div>
+  1632→                        <h2 className="text-xl font-display font-medium tracking-tight text-[#111111] flex items-center gap-2">
+  1633→                          <Users className="w-5 h-5 text-[#FF4D00]" />
+  1634→                          My Network
+  1635→                        </h2>
+  1636→                        <p className="text-[13px] text-[#111111]/40 mt-1">
+  1637→                          {networkMembers.length} XCitizens in your network
+  1638→                        </p>
+  1639→                      </div>
+  1640→                      <button
+  1641→                        onClick={() => { setActiveCategory("home"); setSelectedMemberId(null); }}
+  1642→                        className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#111111]/40 hover:text-[#FF4D00] transition-colors flex items-center gap-1"
+  1643→                      >
+  1644→                        <ArrowLeft className="w-3.5 h-3.5" />
+  1645→                        Back
+  1646→                      </button>
+  1647→                    </div>
+  1648→
+  1649→                    {/* Search */}
+  1650→                    <div className="relative flex items-center bg-[#FAFAFA] hover:bg-[#F5F5F5] focus-within:bg-white focus-within:border-[#FF4D00]/30 focus-within:ring-1 focus-within:ring-[#FF4D00]/20 border border-[#111111]/10 rounded px-3 py-2 transition-colors">
+  1651→                      <Search className="w-4 h-4 text-[#111111]/30 shrink-0" />
+  1652→                      <input
+  1653→                        type="text"
+  1654→                        placeholder="Search members by name, role, or company"
+  1655→                        value={networkSearch}
+  1656→                        onChange={(e) => setNetworkSearch(e.target.value)}
+  1657→                        className="flex-1 bg-transparent border-none text-sm text-[#111111] placeholder-[#111111]/30 outline-none ml-2 min-w-0"
+  1658→                      />
+  1659→                    </div>
+  1660→                  </div>
+  1661→
+  1662→                  {/* Selected Member Profile Card */}
+  1663→                  {selectedMemberId && selectedMember && (
+  1664→                    <motion.div
+  1665→                      initial={{ opacity: 0, y: 8 }}
+  1666→                      animate={{ opacity: 1, y: 0 }}
+  1667→                      transition={{ duration: 0.2 }}
+  1668→                      className="bg-white border border-[#111111]/10 overflow-hidden"
+  1669→                    >
+  1670→                      <div className="h-16 bg-[#111111] relative">
+  1671→                        <div className="absolute -bottom-6 left-6">
+  1672→                          <div
+  1673→                            className="w-14 h-14 rounded-full flex items-center justify-center font-bold text-white text-lg border-4 border-white overflow-hidden"
+  1674→                            style={{ backgroundColor: selectedMember.avatarColor }}
+  1675→                          >
+  1676→                            {selectedMember.avatarUrl ? (
+  1677→                              <img src={selectedMember.avatarUrl} alt="" className="w-full h-full object-cover" />
+  1678→                            ) : (
+  1679→                              getInitials(selectedMember.name)
+  1680→                            )}
+  1681→                          </div>
+  1682→                        </div>
+  1683→                      </div>
+  1684→                      <div className="pt-10 px-6 pb-6">
+  1685→                        <div className="flex items-start justify-between">
+  1686→                          <div>
+  1687→                            <h3 className="text-lg font-display font-medium text-[#111111]">{selectedMember.name}</h3>
+  1688→                            <p className="text-[13px] text-[#111111]/50 mt-0.5">
+  1689→                              {selectedMember.title || ""}{selectedMember.company ? ` at ${selectedMember.company}` : ""}
+  1690→                            </p>
+  1691→                            <div className="flex items-center gap-3 mt-2">
+  1692→                              <span
+  1693→                                className="text-[9px] font-mono font-bold tracking-[0.1em] uppercase px-2 py-0.5 text-white"
+  1694→                                style={{ backgroundColor: ROLE_COLORS[selectedMember.role] || "#6b7280" }}
+  1695→                              >
+  1696→                                {selectedMember.role}
+  1697→                              </span>
+  1698→                              {selectedMember.location && (
+  1699→                                <span className="flex items-center gap-1 text-[11px] text-[#111111]/40">
+  1700→                                  <MapPin className="w-3 h-3" />
+  1701→                                  {selectedMember.location}
+  1702→                                </span>
+  1703→                              )}
+  1704→                              {isRecentlyActive(selectedMember.lastActiveAt) && (
+  1705→                                <span className="flex items-center gap-1 text-[11px] text-green-600">
+  1706→                                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+  1707→                                  Online
+  1708→                                </span>
+  1709→                              )}
+  1710→                            </div>
+  1711→                          </div>
+  1712→                          <button
+  1713→                            onClick={() => setSelectedMemberId(null)}
+  1714→                            className="text-[#111111]/30 hover:text-[#111111] transition-colors p-1"
+  1715→                          >
+  1716→                            <X className="w-4 h-4" />
+  1717→                          </button>
+  1718→                        </div>
+  1719→
+  1720→                        {selectedMember.bio && (
+  1721→                          <p className="text-[13px] text-[#111111]/60 leading-relaxed mt-4">
+  1722→                            {selectedMember.bio}
+  1723→                          </p>
+  1724→                        )}
+  1725→
+  1726→                        {parseCommunities(selectedMember.communities).length > 0 && (
+  1727→                          <div className="mt-4">
+  1728→                            <div className="text-[9px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/30 mb-2">
+  1729→                              Communities
+  1730→                            </div>
+  1731→                            <div className="flex flex-wrap gap-1.5">
+  1732→                              {parseCommunities(selectedMember.communities).map((c) => {
+  1733→                                const comm = COMMUNITIES.find((x) => x.name === c);
+  1734→                                return (
+  1735→                                  <span
+  1736→                                    key={c}
+  1737→                                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-mono font-bold tracking-[0.05em] uppercase text-white ${comm?.color || "bg-[#FF4D00]"}`}
+  1738→                                  >
+  1739→                                    {c}
+  1740→                                  </span>
+  1741→                                );
+  1742→                              })}
+  1743→                            </div>
+  1744→                          </div>
+  1745→                        )}
+  1746→
+  1747→                        {selectedMember.posts && selectedMember.posts.length > 0 && (
+  1748→                          <div className="mt-4 pt-4 border-t border-[#111111]/5">
+  1749→                            <div className="text-[9px] font-mono font-bold tracking-[0.15em] uppercase text-[#111111]/30 mb-2">
+  1750→                              Recent Posts ({selectedMember.posts.length})
+  1751→                            </div>
+  1752→                            <div className="space-y-2">
+  1753→                              {selectedMember.posts.slice(0, 3).map((post) => (
+  1754→                                <button
+  1755→                                  key={post.id}
+  1756→                                  onClick={() => { setSelectedPostId(post.id); setActiveCategory("home"); }}
+  1757→                                  className="w-full text-left p-3 bg-[#FAFAFA] hover:bg-[#111111]/5 border border-[#111111]/5 rounded transition-colors"
+  1758→                                >
+  1759→                                  <div className="text-[12px] font-medium text-[#111111]">{post.title}</div>
+  1760→                                  <div className="text-[10px] text-[#111111]/40 mt-0.5">{post.upvotes} upvotes · {formatRelativeTime(post.createdAt)}</div>
+  1761→                                </button>
+  1762→                              ))}
+  1763→                            </div>
+  1764→                          </div>
+  1765→                        )}
+  1766→
+  1767→                        <div className="flex gap-2 mt-5">
+  1768→                          <button className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-[#FF4D00] text-white text-[11px] font-bold uppercase tracking-[0.1em] hover:bg-[#FF4D00]/90 transition-colors">
+  1769→                            <Mail className="w-3.5 h-3.5" />
+  1770→                            Message
+  1771→                          </button>
+  1772→                          <button className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 border border-[#111111]/10 text-[#111111]/50 text-[11px] font-bold uppercase tracking-[0.1em] hover:border-[#FF4D00] hover:text-[#FF4D00] transition-colors">
+  1773→                            <User className="w-3.5 h-3.5" />
+  1774→                            Connect
+  1775→                          </button>
+  1776→                        </div>
+  1777→                      </div>
+  1778→                    </motion.div>
+  1779→                  )}
+  1780→
+  1781→                  {/* Members Grid */}
+  1782→                  {networkLoading ? (
+  1783→                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+  1784→                      {Array.from({ length: 6 }).map((_, i) => (
+  1785→                        <MemberCardSkeleton key={i} />
+  1786→                      ))}
+  1787→                    </div>
+  1788→                  ) : (
+  1789→                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+  1790→                      {networkMembers
+  1791→                        .filter((m) => {
+  1792→                          if (!networkSearch.trim()) return true;
+  1793→                          const q = networkSearch.toLowerCase();
+  1794→                          return (
+  1795→                            m.name.toLowerCase().includes(q) ||
+  1796→                            m.role.toLowerCase().includes(q) ||
+  1797→                            (m.company || "").toLowerCase().includes(q) ||
+  1798→                            (m.title || "").toLowerCase().includes(q) ||
+  1799→                            (m.location || "").toLowerCase().includes(q)
+  1800→                          );
+  1801→                        })
+  1802→                        .map((member) => {
+  1803→                          const memberCommunities = parseCommunities(member.communities);
+  1804→                          return (
+  1805→                            <button
+  1806→                              key={member.id}
+  1807→                              onClick={() => setSelectedMemberId(member.id === selectedMemberId ? null : member.id)}
+  1808→                              className={`bg-white border text-left overflow-hidden transition-all ${
+  1809→                                selectedMemberId === member.id
+  1810→                                  ? "border-[#FF4D00] ring-1 ring-[#FF4D00]/20"
+  1811→                                  : "border-[#111111]/10 hover:border-[#FF4D00]/30"
+  1812→                              }`}
+  1813→                            >
+  1814→                              <div className="h-10 bg-[#111111]/5 relative">
+  1815→                                <div className="absolute -bottom-4 left-4">
+  1816→                                  <div className="relative">
+  1817→                                    <div
+  1818→                                      className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-[12px] border-2 border-white overflow-hidden"
+  1819→                                      style={{ backgroundColor: member.avatarColor }}
+  1820→                                    >
+  1821→                                      {member.avatarUrl ? (
+  1822→                                        <img src={member.avatarUrl} alt="" className="w-full h-full object-cover" />
+  1823→                                      ) : (
+  1824→                                        getInitials(member.name)
+  1825→                                      )}
+  1826→                                    </div>
+  1827→                                    {isRecentlyActive(member.lastActiveAt) && (
+  1828→                                      <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-500 border-2 border-white" />
+  1829→                                    )}
+  1830→                                  </div>
+  1831→                                </div>
+  1832→                              </div>
+  1833→                              <div className="pt-7 px-4 pb-4">
+  1834→                                <div className="flex items-start justify-between">
+  1835→                                  <div className="flex-1 min-w-0">
+  1836→                                    <h4 className="text-[13px] font-display font-medium text-[#111111] truncate">{member.name}</h4>
+  1837→                                    <p className="text-[11px] text-[#111111]/40 truncate mt-0.5">
+  1838→                                      {member.title || ""}{member.company ? ` at ${member.company}` : ""}
+  1839→                                    </p>
+  1840→                                  </div>
+  1841→                                  <span
+  1842→                                    className="text-[8px] font-mono font-bold tracking-[0.1em] uppercase px-1.5 py-0.5 text-white shrink-0 ml-2"
+  1843→                                    style={{ backgroundColor: ROLE_COLORS[member.role] || "#6b7280" }}
+  1844→                                  >
+  1845→                                    {member.role}
+  1846→                                  </span>
+  1847→                                </div>
+  1848→                                <div className="flex items-center gap-2 mt-2">
+  1849→                                  {member.location && (
+  1850→                                    <span className="flex items-center gap-1 text-[10px] text-[#111111]/40">
+  1851→                                      <MapPin className="w-3 h-3" />
+  1852→                                      {member.location}
+  1853→                                    </span>
+  1854→                                  )}
+  1855→                                </div>
+  1856→                                {member.bio && (
+  1857→                                  <p className="text-[11px] text-[#111111]/40 mt-2 line-clamp-2 leading-relaxed">
+  1858→                                    {member.bio}
+  1859→                                  </p>
+  1860→                                )}
+  1861→                                <div className="flex flex-wrap gap-1 mt-2">
+  1862→                                  {memberCommunities.slice(0, 2).map((c) => (
+  1863→                                    <span
+  1864→                                      key={c}
+  1865→                                      className="text-[8px] font-mono font-bold tracking-[0.05em] uppercase px-1.5 py-0.5 bg-[#111111]/5 text-[#111111]/40"
+  1866→                                    >
+  1867→                                      {c.split("&")[0].trim()}
+  1868→                                    </span>
+  1869→                                  ))}
+  1870→                                </div>
+  1871→                              </div>
+  1872→                            </button>
+  1873→                          );
+  1874→                        })}
+  1875→                    </div>
+  1876→                  )}
+  1877→                </div>
+  1878→              ) : selectedPostId ? (
+  1879→                /* ── POST DETAIL VIEW ── */
+  1880→                <div className="bg-white border border-[#111111]/10 overflow-hidden">
+  1881→                  {postDetailLoading ? (
+  1882→                    <div className="p-8 flex items-center justify-center">
+  1883→                      <Loader2 className="w-6 h-6 animate-spin text-[#FF4D00]" />
+  1884→                    </div>
+  1885→                  ) : selectedPost ? (
+  1886→                    <>
+  1887→                      <div className="p-4 md:p-6 flex flex-col gap-3">
+  1888→                        <div className="flex items-center justify-between">
+  1889→                          <div className="flex items-center gap-2 text-xs text-[#111111]/40">
+  1890→                            <button
+  1891→                              onClick={() => setSelectedPostId(null)}
+  1892→                              className="p-1 hover:bg-[#111111]/5 rounded transition-colors mr-1"
+  1893→                            >
+  1894→                              <ArrowLeft className="w-[18px] h-[18px] text-[#111111]/60" />
+  1895→                            </button>
+  1896→                            <div
+  1897→                              className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
+  1898→                                COMMUNITIES.find((c) => c.name === selectedPost.community)?.color ||
+  1899→                                "bg-[#FF4D00]"
+  1900→                              }`}
+  1901→                            >
+  1902→                              <span className="text-[8px] font-bold text-white uppercase">
+  1903→                                {selectedPost.community[0]}
+  1904→                              </span>
+  1905→                            </div>
+  1906→                            <span className="font-bold text-[#111111]/60">{selectedPost.community}</span>
+  1907→                            <span>•</span>
+  1908→                            <span>{formatRelativeTime(selectedPost.createdAt)}</span>
+  1909→                            <span>•</span>
+  1910→                            <span className="text-[#111111]/60 flex items-center gap-1">
+  1911→                              {selectedPost.author.name}
+  1912→                              {isRecentlyActive(selectedPost.createdAt) && (
+  1913→                                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+  1914→                              )}
+  1915→                            </span>
+  1916→                          </div>
+  1917→                          <button className="p-1 hover:bg-[#111111]/5 rounded transition-colors">
+  1918→                            <MoreHorizontal className="w-5 h-5 text-[#111111]/30" />
+  1919→                          </button>
+  1920→                        </div>
+  1921→
+  1922→                        <h1 className="text-xl font-display font-medium tracking-tight text-[#111111] leading-snug mt-1">
+  1923→                          {selectedPost.title}
+  1924→                        </h1>
+  1925→
+  1926→                        {selectedPost.content && (
+  1927→                          <div className="text-[14px] text-[#111111]/60 leading-relaxed prose prose-slate max-w-none py-1">
+  1928→                            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+  1929→                              {selectedPost.content}
+  1930→                            </ReactMarkdown>
+  1931→                          </div>
+  1932→                        )}
+  1933→
+  1934→                        {selectedPost.imageUrl && (
+  1935→                          <div className="mt-3 w-full overflow-hidden border border-[#111111]/10">
+  1936→                            <img
+  1937→                              src={selectedPost.imageUrl}
+  1938→                              alt=""
+  1939→                              className="w-full h-auto max-h-[500px] object-cover"
+  1940→                            />
+  1941→                          </div>
+  1942→                        )}
+  1943→
+  1944→                        {/* Post Actions */}
+  1945→                        <div className="flex items-center gap-2 py-2 mt-2 border-t border-b border-[#111111]/5">
+  1946→                          <div className="flex items-center bg-[#FAFAFA] rounded border border-[#111111]/5">
+  1947→                            <button
+  1948→                              onClick={(e) => handleVote(selectedPost.id, "up", e)}
+  1949→                              className={`p-1.5 hover:bg-[#111111]/5 rounded-l transition-colors ${
+  1950→                                selectedPost.userVote === "up" ? "text-[#FF4D00]" : "text-[#111111]/30"
+  1951→                              }`}
+  1952→                            >
+  1953→                              <ArrowUp className="w-4 h-4" strokeWidth={2.5} />
+  1954→                            </button>
+  1955→                            <span
+  1956→                              className={`text-[13px] font-bold px-1.5 ${
+  1957→                                selectedPost.userVote === "up"
+  1958→                                  ? "text-[#FF4D00]"
+  1959→                                  : selectedPost.userVote === "down"
+  1960→                                  ? "text-[#111111]/40"
+  1961→                                  : "text-[#111111]/50"
+  1962→                              }`}
+  1963→                            >
+  1964→                              {selectedPost.upvotes}
+  1965→                            </span>
+  1966→                            <button
+  1967→                              onClick={(e) => handleVote(selectedPost.id, "down", e)}
+  1968→                              className={`p-1.5 hover:bg-[#111111]/5 rounded-r transition-colors ${
+  1969→                                selectedPost.userVote === "down" ? "text-[#111111]/60" : "text-[#111111]/30"
+  1970→                              }`}
+  1971→                            >
+  1972→                              <ArrowDown className="w-4 h-4" strokeWidth={2.5} />
+  1973→                            </button>
+  1974→                          </div>
+  1975→                          <button
+  1976→                            onClick={(e) => handleHeart(selectedPost.id, e)}
+  1977→                            className="flex items-center gap-1 px-2.5 py-1.5 bg-[#FAFAFA] hover:bg-[#111111]/5 border border-[#111111]/5 rounded transition-colors"
+  1978→                          >
+  1979→                            <Heart
+  1980→                              className={`w-4 h-4 ${
+  1981→                                selectedPost.userHearted
+  1982→                                  ? "text-[#FF4D00] fill-[#FF4D00]"
+  1983→                                  : "text-[#111111]/30"
+  1984→                              }`}
+  1985→                            />
+  1986→                            <span className="text-[13px] font-bold text-[#111111]/50">
+  1987→                              {selectedPost.hearts || ""}
+  1988→                            </span>
+  1989→                          </button>
+  1990→                          <button className="flex items-center gap-1 px-2.5 py-1.5 bg-[#FAFAFA] hover:bg-[#111111]/5 border border-[#111111]/5 rounded transition-colors">
+  1991→                            <MessageSquare className="w-4 h-4 text-[#111111]/30" />
+  1992→                            <span className="text-[13px] font-bold text-[#111111]/50">
+  1993→                              {selectedPost.comments?.length || 0}
+  1994→                            </span>
+  1995→                          </button>
+  1996→                          <button className="flex items-center gap-1 px-2.5 py-1.5 bg-[#FAFAFA] hover:bg-[#111111]/5 border border-[#111111]/5 rounded transition-colors">
+  1997→                            <Share2 className="w-4 h-4 text-[#111111]/30" />
+  1998→                            <span className="text-[13px] font-bold text-[#111111]/50 hidden sm:inline">
+  1999→                              Share
+  2000→                            </span>
+
+[showing lines 1-2000 of 2524; use offset=2001 with limit to continue reading]
