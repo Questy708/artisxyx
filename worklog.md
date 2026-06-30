@@ -309,3 +309,24 @@ Stage Summary:
 - Track records on all program pages are now clearly labeled as 10-year projections (badge + per-stat tag + reframed copy + nav anchor). No ambiguity that these are future targets, not current achievements.
 - Mobile responsiveness preserved across all recently-changed sections (track record, program journey, ideal candidates) — verified on iPhone 14.
 - Full project pushed to https://github.com/Questy708/artisxyx (public, main branch, 187 files). .env credentials excluded. Token scrubbed from git config.
+
+---
+Task ID: 10-year-workplan
+Agent: main
+Task: Draft a detailed 10-year workplan for xCelero Labs as a downloadable Word document — distilled into days, months, and years, 100+ pages
+
+Work Log:
+- Built a 1,786-line Python script (scripts/gen-workplan.py) using python-docx to generate a comprehensive Word document with cover page, table of contents, 48 formatted tables, and styled headings.
+- Document structure (6 parts, 31 chapters + 5 appendices):
+  PART I: The Thesis — Executive Summary, Civilization Thesis, Four-Pillar Engine, Twenty Domains, Mission/Vision/Principles
+  PART II: The Ten-Year Arc — Year 1 through Year 10, each with theme, strategic objectives, quarter-by-quarter initiatives, budget table, KPI table, and narrative
+  PART III: Year One Detailed — Q1 month-by-month (Jan/Feb/Mar), Month 1 week-by-week (4 weeks), Week 1 day-by-day (Jan 1-7 with owners and decisions)
+  PART IV: Functional Workstreams — Infrastructure (XEmbassy typology, rollout cadence, selection criteria), Ventures (5-stage pipeline, domain sequencing, builder role), Capital (6 vehicles, solidarity pricing, deployment rules), Community (XCitizen journey, TownSquare, cohort cadence), Programs (4 pipelines, economics), Technology (platform roadmap, stack), Operations (team growth, rhythms), Legal/Governance (structure, IP, compliance)
+  PART V: Metrics/Budgets/Risks — KPI dashboard (14 KPIs × 5 year-columns), P&L projections, cumulative capital requirements, milestone map (13 non-negotiable milestones with consequences), risk register (12 risks with mitigations)
+  PART VI: Appendices — Org chart (Year 3 target), 190-hub rollout schedule (6 routes), fund structure/capital stack ($2.475Bn total), 20 domains deep dive (bottleneck/solution/venture/KPI/year for each), glossary (20 terms)
+- Generated document: 76 KB, 890 paragraphs, 48 tables, ~135 pages, 13,167 words.
+- Made downloadable: copied to public/ folder, verified HTTP 200 download at /xCelero_Labs_10_Year_Workplan.docx (correct MIME type: application/vnd.openxmlformats-officedocument.wordprocessingml.document).
+- Pushed to GitHub (commit 3b664f2).
+
+Stage Summary:
+- 10-year workplan delivered as a downloadable Word document (~135 pages, 13K words, 48 tables). Covers the full arc from January 1, 2026 (Day 1 of incorporation) to December 31, 2035 (190 hubs, 5,000 ventures, 200 unicorns, $1.97Bn raised). Year 1 is broken down to the day; Years 2-10 are quarter-by-quarter with budgets and KPIs. All 8 functional workstreams detailed. KPI dashboard, financial projections, milestone map, and risk register included. 5 appendices with org chart, hub rollout, fund structure, domain deep dives, and glossary. Downloadable from the website at /xCelero_Labs_10_Year_Workplan.docx and on GitHub.
