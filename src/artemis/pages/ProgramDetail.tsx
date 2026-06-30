@@ -612,33 +612,50 @@ export function ProgramDetail() {
 
       {/* ── ANCHOR NAV ── */}
       <div className="w-full max-w-[1400px] mx-auto px-6 lg:px-12 flex flex-wrap justify-center items-center gap-4 mb-24 z-40 bg-white">
-          <a href="#our-track-record" className="px-6 py-3 rounded-full bg-[#FAFAFA] text-[#1B1C1E] text-sm font-medium hover:bg-[#F4F4F5] transition-colors border border-transparent hover:border-[#E5E7EB]">Our track record</a>
+          <a href="#our-track-record" className="px-6 py-3 rounded-full bg-[#FAFAFA] text-[#1B1C1E] text-sm font-medium hover:bg-[#F4F4F5] transition-colors border border-transparent hover:border-[#E5E7EB]">10-year targets</a>
           <a href="#application-cycles" className="px-6 py-3 rounded-full bg-[#FAFAFA] text-[#1B1C1E] text-sm font-medium hover:bg-[#F4F4F5] transition-colors border border-transparent hover:border-[#E5E7EB]">Apply</a>
           <a href="#what-you-get" className="px-6 py-3 rounded-full bg-[#FAFAFA] text-[#1B1C1E] text-sm font-medium hover:bg-[#F4F4F5] transition-colors border border-transparent hover:border-[#E5E7EB]">What you get</a>
           <a href="#program-journey" className="px-6 py-3 rounded-full bg-[#FAFAFA] text-[#1B1C1E] text-sm font-medium hover:bg-[#F4F4F5] transition-colors border border-transparent hover:border-[#E5E7EB]">The journey</a>
           <a href="#faq" className="px-6 py-3 rounded-full bg-[#FAFAFA] text-[#1B1C1E] text-sm font-medium hover:bg-[#F4F4F5] transition-colors border border-transparent hover:border-[#E5E7EB]">FAQ</a>
       </div>
 
-      {/* ── OUR TRACK RECORD ── */}
+      {/* ── PROJECTED TRACK RECORD (10-year horizon) ── */}
       <section id="our-track-record" className="py-24 lg:py-32 px-6 lg:px-12 max-w-[1400px] mx-auto">
         <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mb-20 lg:mb-32">
-          <div className="flex items-center mb-6">
-             <span className="text-[#FF4D00] text-[10px] mr-2">&#9679;</span>
-             <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#1B1C1E]/60">Our Track Record</span>
+          <div>
+            <div className="flex items-center gap-3 mb-6">
+              <span className="text-[#FF4D00] text-[10px] mr-2">&#9679;</span>
+              <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#1B1C1E]/60">Projected Horizon</span>
+            </div>
+            {/* Projection badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#FF4D00]/8 border border-[#FF4D00]/20 rounded-full mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00] animate-pulse" />
+              <span className="font-mono text-[10px] font-bold tracking-[0.2em] uppercase text-[#FF4D00]">10-Year Projection</span>
+            </div>
           </div>
           <p className="text-2xl lg:text-3xl max-w-3xl font-medium leading-relaxed text-[#1B1C1E]">
-            Founders who build with {program.title} don&apos;t just start companies, they build category leaders.
+            These are not today&apos;s numbers — they are the targets {program.title} is engineered to hit within a decade. Founders who build with us don&apos;t just start companies; they build category leaders.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
            {(program.trackRecord || []).map((stat, i) => (
-             <div key={i} className="border-l border-[#1B1C1E]/10 pl-6 space-y-4">
+             <motion.div
+               key={i}
+               initial={{ opacity: 0, y: 18 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true, margin: "-60px" }}
+               transition={{ duration: 0.5, delay: i * 0.1, ease: EASE }}
+               className="border-l border-[#1B1C1E]/10 pl-6 space-y-4 relative"
+             >
                <p className="font-mono text-sm tracking-widest text-[#1B1C1E]/60 uppercase">{stat.label}</p>
                <p className="text-3xl sm:text-5xl lg:text-7xl font-display font-medium tracking-tighter">
                  {stat.value}
                </p>
-             </div>
+               <span className="inline-block text-[9px] font-mono font-bold tracking-[0.25em] uppercase text-[#FF4D00]/70 bg-[#FF4D00]/5 px-2 py-1 rounded">
+                 Target · 10 yr
+               </span>
+             </motion.div>
            ))}
         </div>
       </section>
