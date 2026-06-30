@@ -1119,10 +1119,11 @@ function NowFutureSection() {
   };
 
   return (
-    <section className="bg-[#0A0A0A] text-white relative">
+    <section className="px-6 md:px-12 lg:px-20 py-24 md:py-32">
+      {/* Contained dark block — matches the Hero / OperatingBeliefs pattern */}
+      <div className="relative w-full max-w-[1400px] mx-auto bg-[#0A0A0A] text-white overflow-hidden rounded-sm">
       {/* Section intro */}
-      <div className="w-full px-6 md:px-12 lg:px-20 pt-24 md:pt-32 pb-10 md:pb-14">
-        <div className="max-w-[1400px] mx-auto">
+      <div className="px-6 md:px-12 lg:px-16 pt-16 md:pt-20 pb-10 md:pb-14">
         <div className="flex items-center gap-3 mb-6">
           <motion.span
             initial={{ opacity: 0 }}
@@ -1152,12 +1153,11 @@ function NowFutureSection() {
         >
           The future isn&apos;t forecast — it&apos;s built. Domain by domain, these are the pillars a civilization stands on, where humanity stands today, and the picture we are engineering into being.
         </motion.p>
-        </div>
       </div>
 
-      {/* Full-bleed cinematic slideshow — same size as the hero */}
-      <div ref={ref} className="w-full px-6 md:px-12 lg:px-20 pb-24 md:pb-32">
-        <div className="relative w-full max-w-[1400px] mx-auto overflow-hidden bg-[#0A0A0A] rounded-sm">
+      {/* Cinematic slideshow — fills the contained block */}
+      <div ref={ref} className="px-6 md:px-12 lg:px-16 pb-10 md:pb-14">
+        <div className="relative w-full overflow-hidden">
           <div className="relative h-[60vh] sm:h-[68vh] md:h-[78vh] lg:h-[82vh]">
             {/* Sliding images — both now and future layers, crossfaded by mode */}
             {nowFutureSlides.map((s, i) => (
@@ -1337,8 +1337,7 @@ function NowFutureSection() {
       </div>
 
       {/* CTA strip */}
-      <div className="w-full px-6 md:px-12 lg:px-20 pb-24 md:pb-32">
-        <div className="max-w-[1400px] mx-auto">
+      <div className="px-6 md:px-12 lg:px-16 pb-16 md:pb-20">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -1359,7 +1358,7 @@ function NowFutureSection() {
             Read the manifesto <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
         </motion.div>
-        </div>
+      </div>
       </div>
     </section>
   );

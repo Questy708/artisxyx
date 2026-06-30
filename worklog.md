@@ -109,3 +109,22 @@ Stage Summary:
 - Alignment fixed: header, subtext, slideshow frame, and CTA now all share the same left edge (full-width aligned).
 - Subtext added under the header, framing the section as civilization-scale engineering.
 - Now × Future expanded to 10 domains covering the full span of what builds a civilization: Energy, Water, Food, Education, Finance, Transport, Health, Industry, Space, Knowledge. Climate dropped per user direction. All 20 images verified loading. Sliding cinematic Now→Future mechanism intact and browser-verified across desktop and mobile.
+
+---
+Task ID: nowfuture-contained
+Agent: main
+Task: Fix the Now × Future section background — it was still full-bleed (edge-to-edge across the viewport); contain it to match the Hero/OperatingBeliefs pattern
+
+Work Log:
+- Diagnosed: NowFutureSection used `<section className="bg-[#0A0A0A]">` as the outer wrapper, so the dark background bled edge-to-edge across the full viewport width while the content (header/slideshow/CTA) was contained at max-w-[1400px] — leaving dark bars on both sides beyond the container.
+- Restructured to match the codebase's established contained-dark-block pattern (used by Hero and OperatingBeliefsSection): outer `<section>` sits on the white page with horizontal padding (px-6 md:px-12 lg:px-20) and NO dark bg; a single inner `<div className="max-w-[1400px] mx-auto bg-[#0A0A0A] text-white overflow-hidden rounded-sm">` holds the header + slideshow + CTA. Removed the redundant inner max-w wrappers and bg from the slideshow frame (now fills the contained block).
+- Lint passes clean (0 errors). dev.log: zero runtime errors.
+- Browser-verified (desktop 1440px + mobile iPhone 14):
+  - Containment: darkLeft=80px, darkRight=1360px, darkWidth=1280px on 1440px viewport → isFullBleed=false, isContained=true. White page visible on both sides.
+  - VLM confirmed: "dark background is contained within a centered block with white space on the left and right sides. It does not stretch edge-to-edge."
+  - Slideshow intact: frame 1280×738, images loading, 10 domains cycle.
+  - Now→Future toggle works: clicked "SEE THE FUTURE" → toggle changed to "BACK TO THE NOW" (mode switched).
+  - Mobile (390px): darkLeft=24, darkRight=366, no horizontal overflow.
+
+Stage Summary:
+- Now × Future dark background is now contained within a centered max-w-[1400px] block (rounded-sm) sitting on the white page — matching the Hero and OperatingBeliefs sections. No more full-bleed dark band. Header, slideshow, toggle, and CTA all live inside the single contained dark block. Slideshow + Now→Future transition still fully functional. Browser- and VLM-verified.
