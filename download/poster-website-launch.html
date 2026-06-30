@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>xCelero Labs — Website Launch Poster</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1920px; height: 1080px;
+    background: #0A0A0A;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+  /* Grid overlay */
+  .grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+    pointer-events: none;
+  }
+  /* Ambient glows */
+  .glow1 {
+    position: absolute; top: -200px; right: -100px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(255,77,0,0.18), transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+  .glow2 {
+    position: absolute; bottom: -150px; left: 20%;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(255,77,0,0.10), transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+  .content {
+    position: relative; z-index: 10;
+    width: 100%; height: 100%;
+    padding: 70px 110px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  /* Top bar */
+  .top {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 14px;
+  }
+  .logo-mark {
+    width: 48px; height: 48px;
+    background: #FF4D00;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 10px;
+  }
+  .logo-mark span {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 22px; color: #fff;
+  }
+  .logo-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 20px;
+    letter-spacing: -0.02em; text-transform: uppercase;
+    color: #fff;
+  }
+  .logo-text .accent { color: #FF4D00; }
+  .badge {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 20px;
+    background: rgba(255,77,0,0.10);
+    border: 1px solid rgba(255,77,0,0.30);
+    border-radius: 999px;
+  }
+  .badge-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #FF4D00;
+    animation: pulse 1.5s infinite;
+  }
+  .badge-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: #FF4D00;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  /* Center */
+  .center { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px; font-weight: 700;
+    letter-spacing: 0.35em; text-transform: uppercase;
+    color: #FF4D00;
+    margin-bottom: 28px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .eyebrow::after {
+    content: ''; flex: 1; max-width: 80px;
+    height: 1px; background: rgba(255,77,0,0.4);
+  }
+  .headline {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 128px;
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+    color: #fff;
+    margin-bottom: 32px;
+  }
+  .headline .muted { color: rgba(255,255,255,0.35); }
+  .headline .accent { color: #FF4D00; }
+  .subhead {
+    font-family: 'Inter', sans-serif;
+    font-size: 26px; font-weight: 400;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.55);
+    max-width: 900px;
+    margin-bottom: 0;
+  }
+  .subhead strong { color: #fff; font-weight: 600; }
+  /* Stats row */
+  .stats {
+    display: flex; gap: 64px;
+    margin-top: 48px;
+  }
+  .stat {
+    border-left: 2px solid #FF4D00;
+    padding-left: 24px;
+  }
+  .stat-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500; font-size: 44px;
+    color: #fff; line-height: 1;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+  /* Bottom bar */
+  .bottom {
+    display: flex; justify-content: space-between; align-items: flex-end;
+  }
+  .domains {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    max-width: 1100px;
+  }
+  .domain-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    padding: 6px 12px;
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 4px;
+  }
+  .domain-tag.hot { color: #FF4D00; border-color: rgba(255,77,0,0.3); }
+  .cta {
+    text-align: right;
+  }
+  .cta-url {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600; font-size: 28px;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .cta-url .accent { color: #FF4D00; }
+  .cta-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 500;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+  }
+</style>
+</head>
+<body>
+  <div class="grid"></div>
+  <div class="glow1"></div>
+  <div class="glow2"></div>
+  <div class="content">
+    <div class="top">
+      <div class="logo">
+        <div class="logo-mark"><span>X</span></div>
+        <div class="logo-text">xCelero<span class="accent"> Labs</span></div>
+      </div>
+      <div class="badge">
+        <div class="badge-dot"></div>
+        <div class="badge-text">Website Live · 2026</div>
+      </div>
+    </div>
+
+    <div class="center">
+      <div class="eyebrow">The Civilization Engine</div>
+      <h1 class="headline">
+        Build the<br>
+        <span class="muted">next</span> <span class="accent">century.</span>
+      </h1>
+      <p class="subhead">
+        A venture studio and infrastructure platform building critical technology across <strong>190 hubs</strong>, <strong>39 countries</strong>, and <strong>20 domains</strong> — the pillars a civilization of ten billion depends on.
+      </p>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value">5,000+</div>
+          <div class="stat-label">Ventures</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">200</div>
+          <div class="stat-label">Unicorns</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">$1.97Bn</div>
+          <div class="stat-label">Capital</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">100,000</div>
+          <div class="stat-label">XCitizens</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <div class="domains">
+        <span class="domain-tag hot">Energy</span>
+        <span class="domain-tag hot">Water</span>
+        <span class="domain-tag hot">Food</span>
+        <span class="domain-tag hot">Finance</span>
+        <span class="domain-tag">Health</span>
+        <span class="domain-tag">Education</span>
+        <span class="domain-tag">Transport</span>
+        <span class="domain-tag">Cities</span>
+        <span class="domain-tag">Intelligence</span>
+        <span class="domain-tag">Manufacturing</span>
+        <span class="domain-tag">Materials</span>
+        <span class="domain-tag">Connectivity</span>
+        <span class="domain-tag">Longevity</span>
+        <span class="domain-tag">Governance</span>
+        <span class="domain-tag">Defense</span>
+        <span class="domain-tag">Science</span>
+        <span class="domain-tag">Robots</span>
+        <span class="domain-tag">The Moon</span>
+        <span class="domain-tag">Mars</span>
+        <span class="domain-tag hot">Knowledge</span>
+      </div>
+      <div class="cta">
+        <div class="cta-url">xcelero<span class="accent">.com</span></div>
+        <div class="cta-sub">The future isn't a forecast. It's a blueprint.</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

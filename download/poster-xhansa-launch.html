@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>xHansa Fellowship — Launch Poster</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1920px; height: 1080px;
+    background: #0A0A0A;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+  .grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+    pointer-events: none;
+  }
+  .glow1 {
+    position: absolute; top: -150px; left: -100px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(255,77,0,0.20), transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+  .glow2 {
+    position: absolute; bottom: -200px; right: 10%;
+    width: 550px; height: 550px;
+    background: radial-gradient(circle, rgba(147,51,234,0.12), transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+  .content {
+    position: relative; z-index: 10;
+    width: 100%; height: 100%;
+    padding: 60px 100px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+  }
+  /* LEFT SIDE */
+  .left {
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .top-bar {
+    display: flex; align-items: center; gap: 14px;
+  }
+  .logo-mark {
+    width: 44px; height: 44px;
+    background: #FF4D00;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 9px;
+  }
+  .logo-mark span {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 20px; color: #fff;
+  }
+  .logo-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 18px;
+    letter-spacing: -0.02em; text-transform: uppercase;
+    color: #fff;
+  }
+  .logo-text .accent { color: #FF4D00; }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; font-weight: 700;
+    letter-spacing: 0.35em; text-transform: uppercase;
+    color: #FF4D00;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .eyebrow::after {
+    content: ''; width: 60px; height: 1px;
+    background: rgba(255,77,0,0.4);
+  }
+  .headline {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 104px;
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+    color: #fff;
+    margin-bottom: 24px;
+  }
+  .headline .accent { color: #FF4D00; }
+  .headline .thin { font-weight: 400; color: rgba(255,255,255,0.5); }
+  .tagline {
+    font-family: 'Inter', sans-serif;
+    font-size: 24px; font-weight: 400;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.6);
+    max-width: 700px;
+    margin-bottom: 32px;
+  }
+  .tagline strong { color: #fff; font-weight: 600; }
+  /* Stats row */
+  .stats {
+    display: flex; gap: 48px;
+    margin-bottom: 0;
+  }
+  .stat {
+    border-left: 2px solid #FF4D00;
+    padding-left: 20px;
+  }
+  .stat-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500; font-size: 40px;
+    color: #fff; line-height: 1;
+    margin-bottom: 6px;
+    letter-spacing: -0.02em;
+  }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+  /* CTA */
+  .cta-block {
+    margin-top: 0;
+  }
+  .cta-button {
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 18px 36px;
+    background: #FF4D00;
+    border-radius: 999px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 22px;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+  .cta-arrow {
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    font-size: 16px;
+  }
+  .cta-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 500;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-top: 14px;
+  }
+
+  /* RIGHT SIDE — the 8-week timeline */
+  .right {
+    display: flex; flex-direction: column;
+    padding: 60px 50px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .right::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #FF4D00, #9333EA, #059669);
+  }
+  .timeline-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 8px;
+  }
+  .timeline-headline {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600; font-size: 32px;
+    color: #fff;
+    margin-bottom: 28px;
+    letter-spacing: -0.02em;
+  }
+  .timeline {
+    display: flex; flex-direction: column; gap: 14px;
+    flex: 1;
+  }
+  .week {
+    display: flex; align-items: flex-start; gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .week:last-child { border-bottom: none; }
+  .week-num {
+    flex-shrink: 0;
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600; font-size: 18px;
+    color: #fff;
+  }
+  .w1 { background: #FF4D00; }
+  .w2 { background: #FF6A28; }
+  .w3 { background: #E5432F; }
+  .w4 { background: #9333EA; }
+  .w5 { background: #7C3AED; }
+  .w6 { background: #2563EB; }
+  .w7 { background: #0891B2; }
+  .w8 { background: #059669; }
+  .week-content { flex: 1; padding-top: 2px; }
+  .week-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 3px;
+  }
+  .week-theme {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500; font-size: 18px;
+    color: #fff;
+    margin-bottom: 2px;
+  }
+  .week-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px; font-weight: 400;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.4;
+  }
+  /* Footer */
+  .footer {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .demo-day {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600; font-size: 16px;
+    color: #FF4D00;
+  }
+  .demo-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+</style>
+</head>
+<body>
+  <div class="grid"></div>
+  <div class="glow1"></div>
+  <div class="glow2"></div>
+  <div class="content">
+    <!-- LEFT -->
+    <div class="left">
+      <div>
+        <div class="top-bar" style="margin-bottom: 60px;">
+          <div class="logo-mark"><span>X</span></div>
+          <div class="logo-text">xCelero<span class="accent"> Labs</span></div>
+        </div>
+        <div class="eyebrow">Now Accepting Applications</div>
+        <h1 class="headline">
+          The <span class="accent">xHansa</span><br>
+          <span class="thin">Fellowship</span>
+        </h1>
+        <p class="tagline">
+          An <strong>8-week crucible</strong> for the builders who will engineer the next century. Not another accelerator. Not another cohort. <strong>Full immersion in the xCelero engine.</strong>
+        </p>
+      </div>
+      <div>
+        <div class="stats" style="margin-bottom: 36px;">
+          <div class="stat">
+            <div class="stat-value">25</div>
+            <div class="stat-label">Fellows</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">8 wks</div>
+            <div class="stat-label">Crucible</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">$0</div>
+            <div class="stat-label">Tuition</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">Q1</div>
+            <div class="stat-label">2026</div>
+          </div>
+        </div>
+        <div class="cta-block">
+          <div class="cta-button">
+            Apply Now
+            <span class="cta-arrow">→</span>
+          </div>
+          <div class="cta-sub">xcelero.com/fellowship · apply@xcelero.com</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT — Timeline -->
+    <div class="right">
+      <div class="timeline-title">The 8-Week Crucible</div>
+      <div class="timeline-headline">Build, don't study.</div>
+      <div class="timeline">
+        <div class="week">
+          <div class="week-num w1">01</div>
+          <div class="week-content">
+            <div class="week-label">Week 1 · Jan 1–7</div>
+            <div class="week-theme">Immersion</div>
+            <div class="week-desc">Enter the engine. The thesis, the 20 domains, the flywheel.</div>
+          </div>
+        </div>
+        <div class="week">
+          <div class="week-num w2">02</div>
+          <div class="week-content">
+            <div class="week-label">Week 2 · Jan 8–14</div>
+            <div class="week-theme">The Bottlenecks</div>
+            <div class="week-desc">Field visits. Understand the problem before you build the solution.</div>
+          </div>
+        </div>
+        <div class="week">
+          <div class="week-num w3">03</div>
+          <div class="week-content">
+            <div class="week-label">Week 3 · Jan 15–21</div>
+            <div class="week-theme">The Solutions</div>
+            <div class="week-desc">Solution sets, white-space, and 3 venture concepts each.</div>
+          </div>
+        </div>
+        <div class="week">
+          <div class="week-num w4">04</div>
+          <div class="week-content">
+            <div class="week-label">Week 4 · Jan 22–28</div>
+            <div class="week-theme">The Build</div>
+            <div class="week-desc">Commit to one concept. Build the ProtoCo. The crucible gets hot.</div>
+          </div>
+        </div>
+        <div class="week">
+          <div class="week-num w5">05</div>
+          <div class="week-content">
+            <div class="week-label">Week 5 · Jan 29 – Feb 4</div>
+            <div class="week-theme">The Pilot</div>
+            <div class="week-desc">Real customers. Real feedback. 10+ interviews.</div>
+          </div>
+        </div>
+        <div class="week">
+          <div class="week-num w6">06</div>
+          <div class="week-content">
+            <div class="week-label">Week 6 · Feb 5–11</div>
+            <div class="week-theme">The Capital</div>
+            <div class="week-desc">The funding stack. Craft the pitch. Mock pitches to VPs.</div>
+          </div>
+        </div>
+        <div class="week">
+          <div class="week-num w7">07</div>
+          <div class="week-content">
+            <div class="week-label">Week 7 · Feb 12–18</div>
+            <div class="week-theme">The Network</div>
+            <div class="week-desc">Mentor matching. Co-founder speed-dating. You don't build alone.</div>
+          </div>
+        </div>
+        <div class="week">
+          <div class="week-num w8">08</div>
+          <div class="week-content">
+            <div class="week-label">Week 8 · Feb 19–25</div>
+            <div class="week-theme">Demo Day</div>
+            <div class="week-desc">Ship it. Pitch to investors. The 24-month commitment begins.</div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="demo-day">DEMO DAY</div>
+        <div class="demo-date">February 25, 2026 · Nairobi</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

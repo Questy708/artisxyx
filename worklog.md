@@ -330,3 +330,26 @@ Work Log:
 
 Stage Summary:
 - 10-year workplan delivered as a downloadable Word document (~135 pages, 13K words, 48 tables). Covers the full arc from January 1, 2026 (Day 1 of incorporation) to December 31, 2035 (190 hubs, 5,000 ventures, 200 unicorns, $1.97Bn raised). Year 1 is broken down to the day; Years 2-10 are quarter-by-quarter with budgets and KPIs. All 8 functional workstreams detailed. KPI dashboard, financial projections, milestone map, and risk register included. 5 appendices with org chart, hub rollout, fund structure, domain deep dives, and glossary. Downloadable from the website at /xCelero_Labs_10_Year_Workplan.docx and on GitHub.
+
+---
+Task ID: launch-materials
+Agent: main
+Task: Draft LinkedIn posts + landscape posters + application form + timeline + press release for xCelero website launch and xHansa Fellowship launch. No code changes, no GitHub.
+
+Work Log:
+- 5 text deliverables (Markdown, in download/):
+  1. LinkedIn_Post_Website_Launch.md (344 words) — viral, bold, big. Headline "The next century won't build itself. So we built the engine that will." Thesis + 4 pillars + 10-year targets + CTA. Hashtags + tagging instructions.
+  2. LinkedIn_Post_xHansa_Launch.md (328 words) — "We just opened applications for the xHansa Fellowship. Not another accelerator. An 8-week crucible." Who it's for, what you get, the deal, CTA.
+  3. xHansa_Fellowship_Application_Form.md (955 words) — 7-section form: Who You Are, What You've Built, The Crucible (commitment/IP), The Thesis (domain selection), The Honest Part, Referral, Anything Else. Designed to surface builders not résumés. Selection criteria + process + equal-opportunity statement.
+  4. xHansa_Fellowship_Timeline.md (1,264 words) — Pre-program (Weeks -4 to 0) + 8-week crucible (Week 1 Immersion → Week 8 Demo Day, each with daily breakdown) + post-fellowship 24-month commitment. Key dates summary table.
+  5. xHansa_Fellowship_Press_Release.md (849 words) — Full press release format: headline, dateline, quotes from CEO + Head of Community, program details, who it's for, the deal, timeline, bigger picture, about xCelero, media contact.
+
+- 2 landscape posters (1920×1080 PNG, built as HTML→Playwright screenshot):
+  1. Poster_Website_Launch.png — dark #0A0A0A bg, orange #FF4D00 accents, grid overlay, ambient glows. "Build the next century." headline (128px). 4 stats (5,000+ ventures / 200 unicorns / $1.97Bn / 100,000 XCitizens). 20 domain tags at bottom. xcelero.com CTA. VLM confirmed: bold, striking, viral.
+  2. Poster_xHansa_Launch.png — split layout (left: headline + stats + Apply Now CTA; right: 8-week timeline card with gradient header and weekly breakdown). "The xHansa Fellowship" headline, 25 fellows / 8 wks / $0 tuition / Q1 2026 stats, Demo Day Feb 25 2026. VLM confirmed: bold, visually engaging, ideal for social media virality.
+
+- Source HTML files also saved (poster-website-launch.html, poster-xhansa-launch.html) so posters are editable/re-renderable.
+- No code changed. Nothing pushed to GitHub.
+
+Stage Summary:
+- 7 deliverables in download/: 2 LinkedIn posts (viral/bold), 2 landscape posters (1920×1080, VLM-verified), 1 application form (7 sections), 1 program timeline (8-week crucible + 24-month commitment), 1 press release (full format). All xCelero-branded (dark + orange, Space Grotesk + JetBrains Mono). Ready for distribution.
