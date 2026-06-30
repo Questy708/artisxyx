@@ -1,10 +1,14 @@
 import { db } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
-import { isValidInput } from '@/lib/auth'
+import { isValidInput, checkRateLimit, getClientIp } from '@/lib/auth'
 
 // GET /api/forum/users - List all forum users with optional search
 export async function GET(request: NextRequest) {
   try {
+    const rl = checkRateLimit(getClientIp(request), 60, 60_000)
+    if (!rl.allowed) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(Math.ceil((rl.retryAfterMs || 0) / 1000)) } })
+    }
     const { searchParams } = new URL(request.url)
     const search = searchParams.get('search') || ''
 
@@ -33,7 +37,10 @@ export async function GET(request: NextRequest) {
       take: 200, // cap to prevent unbounded load at scale
     })
 
-    return NextResponse.json({ users })
+    return NextResponse.json(
+      { users },
+      { headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' } }
+    )
   } catch (error) {
     console.error('Error fetching forum users:', error)
     return NextResponse.json(
@@ -46,6 +53,10 @@ export async function GET(request: NextRequest) {
 // POST /api/forum/users - Create or update a forum user (upsert by email)
 export async function POST(request: NextRequest) {
   try {
+    const rl = checkRateLimit(getClientIp(request), 10, 60_000)
+    if (!rl.allowed) {
+      return NextResponse.json({ error: 'Too many requests. Please slow down.' }, { status: 429, headers: { 'Retry-After': String(Math.ceil((rl.retryAfterMs || 0) / 1000)) } })
+    }
     const body = await request.json()
     const { name, email, bio, role, location, communities, avatarColor, avatarUrl, company, title } = body
 
@@ -125,6 +136,10 @@ export async function POST(request: NextRequest) {
 // PUT /api/forum/users - Update a forum user by id
 export async function PUT(request: NextRequest) {
   try {
+    const rl = checkRateLimit(getClientIp(request), 15, 60_000)
+    if (!rl.allowed) {
+      return NextResponse.json({ error: 'Too many requests. Please slow down.' }, { status: 429, headers: { 'Retry-After': String(Math.ceil((rl.retryAfterMs || 0) / 1000)) } })
+    }
     const body = await request.json()
     const { id, name, bio, role, location, avatarUrl, communities } = body
 

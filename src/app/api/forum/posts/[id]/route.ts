@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
-import { isValidInput } from '@/lib/auth'
+import { isValidInput, checkRateLimit, getClientIp } from '@/lib/auth'
 
 interface CommentWithAuthor {
   id: string
@@ -42,6 +42,10 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const rl = checkRateLimit(getClientIp(request), 60, 60_000)
+    if (!rl.allowed) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(Math.ceil((rl.retryAfterMs || 0) / 1000)) } })
+    }
     const { id } = await params
     const { searchParams } = new URL(request.url)
     const userId = searchParams.get('userId') || ''
@@ -98,7 +102,9 @@ export async function GET(
       userHearted: (post.heartUsers?.length ?? 0) > 0,
       votes: undefined,
       heartUsers: undefined,
-    })
+    },
+    { headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=120' } }
+  )
   } catch (error) {
     console.error('Error fetching forum post:', error)
     return NextResponse.json(
@@ -117,6 +123,11 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Rate limit vote/heart to deter brigading
+    const rl = checkRateLimit(getClientIp(request), 30, 60_000)
+    if (!rl.allowed) {
+      return NextResponse.json({ error: 'Too many actions. Please slow down.' }, { status: 429, headers: { 'Retry-After': String(Math.ceil((rl.retryAfterMs || 0) / 1000)) } })
+    }
     const { id } = await params
     const body = await request.json()
     const { action, userId, direction } = body

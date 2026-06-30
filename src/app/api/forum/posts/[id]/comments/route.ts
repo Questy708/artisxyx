@@ -1,6 +1,6 @@
 import { db } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
-import { isValidInput } from '@/lib/auth'
+import { isValidInput, checkRateLimit, getClientIp } from '@/lib/auth'
 
 // POST /api/forum/posts/[id]/comments - Add a comment or reply
 export async function POST(
@@ -8,6 +8,11 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Rate limit comment creation to deter spam
+    const rl = checkRateLimit(getClientIp(request), 15, 60_000)
+    if (!rl.allowed) {
+      return NextResponse.json({ error: 'Too many comments. Please slow down.' }, { status: 429, headers: { 'Retry-After': String(Math.ceil((rl.retryAfterMs || 0) / 1000)) } })
+    }
     const { id } = await params
     const body = await request.json()
     const { authorId, content, parentId } = body
@@ -95,6 +100,11 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Rate limit comment votes to deter brigading
+    const rl = checkRateLimit(getClientIp(request), 30, 60_000)
+    if (!rl.allowed) {
+      return NextResponse.json({ error: 'Too many actions. Please slow down.' }, { status: 429, headers: { 'Retry-After': String(Math.ceil((rl.retryAfterMs || 0) / 1000)) } })
+    }
     const { id } = await params
     const body = await request.json()
     const { action, userId, commentId, direction } = body

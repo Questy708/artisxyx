@@ -1,12 +1,18 @@
 import { db } from '@/lib/db'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { checkRateLimit, getClientIp } from '@/lib/auth'
 
 // GET /api/forum/init - Public, idempotent auto-seed.
 // Seeds members + posts + comments ONLY if the forum is empty.
 // This fixes the #1 bug: the forum was always empty for new users because
 // the admin-gated /api/forum/seed was called unauthenticated from the client.
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Rate limit the init endpoint to prevent abuse
+    const rl = checkRateLimit(getClientIp(request), 5, 60_000)
+    if (!rl.allowed) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(Math.ceil((rl.retryAfterMs || 0) / 1000)) } })
+    }
     const [userCount, postCount, commentCount] = await Promise.all([
       db.forumUser.count(),
       db.forumPost.count(),

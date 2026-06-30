@@ -84,6 +84,7 @@ interface ForumComment {
   updatedAt: string;
   author: { id: string; name: string; avatarColor: string; avatarUrl?: string; role: string };
   replies: ForumComment[];
+  userVote: "up" | "down" | null;
 }
 
 /* ── Role Colors ── */
@@ -200,6 +201,9 @@ function CommentNode({
   replyContent,
   setReplyContent,
   handleAddReply,
+  handleVoteComment,
+  onShare,
+  copiedId,
 }: {
   comment: ForumComment;
   postId: string;
@@ -208,6 +212,9 @@ function CommentNode({
   replyContent: string;
   setReplyContent: (content: string) => void;
   handleAddReply: (postId: string, commentId: string) => void;
+  handleVoteComment: (postId: string, commentId: string, dir: "up" | "down") => void;
+  onShare: (postId: string, title: string) => void;
+  copiedId: string | null;
 }) {
   return (
     <div className="group mt-1 pt-2">
@@ -239,13 +246,21 @@ function CommentNode({
 
           <div className="flex flex-wrap items-center gap-0.5 sm:gap-1.5 mt-1 -ml-2">
             <div className="flex items-center">
-              <button className="flex items-center justify-center p-1.5 hover:bg-[#111111]/5 rounded text-[#111111]/40 hover:text-[#FF4D00] transition-colors">
+              <button
+                onClick={() => handleVoteComment(postId, comment.id, "up")}
+                className={`flex items-center justify-center p-1.5 hover:bg-[#111111]/5 rounded transition-colors ${comment.userVote === "up" ? "text-[#FF4D00]" : "text-[#111111]/40 hover:text-[#FF4D00]"}`}
+                aria-label="Upvote comment"
+              >
                 <ArrowUp className="w-4 h-4" />
               </button>
               <span className="text-xs font-bold text-[#111111]/40 px-0.5">
                 {comment.likes || "Vote"}
               </span>
-              <button className="flex items-center justify-center p-1.5 hover:bg-[#111111]/5 rounded text-[#111111]/40 hover:text-[#111111]/60 transition-colors">
+              <button
+                onClick={() => handleVoteComment(postId, comment.id, "down")}
+                className={`flex items-center justify-center p-1.5 hover:bg-[#111111]/5 rounded transition-colors ${comment.userVote === "down" ? "text-[#111111]/70" : "text-[#111111]/40 hover:text-[#111111]/60"}`}
+                aria-label="Downvote comment"
+              >
                 <ArrowDown className="w-4 h-4" />
               </button>
             </div>
@@ -259,7 +274,10 @@ function CommentNode({
               <MessageSquare className="w-4 h-4" />
               <span className="text-xs font-bold leading-none">Reply</span>
             </button>
-            <button className="hidden sm:flex items-center gap-1.5 px-2 py-1.5 text-[#111111]/40 hover:bg-[#111111]/5 rounded transition-colors">
+            <button
+              onClick={() => onShare(postId, comment.content.slice(0, 80))}
+              className="hidden sm:flex items-center gap-1.5 px-2 py-1.5 text-[#111111]/40 hover:bg-[#111111]/5 rounded transition-colors"
+            >
               <Share2 className="w-4 h-4" />
               <span className="text-xs font-bold leading-none">Share</span>
             </button>
@@ -304,6 +322,9 @@ function CommentNode({
                   replyContent={replyContent}
                   setReplyContent={setReplyContent}
                   handleAddReply={handleAddReply}
+                  handleVoteComment={handleVoteComment}
+                  onShare={onShare}
+                  copiedId={copiedId}
                 />
               ))}
             </div>
@@ -1024,6 +1045,15 @@ function ForumContent({ user: initialUser }: { user: ForumUser }) {
   );
   const [actionLoading, setActionLoading] = useState<Record<string, boolean>>({});
   const [showEditProfile, setShowEditProfile] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [copiedShareId, setCopiedShareId] = useState<string | null>(null);
+
+  // Debounce the search input so we don't fire a request per keystroke
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(searchQuery), 350);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
 
   // Fetch posts from API
   const fetchPosts = useCallback(async () => {
@@ -1033,6 +1063,7 @@ function ForumContent({ user: initialUser }: { user: ForumUser }) {
       if (activeCategory !== "network") params.set("category", activeCategory);
       params.set("userId", userId);
       params.set("limit", "50");
+      if (debouncedSearch.trim()) params.set("search", debouncedSearch.trim());
 
       const res = await fetch(`/api/forum/posts?${params.toString()}`);
       if (res.ok) {
@@ -1044,7 +1075,7 @@ function ForumContent({ user: initialUser }: { user: ForumUser }) {
     } finally {
       setPostsLoading(false);
     }
-  }, [activeCommunity, activeCategory, userId]);
+  }, [activeCommunity, activeCategory, userId, debouncedSearch]);
 
   // Initial seed + fetch
   useEffect(() => {
@@ -1062,7 +1093,7 @@ function ForumContent({ user: initialUser }: { user: ForumUser }) {
       setPostsLoading(true);
       fetchPosts();
     }
-  }, [activeCommunity, activeCategory, fetchPosts]);
+  }, [activeCommunity, activeCategory, debouncedSearch, fetchPosts]);
 
   // Fetch network members when category is network
   useEffect(() => {
@@ -1193,17 +1224,24 @@ function ForumContent({ user: initialUser }: { user: ForumUser }) {
     );
 
     try {
-      await fetch(`/api/forum/posts/${id}`, {
+      const res = await fetch(`/api/forum/posts/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "vote", userId, direction: dir }),
       });
-      // Refetch to get accurate counts
-      await fetchPosts();
-      // Also refresh detail view if this is the selected post
-      if (selectedPostId === id) {
-        const res = await fetch(`/api/forum/posts/${id}?userId=${userId}`);
-        if (res.ok) setSelectedPost(await res.json());
+      if (res.ok) {
+        // Use the authoritative response instead of a full refetch
+        const data = await res.json();
+        setPosts((prev) =>
+          prev.map((p) =>
+            p.id === id
+              ? { ...p, upvotes: data.upvotes, userVote: data.userVote }
+              : p
+          )
+        );
+        if (selectedPostId === id && selectedPost) {
+          setSelectedPost({ ...selectedPost, upvotes: data.upvotes, userVote: data.userVote });
+        }
       }
     } catch (err) {
       console.error("Failed to vote:", err);
@@ -1228,21 +1266,98 @@ function ForumContent({ user: initialUser }: { user: ForumUser }) {
     );
 
     try {
-      await fetch(`/api/forum/posts/${id}`, {
+      const res = await fetch(`/api/forum/posts/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "heart", userId }),
       });
-      await fetchPosts();
-      if (selectedPostId === id) {
-        const res = await fetch(`/api/forum/posts/${id}?userId=${userId}`);
-        if (res.ok) setSelectedPost(await res.json());
+      if (res.ok) {
+        const data = await res.json();
+        setPosts((prev) =>
+          prev.map((p) =>
+            p.id === id
+              ? { ...p, hearts: data.hearts, userHearted: data.userHearted }
+              : p
+          )
+        );
+        if (selectedPostId === id && selectedPost) {
+          setSelectedPost({ ...selectedPost, hearts: data.hearts, userHearted: data.userHearted });
+        }
       }
     } catch (err) {
       console.error("Failed to heart:", err);
       await fetchPosts();
     } finally {
       setActionLoading((prev) => ({ ...prev, [`heart-${id}`]: false }));
+    }
+  };
+
+  // Vote on a comment
+  const handleVoteComment = async (postId: string, commentId: string, dir: "up" | "down") => {
+    if (actionLoading[`cvote-${commentId}`]) return;
+    setActionLoading((prev) => ({ ...prev, [`cvote-${commentId}`]: true }));
+
+    // Optimistic update — walk the selectedPost.comments tree
+    const applyOptimistic = (comments: ForumComment[]): ForumComment[] =>
+      comments.map((c) => {
+        if (c.id !== commentId) {
+          return c.replies?.length ? { ...c, replies: applyOptimistic(c.replies) } : c;
+        }
+        let diff = 0;
+        let nextVote: "up" | "down" | null = dir;
+        if (c.userVote === dir) { diff = dir === "up" ? -1 : 1; nextVote = null; }
+        else if (c.userVote === null) { diff = dir === "up" ? 1 : -1; }
+        else { diff = dir === "up" ? 2 : -2; }
+        return { ...c, userVote: nextVote, likes: c.likes + diff };
+      });
+    if (selectedPost) {
+      setSelectedPost({ ...selectedPost, comments: applyOptimistic(selectedPost.comments) });
+    }
+
+    try {
+      const res = await fetch(`/api/forum/posts/${postId}/comments`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "vote", userId, commentId, direction: dir }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        // Apply authoritative response
+        const applyAuthoritative = (comments: ForumComment[]): ForumComment[] =>
+          comments.map((c) => {
+            if (c.id !== commentId) {
+              return c.replies?.length ? { ...c, replies: applyAuthoritative(c.replies) } : c;
+            }
+            return { ...c, likes: data.likes, userVote: data.userVote };
+          });
+        if (selectedPost) {
+          setSelectedPost({ ...selectedPost, comments: applyAuthoritative(selectedPost.comments) });
+        }
+      }
+    } catch (err) {
+      console.error("Failed to vote on comment:", err);
+    } finally {
+      setActionLoading((prev) => ({ ...prev, [`cvote-${commentId}`]: false }));
+    }
+  };
+
+  // Share a post — uses Web Share API on mobile, falls back to copy-link
+  const handleShare = async (postId: string, title: string) => {
+    const url = `${window.location.origin}/#/townsquare?post=${postId}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: title || "xCelero Town Square", url });
+      } catch {
+        /* user cancelled — no-op */
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        setCopiedShareId(postId);
+        setTimeout(() => setCopiedShareId(null), 2000);
+      } catch {
+        /* clipboard blocked — no-op */
+      }
     }
   };
 
@@ -1346,9 +1461,20 @@ function ForumContent({ user: initialUser }: { user: ForumUser }) {
             <Search className="w-4 h-4 text-[#111111]/30 shrink-0" />
             <input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search discussions"
               className="flex-1 bg-transparent border-none text-sm text-[#111111] placeholder-[#111111]/30 outline-none ml-2 min-w-0"
             />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="text-[#111111]/30 hover:text-[#111111]/60 shrink-0"
+                aria-label="Clear search"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
 
@@ -1993,10 +2119,13 @@ function ForumContent({ user: initialUser }: { user: ForumUser }) {
                               {selectedPost.comments?.length || 0}
                             </span>
                           </button>
-                          <button className="flex items-center gap-1 px-2.5 py-1.5 bg-[#FAFAFA] hover:bg-[#111111]/5 border border-[#111111]/5 rounded transition-colors">
-                            <Share2 className="w-4 h-4 text-[#111111]/30" />
+                          <button
+                            onClick={() => handleShare(selectedPost.id, selectedPost.title)}
+                            className="flex items-center gap-1 px-2.5 py-1.5 bg-[#FAFAFA] hover:bg-[#111111]/5 border border-[#111111]/5 rounded transition-colors"
+                          >
+                            <Share2 className={`w-4 h-4 ${copiedShareId === selectedPost.id ? "text-[#FF4D00]" : "text-[#111111]/30"}`} />
                             <span className="text-[13px] font-bold text-[#111111]/50 hidden sm:inline">
-                              Share
+                              {copiedShareId === selectedPost.id ? "Copied!" : "Share"}
                             </span>
                           </button>
                         </div>
@@ -2059,6 +2188,9 @@ function ForumContent({ user: initialUser }: { user: ForumUser }) {
                                 replyContent={replyContent}
                                 setReplyContent={setReplyContent}
                                 handleAddReply={handleAddReply}
+                                handleVoteComment={handleVoteComment}
+                                onShare={handleShare}
+                                copiedId={copiedShareId}
                               />
                             ))}
                           </div>
@@ -2271,8 +2403,15 @@ function ForumContent({ user: initialUser }: { user: ForumUser }) {
                                 {post.commentCount}
                               </span>
                             </button>
-                            <button className="flex items-center gap-1 px-2 py-1.5 bg-[#FAFAFA] hover:bg-[#111111]/5 border border-[#111111]/5 rounded transition-colors ml-auto">
-                              <Share2 className="w-4 h-4 text-[#111111]/30" />
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleShare(post.id, post.title); }}
+                              className="flex items-center gap-1 px-2 py-1.5 bg-[#FAFAFA] hover:bg-[#111111]/5 border border-[#111111]/5 rounded transition-colors ml-auto"
+                              aria-label="Share post"
+                            >
+                              <Share2 className={`w-4 h-4 ${copiedShareId === post.id ? "text-[#FF4D00]" : "text-[#111111]/30"}`} />
+                              {copiedShareId === post.id && (
+                                <span className="text-[11px] font-bold text-[#FF4D00]">Copied</span>
+                              )}
                             </button>
                           </div>
                         </article>

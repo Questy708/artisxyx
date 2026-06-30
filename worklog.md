@@ -173,3 +173,41 @@ Caching: Redis + HTTP cache headers + TanStack Query/SWR on client.
 Auth: real identity (email/password, OAuth, magic link), email verification, sessions, CSRF.
 Pagination: cursor-based throughout, infinite scroll on frontend.
 Quick wins (low effort, high value): wire search input, use PATCH response instead of refetch, wire comment vote buttons, add Cache-Control headers, add per-IP rate limiting to the 6 open routes, denormalize commentCount.
+
+---
+Task ID: townsquare-quick-wins
+Agent: main
+Task: Implement the TownSquare quick wins — fix broken search, wire comment vote buttons, stop wasteful refetches, wire share buttons, add caching + rate limiting to the open API routes
+
+Work Log:
+FRONTEND (src/artemis/pages/TownSquare.tsx):
+- Added `userVote` field to ForumComment interface (backend already returns it).
+- Search: added searchQuery + debouncedSearch state, wired the "Search discussions" input (value/onChange), 350ms debounce, sends ?search= to the API, re-fetches on debounced change. Added a clear (X) button when query is non-empty.
+- Vote/heart: replaced the wasteful full-list refetch + detail refetch after PATCH with targeted state updates using the PATCH response ({upvotes, hearts, userVote, userHearted}). Now updates only the affected post in both the list and the detail view — no refetch. Falls back to refetch only on error.
+- Comment voting: added handleVoteComment (optimistic tree walk + authoritative PATCH response apply), wired the CommentNode upvote/downvote buttons (previously decorative — no onClick), added active-state styling (orange when userVote==="up"). Passed handleVoteComment + onShare + copiedId through CommentNode props (signature + recursive call + ForumContent invocation all updated).
+- Share: added handleShare (navigator.share on mobile, clipboard.writeText + "Copied!" feedback fallback). Wired all 3 share buttons: post detail Share, post list Share, and comment Share. Added copiedShareId state with 2s feedback ("Copied!"/"Copied" + orange icon).
+
+BACKEND — added Cache-Control + per-IP rate limiting to the 6 open forum routes (all using existing checkRateLimit/getClientIp from lib/auth.ts):
+- GET /api/forum/posts: Cache-Control public s-maxage=30 swr=120; 60 req/min
+- POST /api/forum/posts: 10 posts/min (spam deter)
+- GET /api/forum/posts/[id]: Cache-Control public s-maxage=30 swr=120; 60 req/min
+- PATCH /api/forum/posts/[id] (vote/heart): 30/min (brigading deter)
+- POST /api/forum/posts/[id]/comments: 15/min (spam deter)
+- PATCH /api/forum/posts/[id]/comments (comment vote): 30/min
+- GET /api/forum/users: Cache-Control public s-maxage=60 swr=300; 60 req/min
+- POST /api/forum/users: 10/min
+- PUT /api/forum/users: 15/min
+- GET /api/forum/init: 5/min (abuse deter)
+All rate-limited responses return 429 + Retry-After header.
+
+VERIFICATION (Agent Browser, desktop 1440px):
+- X button: X_REMOVED confirmed.
+- Search: typed "hiring" → posts filtered 6→1 (matching "Hiring your first 5 engineers"); clear button present; clearing restored 6 posts.
+- Share: clicked detail Share → "Copied!" feedback shown (clipboard API).
+- Comment vote: added a test comment → CommentNode rendered with "Upvote comment" button → clicked → button turned orange + count went "Vote"→"1" (PATCH /comments returned 200, transactional SQL visible in dev.log: UPDATE + SELECT + COMMIT).
+- No full refetch after vote/heart (targeted state update only).
+- API: curl confirms Cache-Control header on /api/forum/posts; rate limiting confirmed (5×200 then 429 on 6th /init hit).
+- Lint: 0 errors. dev.log: zero runtime errors.
+
+Stage Summary:
+- 6 quick wins delivered, all browser-verified: (1) search now works (debounced, ?search=), (2) vote/heart use PATCH response (no refetch), (3) comment vote buttons wired + working end-to-end, (4) share buttons wired (Web Share API + clipboard fallback with "Copied!" feedback), (5) Cache-Control headers on GET routes (s-maxage=30-60 + stale-while-revalidate), (6) per-IP rate limiting on all 10 open route handlers (429 + Retry-After). These fix the broken UX and add baseline abuse protection. The deeper scale work (Postgres, real auth, Redis, FTS, real-time, notifications, moderation, AI-assisted posting) remains as outlined in the prior assessment.

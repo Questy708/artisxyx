@@ -1,11 +1,17 @@
 import { db } from '@/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
-import { isValidInput } from '@/lib/auth'
+import { isValidInput, checkRateLimit, getClientIp } from '@/lib/auth'
 
 // GET /api/forum/posts - List posts with pagination, filtering, and search
 // Query params: community, category (home|popular|news|explore), userId, page, limit, search, cursor
 export async function GET(request: NextRequest) {
   try {
+    // Light rate limiting on the list endpoint
+    const rl = checkRateLimit(getClientIp(request), 60, 60_000)
+    if (!rl.allowed) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: { 'Retry-After': String(Math.ceil((rl.retryAfterMs || 0) / 1000)) } })
+    }
+
     const { searchParams } = new URL(request.url)
     const communityRaw = searchParams.get('community') || ''
     const community = communityRaw === 'all' ? '' : communityRaw
@@ -122,7 +128,10 @@ export async function GET(request: NextRequest) {
       heartUsers: undefined,
     }))
 
-    return NextResponse.json({ posts, total, page, totalPages, hasMore: page < totalPages })
+    return NextResponse.json(
+      { posts, total, page, totalPages, hasMore: page < totalPages },
+      { headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=120' } }
+    )
   } catch (error) {
     console.error('Error fetching forum posts:', error)
     return NextResponse.json(
@@ -135,6 +144,12 @@ export async function GET(request: NextRequest) {
 // POST /api/forum/posts - Create a new post
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit post creation to deter spam
+    const rl = checkRateLimit(getClientIp(request), 10, 60_000)
+    if (!rl.allowed) {
+      return NextResponse.json({ error: 'Too many posts. Please slow down.' }, { status: 429, headers: { 'Retry-After': String(Math.ceil((rl.retryAfterMs || 0) / 1000)) } })
+    }
+
     const body = await request.json()
     const { authorId, community, title, content, imageUrl } = body
 
