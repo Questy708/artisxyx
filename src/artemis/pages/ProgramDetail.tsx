@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "@/artemis/router";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import { ArrowLeft, CheckCircle2, Plus, Minus, Users, Zap, Shield, Workflow, Activity, Globe, Target, Search as SearchIcon, Calendar, Clock, ChevronRight, MapPin, ArrowRight, X, Loader2 } from "lucide-react";
 import { Link } from "@/artemis/router";
 import { programsData } from "@/artemis/data/programs";
@@ -52,12 +52,424 @@ const programVentureIds: Record<string, string[]> = {
 const stepColors = [
   "bg-[#FF4D00]", "bg-[#E5432F]", "bg-[#9333EA]", "bg-[#2563EB]", "bg-[#059669]",
 ];
+const STEP_HEX = ["#FF4D00", "#E5432F", "#9333EA", "#2563EB", "#059669"];
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PROGRAM JOURNEY — interactive phase deck.
+   Desktop: a row of phase columns; clicking one expands it into a wide
+   spotlight panel (the others collapse to narrow rails) via Framer Motion
+   layout animations. A left mini-map dots show all phases, active enlarged.
+   Mobile: vertical accordion with a kinetic number reveal.
+   ══════════════════════════════════════════════════════════════════════════ */
+function ProgramJourney({
+  title,
+  process,
+}: {
+  title: string;
+  process: { title: string; desc: string; extended?: string }[];
+  stepColors?: string[];
+}) {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const [active, setActive] = useState(0);
+  const phaseCount = process.length;
+
+  return (
+    <section id="program-journey" ref={sectionRef} className="py-0">
+      <div className="max-w-[1400px] mx-auto bg-[#0A0A0A] text-white px-6 md:px-12 lg:px-20 py-24 lg:py-32 rounded-sm relative overflow-hidden">
+        {/* Ambient glow positioned by active phase */}
+        <motion.div
+          animate={{ opacity: isInView ? 1 : 0 }}
+          transition={{ duration: 0.8 }}
+          className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[150px] pointer-events-none"
+          style={{ background: `${STEP_HEX[active % STEP_HEX.length]}18` }}
+        />
+
+        {/* Header + mini-map */}
+        <div className="relative mb-12 md:mb-16 flex flex-col md:flex-row md:items-end md:justify-between gap-8">
+          <div className="max-w-2xl">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, ease: EASE }}
+              className="flex items-center gap-3 mb-6"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00]" />
+              <span className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-white/50">The Program Journey</span>
+            </motion.div>
+            <motion.h2
+              initial={{ opacity: 0, y: 18 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.65, delay: 0.05, ease: EASE }}
+              className="text-3xl sm:text-4xl md:text-[64px] lg:text-[72px] font-display font-medium leading-[0.9] uppercase tracking-tighter mb-5"
+            >
+              YOUR PATH
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.15, ease: EASE }}
+              className="text-base md:text-lg text-white/50 max-w-xl font-medium leading-relaxed"
+            >
+              Every phase of {title} is engineered for one outcome: ventures that survive and scale. Tap a phase to step into it.
+            </motion.p>
+          </div>
+
+          {/* Mini-map dots (desktop) */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="hidden md:flex items-center gap-3"
+          >
+            {process.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActive(idx)}
+                aria-label={`Go to phase ${idx + 1}`}
+                className="flex items-center"
+              >
+                <motion.span
+                  animate={{
+                    width: idx === active ? 32 : 8,
+                    backgroundColor: idx <= active ? STEP_HEX[idx % STEP_HEX.length] : "#ffffff20",
+                  }}
+                  transition={{ duration: 0.35, ease: EASE }}
+                  className="h-2 rounded-full"
+                />
+              </button>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* ── DESKTOP: interactive phase deck ── */}
+        <div className="hidden md:block relative" style={{ height: 460 }}>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.4 }}
+            className="flex gap-3 h-full"
+          >
+            {process.map((step, idx) => {
+              const isActive = idx === active;
+              const hex = STEP_HEX[idx % STEP_HEX.length];
+              return (
+                <motion.button
+                  key={idx}
+                  layout
+                  onClick={() => setActive(idx)}
+                  className="relative h-full rounded-2xl overflow-hidden text-left border transition-colors"
+                  style={{
+                    borderColor: isActive ? hex : "#ffffff14",
+                    background: isActive ? `linear-gradient(160deg, ${hex}22, #111)` : "#111",
+                  }}
+                  animate={{ flex: isActive ? 4 : 1 }}
+                  transition={{ duration: 0.55, ease: EASE }}
+                >
+                  {/* Giant phase number — vertical when collapsed, horizontal when expanded */}
+                  <motion.div
+                    layout
+                    className="absolute top-0 right-0 bottom-0 flex items-center justify-center pointer-events-none"
+                    animate={{ opacity: isActive ? 0.06 : 0.12 }}
+                  >
+                    <span
+                      className="font-display font-medium leading-none"
+                      style={{
+                        color: hex,
+                        fontSize: isActive ? "260px" : "110px",
+                        writingMode: isActive ? "horizontal-tb" : "vertical-rl",
+                      }}
+                    >
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
+                  </motion.div>
+
+                  {/* Content */}
+                  <div className="relative z-10 h-full flex flex-col justify-between p-7">
+                    {/* Top: phase label */}
+                    <div>
+                      <div
+                        className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase mb-3"
+                        style={{ color: hex }}
+                      >
+                        Phase {String(idx + 1).padStart(2, "0")}
+                      </div>
+                      <motion.h3
+                        layout
+                        className="font-display font-medium leading-tight"
+                        animate={{
+                          fontSize: isActive ? "30px" : "17px",
+                          color: isActive ? "#fff" : "#ffffff80",
+                        }}
+                        transition={{ duration: 0.4, ease: EASE }}
+                      >
+                        {step.title}
+                      </motion.h3>
+                    </div>
+
+                    {/* Bottom: description (only visible when expanded) */}
+                    <AnimatePresence>
+                      {isActive && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 12 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 8 }}
+                          transition={{ duration: 0.35, ease: EASE, delay: 0.1 }}
+                          className="max-w-md"
+                        >
+                          <p className="text-[15px] leading-[1.65] text-white/70 mb-5">{step.desc}</p>
+                          {step.extended && (
+                            <p className="text-[13px] leading-[1.6] text-white/45 border-l-2 pl-4" style={{ borderColor: hex }}>
+                              {step.extended}
+                            </p>
+                          )}
+                          {/* Next-phase hint */}
+                          {idx < phaseCount - 1 && (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setActive(idx + 1); }}
+                              className="mt-6 inline-flex items-center gap-2 text-[11px] font-mono font-bold tracking-[0.2em] uppercase text-white/40 hover:text-white transition-colors"
+                            >
+                              Next phase <ArrowRight className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </motion.button>
+              );
+            })}
+          </motion.div>
+        </div>
+
+        {/* ── MOBILE: vertical accordion ── */}
+        <div className="md:hidden space-y-3">
+          {process.map((step, idx) => {
+            const isActive = idx === active;
+            const hex = STEP_HEX[idx % STEP_HEX.length];
+            return (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.45, delay: idx * 0.08, ease: EASE }}
+              >
+                <button
+                  onClick={() => setActive(isActive ? -1 : idx)}
+                  className="w-full text-left rounded-2xl overflow-hidden border transition-colors"
+                  style={{
+                    borderColor: isActive ? hex : "#ffffff14",
+                    background: isActive ? `linear-gradient(160deg, ${hex}22, #111)` : "#111",
+                  }}
+                >
+                  <div className="flex items-center gap-4 p-5">
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={{ background: hex }}
+                    >
+                      <span className="font-display text-lg font-medium text-white">{idx + 1}</span>
+                    </div>
+                    <h3 className="flex-1 font-display font-medium text-base text-white">{step.title}</h3>
+                    <motion.div animate={{ rotate: isActive ? 45 : 0 }} transition={{ duration: 0.3 }}>
+                      <Plus className="w-4 h-4 text-white/40" />
+                    </motion.div>
+                  </div>
+                  <AnimatePresence>
+                    {isActive && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.35, ease: EASE }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-5 pb-5 pl-5">
+                          <p className="text-[14px] leading-[1.6] text-white/70 mb-3">{step.desc}</p>
+                          {step.extended && (
+                            <p className="text-[13px] leading-[1.55] text-white/45 border-l-2 pl-3" style={{ borderColor: hex }}>{step.extended}</p>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </button>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   IDEAL CANDIDATES — animated bento grid.
+   Each trait is a card that scales+rotates in with a staggered reveal,
+   lifts on hover with a colored glow border. The grid uses an asymmetric
+   bento pattern (first card spans 2 cols) for visual rhythm. A kinetic
+   count-up displays the trait total. Dark section with a subtle grid overlay.
+   ══════════════════════════════════════════════════════════════════════════ */
+function IdealCandidates({ title, traits }: { title: string; traits: string[] }) {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+  const [count, setCount] = useState(0);
+  const total = traits.length;
+
+  // Count-up animation when in view
+  useEffect(() => {
+    if (!isInView) return;
+    let raf = 0;
+    const start = performance.now();
+    const dur = 900;
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setCount(Math.round(eased * total));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [isInView, total]);
+
+  return (
+    <section className="py-0" ref={sectionRef}>
+      <div className="max-w-[1400px] mx-auto bg-[#0A0A0A] text-white px-6 md:px-12 lg:px-20 py-24 lg:py-32 rounded-sm relative overflow-hidden">
+        {/* Subtle grid overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+            backgroundSize: "60px 60px",
+          }}
+        />
+        {/* Ambient glow */}
+        <div className="absolute -top-20 left-1/3 w-[500px] h-[500px] rounded-full bg-[#FF4D00]/8 blur-[150px] pointer-events-none" />
+
+        <div className="relative z-10">
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-12 md:mb-16">
+            <div className="max-w-2xl">
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, ease: EASE }}
+                className="flex items-center gap-3 mb-6"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00]" />
+                <span className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-white/50">Ideal Candidates</span>
+              </motion.div>
+              <motion.h2
+                initial={{ opacity: 0, y: 18 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.65, delay: 0.05, ease: EASE }}
+                className="text-3xl sm:text-4xl md:text-[56px] lg:text-[64px] font-display font-medium leading-[0.95] tracking-tight"
+              >
+                {title} is for you if...
+              </motion.h2>
+            </div>
+
+            {/* Kinetic count-up badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 0.5, delay: 0.2, ease: EASE }}
+              className="flex items-center gap-4 shrink-0"
+            >
+              <div className="text-right">
+                <div className="text-[10px] font-mono font-bold tracking-[0.25em] uppercase text-white/30 mb-1">Signals</div>
+                <div className="font-display text-5xl md:text-6xl font-medium text-[#FF4D00] tabular-nums leading-none">
+                  {String(count).padStart(2, "0")}
+                </div>
+              </div>
+              <div className="h-12 w-px bg-white/15" />
+              <div className="text-[11px] font-mono tracking-[0.15em] uppercase text-white/40 max-w-[120px] leading-[1.5]">
+                Look for yourself in the list
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Bento grid — asymmetric spans */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3 md:gap-4">
+            {traits.map((text, idx) => {
+              // Bento pattern: first card spans 3 cols (lg), second spans 3; rest span 2 each
+              const span =
+                idx === 0 ? "lg:col-span-3" :
+                idx === 1 ? "lg:col-span-3" :
+                "lg:col-span-2";
+              const hex = STEP_HEX[idx % STEP_HEX.length];
+              return (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, scale: 0.92, rotate: idx % 2 === 0 ? -2 : 2 }}
+                  animate={isInView ? { opacity: 1, scale: 1, rotate: 0 } : {}}
+                  transition={{ duration: 0.5, delay: 0.25 + idx * 0.1, ease: EASE }}
+                  whileHover={{ y: -6 }}
+                  className={`group relative ${span} bg-white/[0.03] border border-white/10 rounded-2xl p-6 md:p-7 overflow-hidden cursor-default transition-colors hover:border-white/25`}
+                >
+                  {/* Hover glow */}
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                    style={{ background: `radial-gradient(120% 80% at 50% 0%, ${hex}18, transparent 70%)` }}
+                  />
+                  {/* Top accent line that grows on hover */}
+                  <div
+                    className="absolute top-0 left-0 h-[2px] transition-all duration-300 group-hover:w-full"
+                    style={{ width: "40%", background: hex }}
+                  />
+
+                  <div className="relative z-10 flex items-start gap-4 h-full">
+                    {/* Index badge */}
+                    <div
+                      className="shrink-0 w-10 h-10 rounded-xl flex items-center justify-center font-display text-sm font-medium transition-transform duration-300 group-hover:scale-110"
+                      style={{ background: `${hex}20`, color: hex, border: `1px solid ${hex}40` }}
+                    >
+                      {String(idx + 1).padStart(2, "0")}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-[15px] md:text-[16px] font-medium leading-[1.55] text-white/85">
+                        {text}
+                      </p>
+                    </div>
+                    {/* Checkmark that fades in on hover */}
+                    <motion.div
+                      initial={false}
+                      className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    >
+                      <CheckCircle2 className="w-5 h-5" style={{ color: hex }} />
+                    </motion.div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.4 + total * 0.1, ease: EASE }}
+            className="mt-12 md:mt-16"
+          >
+            <button className="button relative inline-flex items-center justify-center bg-[#FF4D00] text-white px-8 py-4 text-sm font-bold uppercase tracking-widest transition-transform hover:scale-105 group overflow-hidden">
+              <span className="relative z-10 inline-flex items-center gap-2">
+                Start your company
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </span>
+            </button>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export function ProgramDetail() {
   const { params, navigate } = useRouter();
   const id = params?.id;
   const program = programsData.find((p) => p.id === id);
-  const [activeSteps, setActiveSteps] = useState<number[]>([0, 1, 2]);
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
 
   // Application modal state
@@ -392,89 +804,9 @@ export function ProgramDetail() {
         </section>
       )}
 
-      {/* ── PROGRAM JOURNEY (visual timeline for process data) ── */}
+      {/* ── PROGRAM JOURNEY (scroll-driven animated timeline) ── */}
       {hasProcess && (
-        <section id="program-journey" className="py-0">
-          <div className="max-w-[1400px] mx-auto bg-[#F9F9F9] px-6 md:px-12 lg:px-20 py-24 lg:py-32 rounded-sm">
-            <div className="mb-16 md:mb-20">
-              <div className="flex items-center mb-6">
-                <span className="text-[#FF4D00] text-[10px] mr-2">&#9679;</span>
-                <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#1B1C1E]/60">The Program Journey</span>
-              </div>
-              <h2 className="text-3xl sm:text-4xl md:text-[64px] lg:text-[80px] font-display font-medium leading-[0.9] text-[#1B1C1E] uppercase tracking-tighter mb-4">
-                YOUR PATH
-              </h2>
-              <p className="text-lg text-[#1B1C1E]/60 max-w-lg font-medium leading-relaxed">
-                From entry to exit, every phase of {program.title} is engineered for one outcome: operational ventures that survive and scale.
-              </p>
-            </div>
-
-            {/* Visual Timeline */}
-            <div className="relative">
-              {/* Vertical connecting line */}
-              <div className="hidden lg:block absolute left-[60px] top-0 bottom-0 w-px bg-gradient-to-b from-[#FF4D00] via-[#9333EA] to-[#059669]" />
-
-              <div className="space-y-6">
-                {program.process!.map((step, idx) => (
-                  <div 
-                    key={idx}
-                    onClick={() => setActiveSteps(prev => prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx])}
-                    className="relative group cursor-pointer"
-                  >
-                    <div className="flex gap-6 lg:gap-10 items-start">
-                      {/* Step indicator */}
-                      <div className="hidden lg:flex flex-col items-center flex-shrink-0">
-                        <div className={`w-[120px] h-[120px] rounded-2xl ${stepColors[idx % stepColors.length]} flex items-center justify-center shadow-lg relative z-10 group-hover:scale-105 transition-transform`}>
-                          <span className="text-white font-display text-4xl font-medium">{String(idx + 1).padStart(2, '0')}</span>
-                        </div>
-                      </div>
-
-                      {/* Content card */}
-                      <div className={`flex-1 bg-white border rounded-2xl overflow-hidden transition-all duration-300 ${
-                        activeSteps.includes(idx) 
-                          ? 'border-[#1B1C1E]/10 shadow-lg' 
-                          : 'border-[#E5E7EB] hover:border-[#1B1C1E]/10 hover:shadow-md'
-                      }`}>
-                        <div className="p-8 lg:p-10">
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="flex-1">
-                              <div className="lg:hidden flex items-center gap-3 mb-3">
-                                <div className={`w-8 h-8 rounded-lg ${stepColors[idx % stepColors.length]} flex items-center justify-center`}>
-                                  <span className="text-white font-display text-sm font-medium">{idx + 1}</span>
-                                </div>
-                              </div>
-                              <h3 className="text-xl md:text-2xl font-medium text-[#1B1C1E] mb-2">{step.title}</h3>
-                              <p className="text-[#1B1C1E]/60 text-[15px] leading-relaxed">{step.desc}</p>
-                            </div>
-                            <div className="w-10 h-10 rounded-full bg-[#F4F4F5] flex items-center justify-center flex-shrink-0 transition-colors hover:bg-[#E5E7EB]">
-                              {activeSteps.includes(idx) ? <Minus className="w-5 h-5 text-[#1B1C1E]" /> : <Plus className="w-5 h-5 text-[#1B1C1E]" />}
-                            </div>
-                          </div>
-                          
-                          <AnimatePresence>
-                            {activeSteps.includes(idx) && (
-                              <motion.div
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: "auto" }}
-                                exit={{ opacity: 0, height: 0 }}
-                                transition={{ duration: 0.3 }}
-                                className="overflow-hidden"
-                              >
-                                <div className="mt-6 pt-6 border-t border-[#1B1C1E]/5">
-                                  <p className="text-[#1B1C1E]/70 text-[15px] leading-relaxed">{step.extended || step.desc}</p>
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
+        <ProgramJourney title={program.title} process={program.process!} />
       )}
 
       {/* ── An Unfair Starting Line, 6 features + auto-play photo collage ── */}
@@ -701,44 +1033,9 @@ export function ProgramDetail() {
         </section>
       )}
 
-      {/* ── Is for you if ── */}
+      {/* ── Ideal Candidates (animated bento grid) ── */}
       {(program.isForYouIf && program.isForYouIf.length > 0) && (
-        <section className="py-0">
-          <div className="max-w-[1400px] mx-auto bg-[#1B1C1E] text-white px-6 md:px-12 lg:px-20 py-32 lg:py-40 rounded-sm relative overflow-hidden">
-            <div className="absolute inset-0 opacity-40 mix-blend-overlay">
-              <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover" alt="Background Texture" />
-            </div>
-            <div className="relative z-10 grid lg:grid-cols-2 gap-16 lg:gap-24">
-             <div>
-                <div className="flex items-center gap-3 mb-10">
-                   <div className="tag-polygon text-white/50" />
-                   <span className="font-mono text-[11px] font-bold uppercase tracking-[0.4em] text-white/50">Ideal Candidates</span>
-                </div>
-                <h2 className="text-4xl lg:text-[60px] leading-[1.1] font-display font-medium">
-                  {program.title} is for you if...
-                </h2>
-             </div>
-             
-             <div className="space-y-6">
-                {program.isForYouIf.map((text, idx) => (
-                  <div key={idx} className="flex items-start gap-4 bg-white/5 p-6 rounded-xl border border-white/10 backdrop-blur-sm">
-                     <div className="mt-1 flex-shrink-0">
-                        <CheckCircle2 className="w-5 h-5 text-[#FF9CDF]" />
-                     </div>
-                     <p className="text-lg font-medium">{text}</p>
-                  </div>
-                ))}
-                
-                <div className="pt-8">
-                   <button className="button relative inline-flex items-center justify-center bg-white text-[#1B1C1E] px-8 py-4 text-sm font-bold uppercase tracking-widest transition-transform hover:scale-105 group overflow-hidden border border-white/20 hover:border-transparent">
-                     <span className="relative z-10 transition-colors group-hover:text-white">Start your company</span>
-                     <div className="button-gradient !opacity-0 group-hover:!opacity-100 transition-opacity" />
-                   </button>
-                </div>
-             </div>
-            </div>
-          </div>
-        </section>
+        <IdealCandidates title={program.title} traits={program.isForYouIf} />
       )}
 
       {/* ── FAQ ── */}

@@ -1,0 +1,1031 @@
+     1→"use client";
+     2→
+     3→import { useState, useEffect, useCallback } from "react";
+     4→import { useRouter } from "@/artemis/router";
+     5→import { motion, AnimatePresence } from "framer-motion";
+     6→import { ArrowLeft, CheckCircle2, Plus, Minus, Users, Zap, Shield, Workflow, Activity, Globe, Target, Search as SearchIcon, Calendar, Clock, ChevronRight, MapPin, ArrowRight, X, Loader2 } from "lucide-react";
+     7→import { Link } from "@/artemis/router";
+     8→import { programsData } from "@/artemis/data/programs";
+     9→import { venturesData } from "@/artemis/data/ventures";
+    10→
+    11→const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+    12→  Shield, Zap, Users, Activity, Workflow, Globe, Target, Search: SearchIcon, Calendar, Clock,
+    13→};
+    14→
+    15→/* ── Auto-play carousel images per program ── */
+    16→const carouselImages: Record<string, string[]> = {
+    17→  "xhansa-fellowship": [
+    18→    "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80",
+    19→    "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=800&q=80",
+    20→    "https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&w=800&q=80",
+    21→    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80",
+    22→  ],
+    23→  "xcelero-accelerator": [
+    24→    "https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&w=800&q=80",
+    25→    "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=800&q=80",
+    26→    "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
+    27→    "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80",
+    28→  ],
+    29→  "inception-studios": [
+    30→    "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
+    31→    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80",
+    32→    "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80",
+    33→    "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=800&q=80",
+    34→  ],
+    35→  "quest-fellowship": [
+    36→    "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=800&q=80",
+    37→    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80",
+    38→    "https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&w=800&q=80",
+    39→    "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80",
+    40→  ],
+    41→};
+    42→
+    43→/* ── Venture IDs per program for "From Idea to Company" section ── */
+    44→const programVentureIds: Record<string, string[]> = {
+    45→  "xhansa-fellowship": ["helios", "vulcan", "refract", "noma"],
+    46→  "xcelero-accelerator": ["joule", "denari", "sankofa", "smelter"],
+    47→  "inception-studios": ["civitas", "aegis", "atomica", "verdant"],
+    48→  "quest-fellowship": ["allele", "ampere", "phylaxis", "azimuth"],
+    49→};
+    50→
+    51→/* ── Journey step colors ── */
+    52→const stepColors = [
+    53→  "bg-[#FF4D00]", "bg-[#E5432F]", "bg-[#9333EA]", "bg-[#2563EB]", "bg-[#059669]",
+    54→];
+    55→
+    56→export function ProgramDetail() {
+    57→  const { params, navigate } = useRouter();
+    58→  const id = params?.id;
+    59→  const program = programsData.find((p) => p.id === id);
+    60→  const [activeSteps, setActiveSteps] = useState<number[]>([0, 1, 2]);
+    61→  const [activeFaq, setActiveFaq] = useState<number | null>(0);
+    62→
+    63→  // Application modal state
+    64→  const [showApplyModal, setShowApplyModal] = useState(false);
+    65→  const [applySubmitting, setApplySubmitting] = useState(false);
+    66→  const [applySuccess, setApplySuccess] = useState(false);
+    67→  const [applyError, setApplyError] = useState("");
+    68→  const [applyForm, setApplyForm] = useState({
+    69→    firstName: "",
+    70→    lastName: "",
+    71→    email: "",
+    72→    phone: "",
+    73→    linkedinUrl: "",
+    74→    location: "",
+    75→    currentRole: "",
+    76→    companyName: "",
+    77→    motivation: "",
+    78→    referral: "",
+    79→  });
+    80→
+    81→  const openApplyModal = () => {
+    82→    setApplySuccess(false);
+    83→    setApplyError("");
+    84→    setShowApplyModal(true);
+    85→  };
+    86→
+    87→  const handleApplySubmit = async (e: React.FormEvent) => {
+    88→    e.preventDefault();
+    89→    if (!applyForm.firstName || !applyForm.lastName || !applyForm.email) return;
+    90→    setApplySubmitting(true);
+    91→    setApplyError("");
+    92→    try {
+    93→      const res = await fetch("/api/programs/apply", {
+    94→        method: "POST",
+    95→        headers: { "Content-Type": "application/json" },
+    96→        body: JSON.stringify({
+    97→          programSlug: id,
+    98→          ...applyForm,
+    99→        }),
+   100→      });
+   101→      if (!res.ok) {
+   102→        const data = await res.json();
+   103→        setApplyError(data.error || "Submission failed. Please try again.");
+   104→        setApplySubmitting(false);
+   105→        return;
+   106→      }
+   107→      setApplySubmitting(false);
+   108→      setApplySuccess(true);
+   109→    } catch {
+   110→      setApplyError("Network error. Please try again.");
+   111→      setApplySubmitting(false);
+   112→    }
+   113→  };
+   114→
+   115→  // Carousel state
+   116→  const images = (id && carouselImages[id]) || [];
+   117→  const [leftIdx, setLeftIdx] = useState(0);
+   118→  const [rightIdx, setRightIdx] = useState(1);
+   119→
+   120→  const nextSlide = useCallback(() => {
+   121→    if (images.length === 0) return;
+   122→    setLeftIdx((prev) => (prev + 1) % images.length);
+   123→    setRightIdx((prev) => (prev + 1) % images.length);
+   124→  }, [images.length]);
+   125→
+   126→  useEffect(() => {
+   127→    if (images.length === 0) return;
+   128→    const timer = setInterval(nextSlide, 4000);
+   129→    return () => clearInterval(timer);
+   130→  }, [images.length, nextSlide]);
+   131→
+   132→  // Ventures for this program
+   133→  const ventureIds = (id && programVentureIds[id]) || [];
+   134→  const programVentures = ventureIds
+   135→    .map((vid) => venturesData.find((v) => v.id === vid))
+   136→    .filter(Boolean) as typeof venturesData;
+   137→
+   138→  if (!program) {
+   139→    return (
+   140→      <div className="min-h-screen flex items-center justify-center bg-white text-[#111111]">
+   141→        <div className="text-center px-6">
+   142→          <p className="font-mono text-[10px] tracking-[0.4em] text-[#FF4D00] mb-4">404_PAGE_NOT_FOUND</p>
+   143→          <h1 className="text-3xl font-display font-medium mb-8 uppercase tracking-tighter">Directive Missing</h1>
+   144→          <Link to="/programs" className="inline-flex items-center gap-2 px-8 py-4 bg-[#111111] text-white text-[12px] font-bold uppercase tracking-widest hover:bg-[#FF4D00] transition-colors">
+   145→            <ArrowLeft className="w-4 h-4" /> Return Explorer
+   146→          </Link>
+   147→        </div>
+   148→      </div>
+   149→    );
+   150→  }
+   151→
+   152→  const hasAppCycles = program.applicationCycles && program.applicationCycles.length > 0;
+   153→  const hasWhatYouGet = program.whatYouGet && program.whatYouGet.length > 0;
+   154→  const hasProcess = program.process && program.process.length > 0;
+   155→
+   156→  return (
+   157→    <div className="bg-white text-[#1B1C1E] min-h-screen selection:bg-[#FF9CDF] selection:text-white pb-0 overflow-x-hidden">
+   158→      
+   159→      {/* ── HERO SECTION ── */}
+   160→      <section className="pt-32 pb-16 px-6 lg:px-12 w-full max-w-[1400px] mx-auto">
+   161→        <div className="mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+   162→          <div className="flex-1">
+   163→            <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-[100px] font-display font-medium uppercase leading-[0.9] text-[#1B1C1E] tracking-tighter mb-6">
+   164→              {program.title}
+   165→            </h1>
+   166→            <p className="text-lg text-[#1B1C1E]/60 leading-relaxed max-w-xl">
+   167→              {program.desc}
+   168→            </p>
+   169→          </div>
+   170→          <div className="flex-shrink-0 self-start md:self-end">
+   171→            <button className="inline-flex items-center justify-center gap-2 bg-[#1B1C1E] text-white px-8 py-4 rounded-full text-sm font-medium hover:bg-black transition-transform hover:scale-105">
+   172→              Start your company <svg width="18" height="15" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="ml-1"><path d="M11 1L17 7M17 7L11 13M17 7H0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+   173→            </button>
+   174→          </div>
+   175→        </div>
+   176→        
+   177→        <div className="w-full relative overflow-hidden aspect-[2.5/1]">
+   178→            <img
+   179→              src={program.image}
+   180→              alt={program.title}
+   181→              className="w-full h-full object-cover"
+   182→            />
+   183→            <div className="absolute inset-0 bg-gradient-to-r from-[#111111]/70 via-[#111111]/30 to-[#111111]/70" />
+   184→            <div className="absolute inset-0 flex items-center justify-center">
+   185→              <div className="text-center">
+   186→                <div className="text-white font-mono text-sm md:text-base font-bold tracking-[0.3em] mb-4 opacity-70">FROM 0</div>
+   187→                <div className="w-16 h-16 md:w-24 md:h-24 mx-auto flex items-center justify-center opacity-50">
+   188→                  <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+   189→                    <path d="M100 0L186.6 50V150L100 200L13.4 150V50L100 0Z" stroke="white" strokeWidth="1.5"/>
+   190→                    <path d="M100 100L186.6 50" stroke="white" strokeWidth="1"/>
+   191→                    <path d="M100 100V200" stroke="white" strokeWidth="1"/>
+   192→                    <path d="M100 100L13.4 50" stroke="white" strokeWidth="1"/>
+   193→                  </svg>
+   194→                </div>
+   195→                <div className="text-white font-mono text-sm md:text-base font-bold tracking-[0.3em] mt-4 opacity-70">TO 1</div>
+   196→              </div>
+   197→            </div>
+   198→        </div>
+   199→      </section>
+   200→
+   201→      {/* ── ANCHOR NAV ── */}
+   202→      <div className="w-full max-w-[1400px] mx-auto px-6 lg:px-12 flex flex-wrap justify-center items-center gap-4 mb-24 z-40 bg-white">
+   203→          <a href="#our-track-record" className="px-6 py-3 rounded-full bg-[#FAFAFA] text-[#1B1C1E] text-sm font-medium hover:bg-[#F4F4F5] transition-colors border border-transparent hover:border-[#E5E7EB]">Our track record</a>
+   204→          <a href="#application-cycles" className="px-6 py-3 rounded-full bg-[#FAFAFA] text-[#1B1C1E] text-sm font-medium hover:bg-[#F4F4F5] transition-colors border border-transparent hover:border-[#E5E7EB]">Apply</a>
+   205→          <a href="#what-you-get" className="px-6 py-3 rounded-full bg-[#FAFAFA] text-[#1B1C1E] text-sm font-medium hover:bg-[#F4F4F5] transition-colors border border-transparent hover:border-[#E5E7EB]">What you get</a>
+   206→          <a href="#program-journey" className="px-6 py-3 rounded-full bg-[#FAFAFA] text-[#1B1C1E] text-sm font-medium hover:bg-[#F4F4F5] transition-colors border border-transparent hover:border-[#E5E7EB]">The journey</a>
+   207→          <a href="#faq" className="px-6 py-3 rounded-full bg-[#FAFAFA] text-[#1B1C1E] text-sm font-medium hover:bg-[#F4F4F5] transition-colors border border-transparent hover:border-[#E5E7EB]">FAQ</a>
+   208→      </div>
+   209→
+   210→      {/* ── OUR TRACK RECORD ── */}
+   211→      <section id="our-track-record" className="py-24 lg:py-32 px-6 lg:px-12 max-w-[1400px] mx-auto">
+   212→        <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mb-20 lg:mb-32">
+   213→          <div className="flex items-center mb-6">
+   214→             <span className="text-[#FF4D00] text-[10px] mr-2">&#9679;</span>
+   215→             <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#1B1C1E]/60">Our Track Record</span>
+   216→          </div>
+   217→          <p className="text-2xl lg:text-3xl max-w-3xl font-medium leading-relaxed text-[#1B1C1E]">
+   218→            Founders who build with {program.title} don&apos;t just start companies, they build category leaders.
+   219→          </p>
+   220→        </div>
+   221→
+   222→        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+   223→           {(program.trackRecord || []).map((stat, i) => (
+   224→             <div key={i} className="border-l border-[#1B1C1E]/10 pl-6 space-y-4">
+   225→               <p className="font-mono text-sm tracking-widest text-[#1B1C1E]/60 uppercase">{stat.label}</p>
+   226→               <p className="text-3xl sm:text-5xl lg:text-7xl font-display font-medium tracking-tighter">
+   227→                 {stat.value}
+   228→               </p>
+   229→             </div>
+   230→           ))}
+   231→        </div>
+   232→      </section>
+   233→
+   234→      {/* ── APPLICATION CYCLES ── */}
+   235→      {hasAppCycles && (
+   236→        <section id="application-cycles" className="py-0">
+   237→          <div className="max-w-[1400px] mx-auto bg-[#1B1C1E] text-white px-6 md:px-12 lg:px-20 py-24 lg:py-32 rounded-sm relative overflow-hidden">
+   238→            {/* Background texture */}
+   239→            <div className="absolute inset-0 opacity-10">
+   240→              <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-[#FF4D00] blur-[200px]" />
+   241→              <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-[#FF9CDF] blur-[150px]" />
+   242→            </div>
+   243→
+   244→            <div className="relative z-10">
+   245→            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-16">
+   246→              <div>
+   247→                <div className="flex items-center gap-3 mb-6">
+   248→                  <Calendar className="w-4 h-4 text-[#FF4D00]" />
+   249→                  <span className="font-mono text-[11px] font-bold uppercase tracking-[0.4em] text-white/50">Application Cycles</span>
+   250→                </div>
+   251→                <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-medium uppercase tracking-tighter leading-[0.95]">
+   252→                  WHEN TO <br/>APPLY
+   253→                </h2>
+   254→              </div>
+   255→              <div>
+   256→                {program.applicationCycles!.some(c => c.status === 'open') && (
+   257→                  <button onClick={openApplyModal} className="inline-flex items-center justify-center gap-2 bg-[#FF4D00] text-white px-8 py-4 rounded-full text-sm font-bold uppercase tracking-widest hover:bg-[#E54300] transition-colors">
+   258→                    Apply Now <ArrowRight className="w-4 h-4" />
+   259→                  </button>
+   260→                )}
+   261→              </div>
+   262→            </div>
+   263→
+   264→            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+   265→              {program.applicationCycles!.map((cycle, i) => (
+   266→                <div 
+   267→                  key={i} 
+   268→                  className={`relative border rounded-2xl p-8 transition-all duration-300 hover:scale-[1.02] ${
+   269→                    cycle.status === 'open' 
+   270→                      ? 'border-[#FF4D00]/40 bg-[#FF4D00]/5 hover:border-[#FF4D00]/60' 
+   271→                      : 'border-white/10 bg-white/[0.03] hover:border-white/20'
+   272→                  }`}
+   273→                >
+   274→                  {/* Status badge */}
+   275→                  <div className="flex items-center justify-between mb-8">
+   276→                    <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${
+   277→                      cycle.status === 'open' 
+   278→                        ? 'bg-[#FF4D00]/20 text-[#FF4D00]' 
+   279→                        : cycle.status === 'upcoming'
+   280→                        ? 'bg-white/10 text-white/60'
+   281→                        : 'bg-white/5 text-white/30'
+   282→                    }`}>
+   283→                      <span className={`w-1.5 h-1.5 rounded-full ${
+   284→                        cycle.status === 'open' ? 'bg-[#FF4D00] animate-pulse' : 'bg-white/30'
+   285→                      }`} />
+   286→                      {cycle.status === 'open' ? 'Applications Open' : cycle.status === 'upcoming' ? 'Upcoming' : 'Closed'}
+   287→                    </span>
+   288→                  </div>
+   289→
+   290→                  <h3 className="text-xl font-medium mb-6 text-white">{cycle.cycle}</h3>
+   291→
+   292→                  <div className="space-y-4">
+   293→                    <div className="flex items-center gap-3">
+   294→                      <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
+   295→                        <Clock className="w-4 h-4 text-white/60" />
+   296→                      </div>
+   297→                      <div>
+   298→                        <p className="text-[10px] font-mono uppercase tracking-wider text-white/40 mb-0.5">Opens</p>
+   299→                        <p className="text-sm font-medium text-white/80">{cycle.opens}</p>
+   300→                      </div>
+   301→                    </div>
+   302→
+   303→                    <div className="flex items-center gap-3">
+   304→                      <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
+   305→                        <Clock className="w-4 h-4 text-white/60" />
+   306→                      </div>
+   307→                      <div>
+   308→                        <p className="text-[10px] font-mono uppercase tracking-wider text-white/40 mb-0.5">Closes</p>
+   309→                        <p className="text-sm font-medium text-white/80">{cycle.closes}</p>
+   310→                      </div>
+   311→                    </div>
+   312→
+   313→                    <div className="flex items-center gap-3">
+   314→                      <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
+   315→                        <MapPin className="w-4 h-4 text-white/60" />
+   316→                      </div>
+   317→                      <div>
+   318→                        <p className="text-[10px] font-mono uppercase tracking-wider text-white/40 mb-0.5">Cohort Begins</p>
+   319→                        <p className="text-sm font-medium text-white/80">{cycle.cohortStart}</p>
+   320→                      </div>
+   321→                    </div>
+   322→                  </div>
+   323→
+   324→                  {/* Decorative corner */}
+   325→                  {cycle.status === 'open' && (
+   326→                    <div className="absolute top-0 right-0 w-16 h-16 overflow-hidden rounded-tr-2xl">
+   327→                      <div className="absolute top-0 right-0 w-32 h-32 -translate-y-1/2 translate-x-1/2 rotate-45 bg-[#FF4D00]/10" />
+   328→                    </div>
+   329→                  )}
+   330→                </div>
+   331→              ))}
+   332→            </div>
+   333→
+   334→            {/* Countdown / urgency bar */}
+   335→            {program.applicationCycles!.some(c => c.status === 'open') && (
+   336→              <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-xl px-6 py-4">
+   337→                <div className="flex items-center gap-3">
+   338→                  <div className="w-2 h-2 rounded-full bg-[#FF4D00] animate-pulse" />
+   339→                  <p className="text-sm text-white/70">
+   340→                    Applications are currently open for <span className="text-white font-medium">{program.applicationCycles!.find(c => c.status === 'open')?.cycle}</span>
+   341→                  </p>
+   342→                </div>
+   343→                <div className="flex items-center gap-2 text-sm text-white/50">
+   344→                  <span>Closes</span>
+   345→                  <span className="text-white font-medium">{program.applicationCycles!.find(c => c.status === 'open')?.closes}</span>
+   346→                </div>
+   347→              </div>
+   348→            )}
+   349→            </div>
+   350→          </div>
+   351→        </section>
+   352→      )}
+   353→
+   354→      {/* ── WHAT YOU GET (replaces "How we help you") ── */}
+   355→      {hasWhatYouGet && (
+   356→        <section id="what-you-get" className="py-24 lg:py-32 px-6 lg:px-12 max-w-[1400px] mx-auto">
+   357→          <div className="mb-16 md:mb-20">
+   358→            <div className="flex items-center mb-6">
+   359→              <span className="text-[#FF4D00] text-[10px] mr-2">&#9679;</span>
+   360→              <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#1B1C1E]/60">What you get</span>
+   361→            </div>
+   362→            <h2 className="text-4xl lg:text-5xl font-display font-medium mb-4">
+   363→              {program.howWeHelpIntro || `Everything you need to build with ${program.title}`}
+   364→            </h2>
+   365→          </div>
+   366→
+   367→          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+   368→            {program.whatYouGet!.map((item, i) => {
+   369→              const IconComponent = iconMap[item.icon || 'Shield'] || Shield;
+   370→              return (
+   371→                <div 
+   372→                  key={i} 
+   373→                  className="group relative bg-[#FAFAFA] border border-[#E5E7EB] rounded-2xl p-8 hover:border-[#FF4D00]/30 hover:bg-white transition-all duration-300 hover:shadow-lg"
+   374→                >
+   375→                  <div className="flex items-start gap-4 mb-4">
+   376→                    <div className="w-10 h-10 rounded-xl bg-[#FF4D00]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#FF4D00]/20 transition-colors">
+   377→                      <IconComponent className="w-5 h-5 text-[#FF4D00]" />
+   378→                    </div>
+   379→                    <span className="font-mono text-[10px] font-bold text-[#1B1C1E]/30 mt-2">{String(i + 1).padStart(2, '0')}</span>
+   380→                  </div>
+   381→                  <h3 className="text-lg font-medium text-[#1B1C1E] mb-3">{item.title}</h3>
+   382→                  <p className="text-[15px] text-[#1B1C1E]/60 leading-relaxed">{item.desc}</p>
+   383→                  
+   384→                  {/* Hover arrow */}
+   385→                  <div className="absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
+   386→                    <ChevronRight className="w-5 h-5 text-[#FF4D00]" />
+   387→                  </div>
+   388→                </div>
+   389→              );
+   390→            })}
+   391→          </div>
+   392→        </section>
+   393→      )}
+   394→
+   395→      {/* ── PROGRAM JOURNEY (visual timeline for process data) ── */}
+   396→      {hasProcess && (
+   397→        <section id="program-journey" className="py-0">
+   398→          <div className="max-w-[1400px] mx-auto bg-[#F9F9F9] px-6 md:px-12 lg:px-20 py-24 lg:py-32 rounded-sm">
+   399→            <div className="mb-16 md:mb-20">
+   400→              <div className="flex items-center mb-6">
+   401→                <span className="text-[#FF4D00] text-[10px] mr-2">&#9679;</span>
+   402→                <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#1B1C1E]/60">The Program Journey</span>
+   403→              </div>
+   404→              <h2 className="text-3xl sm:text-4xl md:text-[64px] lg:text-[80px] font-display font-medium leading-[0.9] text-[#1B1C1E] uppercase tracking-tighter mb-4">
+   405→                YOUR PATH
+   406→              </h2>
+   407→              <p className="text-lg text-[#1B1C1E]/60 max-w-lg font-medium leading-relaxed">
+   408→                From entry to exit, every phase of {program.title} is engineered for one outcome: operational ventures that survive and scale.
+   409→              </p>
+   410→            </div>
+   411→
+   412→            {/* Visual Timeline */}
+   413→            <div className="relative">
+   414→              {/* Vertical connecting line */}
+   415→              <div className="hidden lg:block absolute left-[60px] top-0 bottom-0 w-px bg-gradient-to-b from-[#FF4D00] via-[#9333EA] to-[#059669]" />
+   416→
+   417→              <div className="space-y-6">
+   418→                {program.process!.map((step, idx) => (
+   419→                  <div 
+   420→                    key={idx}
+   421→                    onClick={() => setActiveSteps(prev => prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx])}
+   422→                    className="relative group cursor-pointer"
+   423→                  >
+   424→                    <div className="flex gap-6 lg:gap-10 items-start">
+   425→                      {/* Step indicator */}
+   426→                      <div className="hidden lg:flex flex-col items-center flex-shrink-0">
+   427→                        <div className={`w-[120px] h-[120px] rounded-2xl ${stepColors[idx % stepColors.length]} flex items-center justify-center shadow-lg relative z-10 group-hover:scale-105 transition-transform`}>
+   428→                          <span className="text-white font-display text-4xl font-medium">{String(idx + 1).padStart(2, '0')}</span>
+   429→                        </div>
+   430→                      </div>
+   431→
+   432→                      {/* Content card */}
+   433→                      <div className={`flex-1 bg-white border rounded-2xl overflow-hidden transition-all duration-300 ${
+   434→                        activeSteps.includes(idx) 
+   435→                          ? 'border-[#1B1C1E]/10 shadow-lg' 
+   436→                          : 'border-[#E5E7EB] hover:border-[#1B1C1E]/10 hover:shadow-md'
+   437→                      }`}>
+   438→                        <div className="p-8 lg:p-10">
+   439→                          <div className="flex items-start justify-between gap-4">
+   440→                            <div className="flex-1">
+   441→                              <div className="lg:hidden flex items-center gap-3 mb-3">
+   442→                                <div className={`w-8 h-8 rounded-lg ${stepColors[idx % stepColors.length]} flex items-center justify-center`}>
+   443→                                  <span className="text-white font-display text-sm font-medium">{idx + 1}</span>
+   444→                                </div>
+   445→                              </div>
+   446→                              <h3 className="text-xl md:text-2xl font-medium text-[#1B1C1E] mb-2">{step.title}</h3>
+   447→                              <p className="text-[#1B1C1E]/60 text-[15px] leading-relaxed">{step.desc}</p>
+   448→                            </div>
+   449→                            <div className="w-10 h-10 rounded-full bg-[#F4F4F5] flex items-center justify-center flex-shrink-0 transition-colors hover:bg-[#E5E7EB]">
+   450→                              {activeSteps.includes(idx) ? <Minus className="w-5 h-5 text-[#1B1C1E]" /> : <Plus className="w-5 h-5 text-[#1B1C1E]" />}
+   451→                            </div>
+   452→                          </div>
+   453→                          
+   454→                          <AnimatePresence>
+   455→                            {activeSteps.includes(idx) && (
+   456→                              <motion.div
+   457→                                initial={{ opacity: 0, height: 0 }}
+   458→                                animate={{ opacity: 1, height: "auto" }}
+   459→                                exit={{ opacity: 0, height: 0 }}
+   460→                                transition={{ duration: 0.3 }}
+   461→                                className="overflow-hidden"
+   462→                              >
+   463→                                <div className="mt-6 pt-6 border-t border-[#1B1C1E]/5">
+   464→                                  <p className="text-[#1B1C1E]/70 text-[15px] leading-relaxed">{step.extended || step.desc}</p>
+   465→                                </div>
+   466→                              </motion.div>
+   467→                            )}
+   468→                          </AnimatePresence>
+   469→                        </div>
+   470→                      </div>
+   471→                    </div>
+   472→                  </div>
+   473→                ))}
+   474→              </div>
+   475→            </div>
+   476→          </div>
+   477→        </section>
+   478→      )}
+   479→
+   480→      {/* ── An Unfair Starting Line, 6 features + auto-play photo collage ── */}
+   481→      {(program.features && program.features.length > 0) && (
+   482→        <section id="what-you-get" className="py-24 lg:py-32 px-6 lg:px-12 bg-white">
+   483→           <div className="max-w-[1400px] mx-auto">
+   484→              <div className="mb-16 md:mb-20">
+   485→                <div className="flex items-center mb-6">
+   486→                  <span className="text-[#FF4D00] text-[10px] mr-2">&#9679;</span>
+   487→                  <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#1B1C1E]/60">What sets us apart</span>
+   488→                </div>
+   489→                <h2 className="text-4xl lg:text-5xl font-display font-medium">
+   490→                  {program.unfairAdvantageTitle || "An unfair starting line"}
+   491→                </h2>
+   492→              </div>
+   493→
+   494→              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-16 mb-20 md:mb-28">
+   495→                 {program.features.map((feature, i) => {
+   496→                   const IconComponent = iconMap[feature.icon || 'Shield'] || Shield;
+   497→                   return (
+   498→                     <div key={i} className="space-y-4">
+   499→                        <div className="w-8 h-8 flex items-center text-[#FF4D00]">
+   500→                           <IconComponent className="w-6 h-6" />
+   501→                        </div>
+   502→                        <h4 className="text-xl font-medium">{feature.title}</h4>
+   503→                        <p className="text-[#1B1C1E]/70 leading-relaxed text-[15px]">
+   504→                           {feature.desc}
+   505→                        </p>
+   506→                     </div>
+   507→                   );
+   508→                 })}
+   509→              </div>
+   510→
+   511→              {/* Auto-play photo collage */}
+   512→              {images.length >= 2 && (
+   513→                <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+   514→                  {/* Left column: auto-play image + testimonial */}
+   515→                  <div className="flex flex-col">
+   516→                    <div className="aspect-square overflow-hidden relative">
+   517→                      <AnimatePresence mode="wait">
+   518→                        <motion.img
+   519→                          key={leftIdx}
+   520→                          src={images[leftIdx]}
+   521→                          alt={`${program.title} program in action`}
+   522→                          initial={{ opacity: 0 }}
+   523→                          animate={{ opacity: 1 }}
+   524→                          exit={{ opacity: 0 }}
+   525→                          transition={{ duration: 0.8 }}
+   526→                          className="w-full h-full object-cover absolute inset-0"
+   527→                        />
+   528→                      </AnimatePresence>
+   529→                    </div>
+   530→                    {program.testimonial && (
+   531→                      <div className="bg-[#EFEFEF] p-8 md:p-10 flex-1 flex flex-col justify-between">
+   532→                        <div>
+   533→                          <div className="flex items-center justify-between mb-6">
+   534→                            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#1B1C1E]/40">What they say</span>
+   535→                            <span className="font-mono text-[10px] text-[#1B1C1E]/30">03, 03</span>
+   536→                          </div>
+   537→                          <p className="text-lg md:text-xl font-medium leading-[1.5] text-[#1B1C1E]/80 mb-8">
+   538→                            &ldquo;{program.testimonial.quote}&rdquo;
+   539→                          </p>
+   540→                        </div>
+   541→                        <div className="flex items-center gap-4 pt-4 border-t border-[#1B1C1E]/10">
+   542→                          <div className="w-10 h-10 rounded-full shrink-0 bg-[#FF4D00]/10 flex items-center justify-center">
+   543→                            <span className="text-[#FF4D00] font-display font-bold text-xs">AF</span>
+   544→                          </div>
+   545→                          <div>
+   546→                            <div className="font-medium text-sm text-[#1B1C1E]">{program.testimonial.author}</div>
+   547→                            <div className="text-xs text-[#1B1C1E]/50">{program.testimonial.role}</div>
+   548→                          </div>
+   549→                        </div>
+   550→                      </div>
+   551→                    )}
+   552→                  </div>
+   553→
+   554→                  {/* Right column: auto-play image */}
+   555→                  <div className="aspect-square md:aspect-auto md:min-h-[600px] overflow-hidden relative">
+   556→                    <AnimatePresence mode="wait">
+   557→                      <motion.img
+   558→                        key={rightIdx}
+   559→                        src={images[rightIdx]}
+   560→                        alt={`${program.title} community`}
+   561→                        initial={{ opacity: 0 }}
+   562→                        animate={{ opacity: 1 }}
+   563→                        exit={{ opacity: 0 }}
+   564→                        transition={{ duration: 0.8 }}
+   565→                        className="w-full h-full object-cover absolute inset-0"
+   566→                      />
+   567→                    </AnimatePresence>
+   568→                  </div>
+   569→                </div>
+   570→              )}
+   571→           </div>
+   572→        </section>
+   573→      )}
+   574→
+   575→      {/* ── STARTUP IDEAS, 6 cards ── */}
+   576→      {(program.ideas && program.ideas.length > 0) && (
+   577→        <section id="startup-ideas" className="py-24 lg:py-32 px-6 lg:px-12 max-w-[1400px] mx-auto bg-white">
+   578→           <div className="mb-16 md:mb-20">
+   579→             <div className="flex items-center mb-6">
+   580→               <span className="text-[#FF4D00] text-[10px] mr-2">&#9679;</span>
+   581→               <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#1B1C1E]/60">Opportunity Pipeline</span>
+   582→             </div>
+   583→             <h2 className="text-3xl sm:text-4xl md:text-[64px] lg:text-[80px] font-display font-medium leading-[0.9] text-[#1B1C1E] uppercase tracking-tighter mb-4">
+   584→               STARTUP IDEAS
+   585→             </h2>
+   586→             <p className="text-lg text-[#1B1C1E]/60 max-w-lg font-medium leading-relaxed">
+   587→               Pick a problem worth solving. We&apos;ve done the research, now we&apos;re looking for the right people to build it.
+   588→             </p>
+   589→           </div>
+   590→
+   591→           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+   592→              {program.ideas.map((idea, i) => {
+   593→                 const tag = idea.desc.match(/\[([^\]]+)\]/);
+   594→                 const vertical = tag ? tag[1] : "Opportunity";
+   595→                 const cleanDesc = idea.desc.replace(/\s*\[[^\]]+\]\s*$/, "");
+   596→                 return (
+   597→                    <div key={i} className="group block text-left w-full">
+   598→                       <div className="relative bg-[#111111] text-white overflow-hidden transition-all duration-200 group-hover:scale-[1.02] group-hover:brightness-110 group-hover:ring-1 group-hover:ring-[#FF4D00]">
+   599→                          {/* Top section: name + code */}
+   600→                          <div className="p-4 pb-3">
+   601→                             <div className="flex items-start justify-between gap-2">
+   602→                                <div className="min-w-0 flex-1">
+   603→                                   <h3 className="text-sm font-display font-bold text-white leading-tight truncate">
+   604→                                      {idea.title}
+   605→                                   </h3>
+   606→                                   <span className="text-[10px] font-mono text-white/50 tracking-wider mt-1 block">
+   607→                                      IDEA-{String(i + 1).padStart(3, "0")}
+   608→                                   </span>
+   609→                                </div>
+   610→                             </div>
+   611→                             <div className="mt-2.5">
+   612→                                <span className="inline-block px-2 py-0.5 bg-white/10 text-[9px] font-mono uppercase tracking-widest text-white/70">
+   613→                                   {vertical}
+   614→                                </span>
+   615→                             </div>
+   616→                          </div>
+   617→                          {/* Middle: description */}
+   618→                          <div className="px-4 pb-3">
+   619→                             <p className="text-[11px] text-white/70 leading-relaxed line-clamp-2">
+   620→                                {cleanDesc}
+   621→                             </p>
+   622→                          </div>
+   623→                          {/* Bottom: alumni founder */}
+   624→                          <div className="px-4 pb-4 pt-1">
+   625→                             <span className="text-[9px] font-mono uppercase tracking-widest text-white/30 block mb-0.5">
+   626→                                Alumni Founder
+   627→                             </span>
+   628→                             <span className="text-[11px] text-white/60 leading-snug line-clamp-1 block">
+   629→                                xCelero Network
+   630→                             </span>
+   631→                          </div>
+   632→                          {/* Bottom-right orange square */}
+   633→                          <div className="absolute bottom-3 right-3 w-8 h-8 bg-[#FF4D00] flex items-center justify-center font-display font-bold text-sm text-white">
+   634→                             {idea.title.charAt(0)}
+   635→                          </div>
+   636→                       </div>
+   637→                    </div>
+   638→                 );
+   639→              })}
+   640→           </div>
+   641→        </section>
+   642→      )}
+   643→
+   644→      {/* ── FROM IDEA TO COMPANY, 4 ventures from ventures data ── */}
+   645→      {programVentures.length > 0 && (
+   646→        <section className="py-24 lg:py-32 px-6 lg:px-12 max-w-[1400px] mx-auto bg-white mb-16 relative">
+   647→           <div className="mb-16">
+   648→             <div className="flex items-center mb-6">
+   649→               <span className="text-[#FF4D00] text-[10px] mr-2">&#9679;</span>
+   650→               <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#1B1C1E]/60">Portfolio</span>
+   651→             </div>
+   652→              <h2 className="text-3xl sm:text-4xl md:text-[64px] lg:text-[80px] font-display font-medium leading-[0.9] text-[#1B1C1E] uppercase tracking-tighter mb-4">
+   653→                 FROM IDEA TO COMPANY
+   654→              </h2>
+   655→              <p className="text-lg text-[#1B1C1E]/60 max-w-md font-medium leading-relaxed">
+   656→                 See the companies that started as just an idea here and grew into category leaders.
+   657→              </p>
+   658→           </div>
+   659→
+   660→           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+   661→              {programVentures.map((venture) => venture && (
+   662→                 <Link key={venture.id} to={`/ventures/${venture.id}`} className="group block">
+   663→                   <div className="relative bg-[#111111] text-white overflow-hidden transition-all duration-200 group-hover:scale-[1.02] group-hover:ring-1 group-hover:ring-[#FF4D00] group-hover:brightness-110">
+   664→                     <div className="p-4 pb-3">
+   665→                       <div className="flex items-start justify-between gap-2">
+   666→                         <div className="min-w-0 flex-1">
+   667→                           <h3 className="text-sm font-display font-bold text-white leading-tight truncate">
+   668→                             {venture.name}
+   669→                           </h3>
+   670→                           <span className="text-[10px] font-mono text-white/50 tracking-wider mt-1 block">
+   671→                             {venture.code}
+   672→                           </span>
+   673→                         </div>
+   674→                       </div>
+   675→                       <div className="mt-2.5">
+   676→                         <span className="inline-block px-2 py-0.5 bg-white/10 text-[9px] font-mono uppercase tracking-widest text-white/70">
+   677→                           {venture.vertical}
+   678→                         </span>
+   679→                       </div>
+   680→                     </div>
+   681→                     <div className="px-4 pb-3">
+   682→                       <p className="text-[11px] text-white/70 leading-relaxed line-clamp-2">
+   683→                         {venture.solution}
+   684→                       </p>
+   685→                     </div>
+   686→                     <div className="px-4 pb-4 pt-1">
+   687→                       <span className="text-[9px] font-mono uppercase tracking-widest text-white/30 block mb-0.5">
+   688→                         Anchor Partners
+   689→                       </span>
+   690→                       <span className="text-[11px] text-white/60 leading-snug line-clamp-1 block">
+   691→                         {venture.anchorPartners}
+   692→                       </span>
+   693→                     </div>
+   694→                     <div className="absolute bottom-3 right-3 w-8 h-8 bg-[#FF4D00] flex items-center justify-center font-display font-bold text-sm text-white">
+   695→                       {venture.name.charAt(0)}
+   696→                     </div>
+   697→                   </div>
+   698→                 </Link>
+   699→              ))}
+   700→           </div>
+   701→        </section>
+   702→      )}
+   703→
+   704→      {/* ── Is for you if ── */}
+   705→      {(program.isForYouIf && program.isForYouIf.length > 0) && (
+   706→        <section className="py-0">
+   707→          <div className="max-w-[1400px] mx-auto bg-[#1B1C1E] text-white px-6 md:px-12 lg:px-20 py-32 lg:py-40 rounded-sm relative overflow-hidden">
+   708→            <div className="absolute inset-0 opacity-40 mix-blend-overlay">
+   709→              <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover" alt="Background Texture" />
+   710→            </div>
+   711→            <div className="relative z-10 grid lg:grid-cols-2 gap-16 lg:gap-24">
+   712→             <div>
+   713→                <div className="flex items-center gap-3 mb-10">
+   714→                   <div className="tag-polygon text-white/50" />
+   715→                   <span className="font-mono text-[11px] font-bold uppercase tracking-[0.4em] text-white/50">Ideal Candidates</span>
+   716→                </div>
+   717→                <h2 className="text-4xl lg:text-[60px] leading-[1.1] font-display font-medium">
+   718→                  {program.title} is for you if...
+   719→                </h2>
+   720→             </div>
+   721→             
+   722→             <div className="space-y-6">
+   723→                {program.isForYouIf.map((text, idx) => (
+   724→                  <div key={idx} className="flex items-start gap-4 bg-white/5 p-6 rounded-xl border border-white/10 backdrop-blur-sm">
+   725→                     <div className="mt-1 flex-shrink-0">
+   726→                        <CheckCircle2 className="w-5 h-5 text-[#FF9CDF]" />
+   727→                     </div>
+   728→                     <p className="text-lg font-medium">{text}</p>
+   729→                  </div>
+   730→                ))}
+   731→                
+   732→                <div className="pt-8">
+   733→                   <button className="button relative inline-flex items-center justify-center bg-white text-[#1B1C1E] px-8 py-4 text-sm font-bold uppercase tracking-widest transition-transform hover:scale-105 group overflow-hidden border border-white/20 hover:border-transparent">
+   734→                     <span className="relative z-10 transition-colors group-hover:text-white">Start your company</span>
+   735→                     <div className="button-gradient !opacity-0 group-hover:!opacity-100 transition-opacity" />
+   736→                   </button>
+   737→                </div>
+   738→             </div>
+   739→            </div>
+   740→          </div>
+   741→        </section>
+   742→      )}
+   743→
+   744→      {/* ── FAQ ── */}
+   745→      {(program.faqs && program.faqs.length > 0) && (
+   746→        <section id="faq" className="py-24 lg:py-32 px-6 lg:px-12 max-w-[1400px] mx-auto border-t border-[#1B1C1E]/10">
+   747→           <div className="grid lg:grid-cols-12 gap-16 lg:gap-24 items-start">
+   748→              <div className="lg:col-span-5 lg:sticky lg:top-32 self-start">
+   749→                 <div>
+   750→                    <div className="flex items-center mb-6">
+   751→                      <span className="text-[#FF4D00] text-[10px] mr-2">&#9679;</span>
+   752→                      <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#1B1C1E]/60">FAQ</span>
+   753→                    </div>
+   754→                    <h2 className="text-4xl sm:text-6xl md:text-[80px] lg:text-[100px] font-display font-medium uppercase tracking-tighter leading-[0.8] mb-12">ALL YOU NEED<br/>TO KNOW</h2>
+   755→                    
+   756→                    <button className="inline-flex items-center justify-center bg-[#1B1C1E] text-white px-6 py-4 rounded-full text-sm font-medium hover:bg-black transition-colors">
+   757→                       View the full FAQ <svg width="18" height="15" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="ml-2"><path d="M11 1L17 7M17 7L11 13M17 7H0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+   758→                    </button>
+   759→                 </div>
+   760→              </div>
+   761→
+   762→              <div className="lg:col-span-7 space-y-px bg-[#1B1C1E]/10">
+   763→                 {program.faqs.map((item, idx) => (
+   764→                    <div 
+   765→                      key={idx} 
+   766→                      onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
+   767→                      className="bg-white group cursor-pointer flex flex-col justify-center transition-colors border-b border-transparent"
+   768→                    >
+   769→                       <div className={`flex justify-between items-center bg-white p-6 transition-colors ${activeFaq === idx ? 'bg-[#FAFAFA]' : 'hover:bg-[#FAFAFA]'}`}>
+   770→                          <h3 className="text-[17px] font-medium text-[#1B1C1E]">{item.q}</h3>
+   771→                          <div className="w-8 h-8 flex items-center justify-center transition-all">
+   772→                             {activeFaq === idx ? <Minus className="w-5 h-5 text-[#1B1C1E]" /> : <Plus className="w-5 h-5 text-[#1B1C1E]/60 group-hover:text-[#1B1C1E]" />}
+   773→                          </div>
+   774→                       </div>
+   775→                       <AnimatePresence>
+   776→                          {activeFaq === idx && (
+   777→                             <motion.div
+   778→                                initial={{ opacity: 0, height: 0 }}
+   779→                                animate={{ opacity: 1, height: "auto" }}
+   780→                                exit={{ opacity: 0, height: 0 }}
+   781→                                transition={{ duration: 0.3 }}
+   782→                                className="overflow-hidden bg-[#FAFAFA] px-6"
+   783→                             >
+   784→                                <div className="text-[#1B1C1E]/70 text-[15px] leading-relaxed pb-6 max-w-2xl">
+   785→                                   <p>{item.a}</p>
+   786→                                </div>
+   787→                             </motion.div>
+   788→                          )}
+   789→                       </AnimatePresence>
+   790→                    </div>
+   791→                 ))}
+   792→              </div>
+   793→           </div>
+   794→        </section>
+   795→      )}
+   796→      
+   797→      {/* ── Build the exceptional today Footer Banner ── */}
+   798→      <section>
+   799→         <div className="max-w-[1400px] mx-auto relative h-[800px] flex items-center justify-center overflow-hidden rounded-sm">
+   800→            <div className="absolute inset-0 bg-[#1B1C1E]">
+   801→               <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop" alt="Build" className="w-full h-full object-cover opacity-30 mix-blend-luminosity" />
+   802→            </div>
+   803→            <div className="relative z-10 text-center space-y-12">
+   804→               <h2 className="text-3xl sm:text-5xl md:text-[80px] lg:text-[120px] font-display font-medium text-white uppercase leading-[0.9] tracking-tighter">
+   805→                  BUILD THE <br /> EXCEPTIONAL <br /> TODAY AND <br /> LAUNCH NOW
+   806→               </h2>
+   807→               <button onClick={openApplyModal} className="button relative inline-flex items-center justify-center bg-white text-[#1B1C1E] px-12 py-5 text-sm font-bold uppercase tracking-widest transition-transform hover:scale-105 group overflow-hidden rounded-md">
+   808→                  <span className="relative z-10 transition-colors group-hover:text-white">Apply</span>
+   809→                  <div className="button-gradient !opacity-0 group-hover:!opacity-100 transition-opacity" />
+   810→               </button>
+   811→            </div>
+   812→         </div>
+   813→      </section>
+   814→
+   815→      {/* ── APPLICATION MODAL ── */}
+   816→      <AnimatePresence>
+   817→        {showApplyModal && (
+   818→          <motion.div
+   819→            initial={{ opacity: 0 }}
+   820→            animate={{ opacity: 1 }}
+   821→            exit={{ opacity: 0 }}
+   822→            transition={{ duration: 0.3 }}
+   823→            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+   824→            onClick={(e) => { if (e.target === e.currentTarget && !applySubmitting) setShowApplyModal(false); }}
+   825→          >
+   826→            <motion.div
+   827→              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+   828→              animate={{ opacity: 1, scale: 1, y: 0 }}
+   829→              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+   830→              transition={{ duration: 0.3 }}
+   831→              className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto bg-[#111111] text-white rounded-2xl shadow-2xl"
+   832→              onClick={(e) => e.stopPropagation()}
+   833→            >
+   834→              {/* Header */}
+   835→              <div className="sticky top-0 z-10 bg-[#111111] flex items-center justify-between px-8 pt-8 pb-4 border-b border-white/10">
+   836→                <div>
+   837→                  <p className="font-mono text-[10px] font-bold uppercase tracking-[0.4em] text-[#FF4D00] mb-1">APPLICATION</p>
+   838→                  <h2 className="text-2xl font-display font-medium uppercase tracking-tighter">
+   839→                    Apply to {program.title}
+   840→                  </h2>
+   841→                </div>
+   842→                <button
+   843→                  onClick={() => { if (!applySubmitting) setShowApplyModal(false); }}
+   844→                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+   845→                  aria-label="Close modal"
+   846→                >
+   847→                  <X className="w-5 h-5" />
+   848→                </button>
+   849→              </div>
+   850→
+   851→              {/* Success state */}
+   852→              {applySuccess ? (
+   853→                <div className="px-8 py-16 text-center">
+   854→                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#FF4D00]/20 flex items-center justify-center">
+   855→                    <CheckCircle2 className="w-8 h-8 text-[#FF4D00]" />
+   856→                  </div>
+   857→                  <h3 className="text-2xl font-display font-medium mb-3 uppercase tracking-tighter">Application Submitted</h3>
+   858→                  <p className="text-white/60 leading-relaxed mb-8">
+   859→                    Your application to {program.title} has been received. We&apos;ll review it and get back to you soon.
+   860→                  </p>
+   861→                  <button
+   862→                    onClick={() => { setShowApplyModal(false); setApplySuccess(false); setApplyForm({ firstName: "", lastName: "", email: "", phone: "", linkedinUrl: "", location: "", currentRole: "", companyName: "", motivation: "", referral: "" }); }}
+   863→                    className="inline-flex items-center justify-center bg-[#FF4D00] text-white px-8 py-4 rounded-full text-sm font-bold uppercase tracking-widest hover:bg-[#E54300] transition-colors"
+   864→                  >
+   865→                    Done
+   866→                  </button>
+   867→                </div>
+   868→              ) : (
+   869→                /* Form */
+   870→                <form onSubmit={handleApplySubmit} className="px-8 py-6 space-y-5">
+   871→                  {/* Error message */}
+   872→                  {applyError && (
+   873→                    <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-sm text-red-400">
+   874→                      {applyError}
+   875→                    </div>
+   876→                  )}
+   877→
+   878→                  {/* Name row */}
+   879→                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+   880→                    <div>
+   881→                      <label className="block font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-white/40 mb-2">First Name *</label>
+   882→                      <input
+   883→                        type="text"
+   884→                        required
+   885→                        value={applyForm.firstName}
+   886→                        onChange={(e) => setApplyForm({ ...applyForm, firstName: e.target.value })}
+   887→                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] transition-colors"
+   888→                        placeholder="Jane"
+   889→                      />
+   890→                    </div>
+   891→                    <div>
+   892→                      <label className="block font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-white/40 mb-2">Last Name *</label>
+   893→                      <input
+   894→                        type="text"
+   895→                        required
+   896→                        value={applyForm.lastName}
+   897→                        onChange={(e) => setApplyForm({ ...applyForm, lastName: e.target.value })}
+   898→                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] transition-colors"
+   899→                        placeholder="Doe"
+   900→                      />
+   901→                    </div>
+   902→                  </div>
+   903→
+   904→                  {/* Email */}
+   905→                  <div>
+   906→                    <label className="block font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-white/40 mb-2">Email *</label>
+   907→                    <input
+   908→                      type="email"
+   909→                      required
+   910→                      value={applyForm.email}
+   911→                      onChange={(e) => setApplyForm({ ...applyForm, email: e.target.value })}
+   912→                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] transition-colors"
+   913→                      placeholder="jane@example.com"
+   914→                    />
+   915→                  </div>
+   916→
+   917→                  {/* Phone */}
+   918→                  <div>
+   919→                    <label className="block font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-white/40 mb-2">Phone</label>
+   920→                    <input
+   921→                      type="tel"
+   922→                      value={applyForm.phone}
+   923→                      onChange={(e) => setApplyForm({ ...applyForm, phone: e.target.value })}
+   924→                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] transition-colors"
+   925→                      placeholder="+1 (555) 000-0000"
+   926→                    />
+   927→                  </div>
+   928→
+   929→                  {/* LinkedIn */}
+   930→                  <div>
+   931→                    <label className="block font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-white/40 mb-2">LinkedIn URL</label>
+   932→                    <input
+   933→                      type="url"
+   934→                      value={applyForm.linkedinUrl}
+   935→                      onChange={(e) => setApplyForm({ ...applyForm, linkedinUrl: e.target.value })}
+   936→                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] transition-colors"
+   937→                      placeholder="https://linkedin.com/in/janedoe"
+   938→                    />
+   939→                  </div>
+   940→
+   941→                  {/* Location + Current Role */}
+   942→                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+   943→                    <div>
+   944→                      <label className="block font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-white/40 mb-2">Location</label>
+   945→                      <input
+   946→                        type="text"
+   947→                        value={applyForm.location}
+   948→                        onChange={(e) => setApplyForm({ ...applyForm, location: e.target.value })}
+   949→                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] transition-colors"
+   950→                        placeholder="Lagos, Nigeria"
+   951→                      />
+   952→                    </div>
+   953→                    <div>
+   954→                      <label className="block font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-white/40 mb-2">Current Role</label>
+   955→                      <input
+   956→                        type="text"
+   957→                        value={applyForm.currentRole}
+   958→                        onChange={(e) => setApplyForm({ ...applyForm, currentRole: e.target.value })}
+   959→                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] transition-colors"
+   960→                        placeholder="Software Engineer"
+   961→                      />
+   962→                    </div>
+   963→                  </div>
+   964→
+   965→                  {/* Company */}
+   966→                  <div>
+   967→                    <label className="block font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-white/40 mb-2">Company Name</label>
+   968→                    <input
+   969→                      type="text"
+   970→                      value={applyForm.companyName}
+   971→                      onChange={(e) => setApplyForm({ ...applyForm, companyName: e.target.value })}
+   972→                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] transition-colors"
+   973→                      placeholder="Acme Inc."
+   974→                    />
+   975→                  </div>
+   976→
+   977→                  {/* Motivation */}
+   978→                  <div>
+   979→                    <label className="block font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-white/40 mb-2">Why do you want to join? (Motivation)</label>
+   980→                    <textarea
+   981→                      rows={4}
+   982→                      value={applyForm.motivation}
+   983→                      onChange={(e) => setApplyForm({ ...applyForm, motivation: e.target.value })}
+   984→                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] transition-colors resize-none"
+   985→                      placeholder="Tell us why you want to join this program..."
+   986→                    />
+   987→                  </div>
+   988→
+   989→                  {/* Referral */}
+   990→                  <div>
+   991→                    <label className="block font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-white/40 mb-2">Referral Code</label>
+   992→                    <input
+   993→                      type="text"
+   994→                      value={applyForm.referral}
+   995→                      onChange={(e) => setApplyForm({ ...applyForm, referral: e.target.value })}
+   996→                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] transition-colors"
+   997→                      placeholder="Optional referral code"
+   998→                    />
+   999→                  </div>
+  1000→
+  1001→                  {/* Program slug indicator */}
+  1002→                  <div className="flex items-center gap-2 text-white/30 text-xs font-mono">
+  1003→                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00]" />
+  1004→                    <span>Applying to: <span className="text-[#FF4D00]">{id}</span></span>
+  1005→                  </div>
+  1006→
+  1007→                  {/* Submit */}
+  1008→                  <button
+  1009→                    type="submit"
+  1010→                    disabled={applySubmitting || !applyForm.firstName || !applyForm.lastName || !applyForm.email}
+  1011→                    className="w-full inline-flex items-center justify-center gap-2 bg-[#FF4D00] text-white px-8 py-4 rounded-full text-sm font-bold uppercase tracking-widest hover:bg-[#E54300] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+  1012→                  >
+  1013→                    {applySubmitting ? (
+  1014→                      <>
+  1015→                        <Loader2 className="w-4 h-4 animate-spin" />
+  1016→                        Submitting...
+  1017→                      </>
+  1018→                    ) : (
+  1019→                      "Submit Application"
+  1020→                    )}
+  1021→                  </button>
+  1022→                </form>
+  1023→              )}
+  1024→            </motion.div>
+  1025→          </motion.div>
+  1026→        )}
+  1027→      </AnimatePresence>
+  1028→    </div>
+  1029→  );
+  1030→}
+  1031→

@@ -246,3 +246,32 @@ Rewrote the entire nowFutureSlides array from 10 → 20 domains, each with the f
 Also: bumped auto-advance 5.5s→7s (longer captions need more read time), widened caption max-w-xl→max-w-2xl, prompt timer 7s→12s (appears after 2 slides), updated section subtext to "The case for acceleration, in twenty domains... This is not a forecast. It is a blueprint."
 
 VERIFICATION: Lint clean. Browser-verified: counter "01/20", 20 slide indicators, 0 broken images (65 total), apocalyptic captions confirmed for Food/Mars/Robots/Moon, Now→Future transition works, mobile no overflow (390px), VLM confirmed caption readable multiple lines. dev.log: zero errors.
+
+---
+Task ID: program-journey-ideal-candidates-redesign
+Agent: main
+Task: Try new animated layout/visualization for the Program Detail's Program Journey AND Ideal Candidates sections
+
+Work Log:
+PROGRAM JOURNEY — replaced the scroll-driven horizontal stepper with a new "interactive phase deck":
+- Desktop: a flex row of phase columns; clicking one animates its `flex` from 1→4 (expands wide) while the others collapse to narrow rails, using Framer Motion `layout` + `animate={{ flex }}`. The expanded column shows a giant faint phase number (260px, was 110px vertical when collapsed), the phase title scales from 17px→30px, and the description + extended detail + a "Next phase →" hint fade in. A top mini-map of dots (active one widens to 32px, past ones fill with their phase color) lets you jump between phases. Ambient glow repositions by active phase color.
+- Mobile: vertical accordion with colored phase nodes, rotating + icon, height/opacity expand.
+
+IDEAL CANDIDATES — replaced the static 2-column checkmark list with an "animated bento grid":
+- Asymmetric bento grid (lg: 6 cols; first two cards span 3, rest span 2) for visual rhythm.
+- Each trait card animates in with a staggered scale+rotate reveal (0.1s stagger, alternating -2°/+2° initial rotate), lifts -6px on hover (whileHover y:-6), with a colored radial glow that fades in and a top accent line that grows from 40%→100% width on hover.
+- A kinetic count-up badge in the header animates from 0→total (requestAnimationFrame, cubic ease-out) labeled "SIGNALS" in orange.
+- Each card has a colored index badge (01, 02...) that scales on hover, and a CheckCircle2 that fades in on hover.
+- Dark section (#0A0A0A) with subtle grid overlay + ambient orange glow. Orange "Start your company" CTA with arrow.
+
+Also: removed unused `activeSteps` state and the `stepColors` prop from the ProgramJourney call site (component uses STEP_HEX internally now).
+
+VERIFICATION (Agent Browser, desktop 1440px + mobile iPhone 14):
+- Program Journey: phase deck renders (YOUR PATH, "Tap a phase" hint, 5 phase cards + 5 mini-map dots). Clicked phase 3 → it expanded wide with giant "03", "Group Office Hours" title, description visible. VLM confirmed: "multiple phase columns side by side, Phase 03 expanded wider, large faint 03, description visible, mini-map dots, modern and interactive."
+- Ideal Candidates: bento grid renders with all 6 traits, "Signals 06" count-up, colored index badges 01-06, "is for you if..." header, orange "Start your company" CTA. VLM confirmed: "asymmetric grid of trait cards, large orange 06 count-up labeled SIGNALS, colored index badges, modern and polished."
+- Mobile (390px): no horizontal overflow, journey accordion + bento grid both fit.
+- Lint: 0 errors. dev.log: zero runtime errors.
+
+Stage Summary:
+- Program Journey: new interactive phase deck layout (click-to-expand columns with layout animations + mini-map) — distinct from the prior scroll-driven stepper.
+- Ideal Candidates: new animated bento grid (staggered scale+rotate reveal, hover lift+glow, kinetic count-up) — distinct from the prior static checkmark list. Both browser- and VLM-verified across desktop and mobile.

@@ -280,9 +280,10 @@ function Hero() {
               transition={{ duration: 0.7, delay: 0.6, ease: EASE }}
               className="text-white/55 text-[14px] md:text-[16px] font-medium leading-[1.6] max-w-lg mb-6"
             >
-              A network of 190 hubs across 39 countries, built into a single
-              commercialization engine — infrastructure to build, programs to
-              validate, capital to scale, and community to compound.
+              A network of 190 hubs across 39 countries — a single
+              commercialization engine to accelerate human civilization:
+              infrastructure to build, ventures to solve, capital to scale,
+              and community to compound, across every domain that matters.
             </motion.p>
 
             <motion.div
@@ -393,10 +394,10 @@ function ThesisSection() {
           transition={{ duration: 0.8, ease: EASE }}
           className="font-display font-medium tracking-[-0.025em] leading-[1.05] text-[30px] sm:text-[40px] md:text-[54px] lg:text-[68px] text-[#111111]"
         >
-          The 21st century will be built in the markets that need its
-          breakthroughs most.{" "}
+          The next century of human civilization will be built — or lost — in the
+          markets that need its breakthroughs most.{" "}
           <span className="text-[#111111]/35">
-            We are building the infrastructure to make that inevitable.
+            We are building the engine to make sure it is built.
           </span>
         </motion.h2>
 
@@ -408,16 +409,16 @@ function ThesisSection() {
         >
           {[
             {
-              k: "The gap",
-              v: "Capital, infrastructure, and talent sit on one side; the markets that need them sit on the other.",
+              k: "The stakes",
+              v: "Food, water, energy, health, knowledge — twenty domains on which a civilization of ten billion depends. Each has a bottleneck the century will not forgive.",
             },
             {
-              k: "The method",
-              v: "Four pillars — Infrastructure, Ventures, Capital, Community — fused into a single commercialization engine.",
+              k: "The engine",
+              v: "Infrastructure to build, ventures to solve, capital to scale, and community to compound — four pillars fused into one commercialization machine, across 190 hubs and 39 countries.",
             },
             {
-              k: "The compounding",
-              v: "Every new venture strengthens the network. Every hub compounds the reach. 5,000 companies. 200 unicorns.",
+              k: "The outcome",
+              v: "Not a forecast, but a blueprint. The bottlenecks break open, domain by domain, until the future is not something we wait for — but something we ship.",
             },
           ].map((b) => (
             <div key={b.k} className="border-t border-[#111111]/15 pt-5">
