@@ -1,160 +1,125 @@
 # xHANSA FELLOWSHIP — PROGRAM TIMELINE
 
-**Cohort 1 | January – March 2026 | XEmbassy Nairobi**
+**Cohort 3, 2025 | Applications: March 1 – May 15, 2025 | Deployment: July 2025 – July 2027**
 
 ---
 
-## THE 8-WEEK CRUCIBLE
+## THE 24-MONTH DEPLOYMENT
 
-The xHansa Fellowship is not a course. It is an 8-week immersion in the xCelero engine — infrastructure, ventures, capital, and community. Fellows build, not study. By Week 8, every fellow has either joined a venture, spun out a ProtoCo, or committed to the XCitizen network.
-
----
-
-### PRE-PROGRAM (Weeks −4 to 0)
-
-| Week | Dates | Phase | What Happens |
-|------|-------|-------|--------------|
-| −4 | Dec 1–7, 2025 | Applications open | Public launch; applications go live on website + LinkedIn |
-| −3 | Dec 8–14 | Rolling review | Applications reviewed within 14 days of submission; first interviews begin |
-| −2 | Dec 15–21 | Interviews | 30–45 min video interviews with the xCelero team |
-| −1 | Dec 22–28 | Decisions | Offers extended; fellows confirm; travel logistics arranged |
-| 0 | Dec 29–31 | Onboarding | Pre-program orientation (virtual); fellows arrive in Nairobi |
+The xHansa Fellowship is a 24-month human capital deployment engine. 1,000 Xcitizens per cohort are deployed as 100 ten-person Pods, each building one commissioned ProtoCo across one of Nine Civilizational Fields. The program follows a strict five-phase structure: an 8-week onboarding Crucible, followed by four quarterly Gates.
 
 ---
 
-### WEEK 1 (Jan 1–7, 2026): IMMERSION
+### PRE-DEPLOYMENT (March – July 2025)
 
-**Theme: Enter the Engine**
-
-Fellows arrive at XEmbassy Nairobi. The first week is about shedding old frameworks and absorbing the xCelero thesis — the 20 domains, the 4 pillars, the flywheel.
-
-- **Day 1 (Jan 1):** Arrival. Hub tour. Welcome dinner.
-- **Day 2:** The Thesis session — CEO presents the 10-year plan and the civilization thesis.
-- **Day 3:** The 20 Domains deep-dive — each fellow picks 3 domains to explore.
-- **Day 4:** Venture studio immersion — shadow a Venture Builder for a day.
-- **Day 5:** Community session — meet the first XCitizens; understand the network.
-- **Day 6:** TownSquare onboarding — every fellow sets up their profile.
-- **Day 7:** Reflection. 1-on-1s with the Head of Community.
-
-**Deliverable:** Each fellow writes a 1-page "What I would build" statement.
+| Phase | Dates | What Happens |
+|-------|-------|--------------|
+| Applications | Mar 1 – May 15, 2025 | Applications open publicly; rolling review within 21 days |
+| Typing Assessment | May – June 2025 | Civilizational Field Typing Assessment — behavioral observation under stress (not an interview). Determines Archetype and field assignment. |
+| Pod Formation | June 2025 | Deterministic algorithm composes 100 ten-person Pods (1,000 Xcitizens) based on Deployment Classification and Archetype compatibility |
+| Pre-Deployment | Late June 2025 | Pods briefed on commissioned ProtoCos; logistics arranged; Xcitizens relocate to assigned XEmbassies |
+| Deployment Begins | July 2025 | The Crucible starts |
 
 ---
 
-### WEEK 2 (Jan 8–14): THE BOTTLENECKS
+### PHASE 0: THE 8-WEEK CRUCIBLE (July – September 2025)
 
-**Theme: Understand the Problem Before You Build the Solution**
+**Theme: Neural Reprogramming**
 
-Fellows go deep into the domain bottlenecks — the "Now" of the Now × Future framework. Field visits, expert sessions, and primary research.
+The Crucible is the onboarding phase — an 8-week psychological demolition and reconstruction process. It is not training. It overwrites compliance conditioning with execution capability.
 
-- **Days 1–2:** Field visits — energy poverty sites, water-stressed communities, informal markets.
-- **Days 3–4:** Expert sessions — domain practitioners, XCitizen mentors, venture founders.
-- **Day 5:** Bottleneck mapping — each fellow maps their chosen domain's bottleneck in detail.
-- **Days 6–7:** Synthesis. Fellows present their bottleneck maps to the cohort.
+- **"The Shock"** (Weeks 1–4): Systematic destabilization of habitual thought patterns. Candidates are stripped of social performance and forced into execution-first decision-making under uncertainty.
+- **"The Wall"** (Weeks 5–8): Sustained cognitive exhaustion. The phase that separates those who can operate when spent from those who cannot. Behavioral ground-truth emerges: who leads when the plan fails, who stabilizes the group, who identifies the exit.
+- **Archetype Confirmation**: Observed behavior (not stated preference) confirms each Xcitizen's Archetype: Pilot, Builder, Hustler, Operator, Tracker, or Comms. Pod composition is finalized.
+- **Field Assignment**: Each Pod is assigned its commissioned ProtoCo against one of the Nine Civilizational Fields.
 
-**Deliverable:** A detailed bottleneck map for one domain.
+**Gate 0 (end of Week 8):** Crucible certification. Xcitizens who do not complete the Crucible do not deploy. There is no appeals process.
 
----
-
-### WEEK 3 (Jan 15–21): THE SOLUTIONS
-
-**Theme: What Can Be Built**
-
-From problem to solution. Fellows study the "Future" — the solution sets for their domains, existing ventures, and white-space opportunities.
-
-- **Days 1–2:** Solution-set research — what exists, what's missing, what's possible.
-- **Days 3–4:** Venture teardowns — analyze 3 existing xCelero ventures (Helios, Nimbus, Meridian).
-- **Day 5:** White-space identification — where is the gap no one is building for?
-- **Days 6–7:** Fellows pitch 3 venture concepts each; cohort gives feedback.
-
-**Deliverable:** 3 venture concept briefs (1 page each).
+**Deliverable:** A certified Pod with a commissioned ProtoCo, ready for 0-to-1 deployment.
 
 ---
 
-### WEEK 4 (Jan 22–28): THE BUILD
+### PHASE 1: Q1 — 0-TO-1 PILOT (Months 1–6 | September 2025 – March 2026)
 
-**Theme: Stop Studying. Start Building.**
+**Theme: Build the Minimal Version**
 
-Fellows select one concept and begin building. This is the pivot from fellowship to venture studio — the moment the crucible gets hot.
+The first six months are a race from concept to working prototype with real-world deployment. No slide decks. No business plans. A functioning asset deployed in the field.
 
-- **Day 1:** Concept selection — each fellow commits to one venture concept.
-- **Days 2–5:** Build sprint — MVP scope, customer interviews, unit economics, pilot plan.
-- **Day 6:** Mid-sprint review — Venture Builders give feedback.
-- **Day 7:** Pivot or persevere — fellows decide whether to continue or switch.
+- **Months 1–2:** Minimal Version scoping. The Pod defines the smallest deployable version of the ProtoCo.
+- **Months 3–4:** Build sprint. The Minimal Version is constructed using XEmbassy infrastructure (foundry, lab, studio).
+- **Month 5:** Anchor Partner engagement. The Pod secures a Letter of Intent (LOI) from an institutional partner — a non-negotiable Gate requirement.
+- **Month 6:** Field deployment. The Minimal Version is deployed in a real-world context.
 
-**Deliverable:** A ProtoCo brief — MVP scope, pilot plan, team needs, 12-month milestones.
+**Gate 1 (Month 6):** The Pod must deliver:
+- A functioning Minimal Version (not a prototype — a deployed asset)
+- A signed Anchor Partner LOI
+- Evidence of real-world operation
 
----
+**Consequence of failure:** The Kill Switch. Pod dissolved within 48 hours. Assets redistributed. Xcitizens reassigned.
 
-### WEEK 5 (Jan 29 – Feb 4): THE PILOT
-
-**Theme: Real Customers, Real Feedback**
-
-Fellows take their ProtoCo out of the building. Customer interviews, pilot deployments, and the first taste of real-world feedback.
-
-- **Days 1–3:** Customer discovery — 10+ interviews with target users.
-- **Days 4–5:** Pilot deployment (where possible) or detailed pilot plan.
-- **Day 6:** Feedback synthesis — what did we learn? What's broken?
-- **Day 7:** Iteration — refine the ProtoCo based on feedback.
-
-**Deliverable:** 10+ customer interview notes + an updated ProtoCo brief.
+**Deliverable:** A deployed Minimal Version with an Anchor Partner LOI.
 
 ---
 
-### WEEK 6 (Feb 5–11): THE CAPITAL
+### PHASE 2: Q2 — FIRST REVENUE (Months 7–12 | March – September 2026)
 
-**Theme: How Ventures Get Funded**
+**Theme: Prove the Unit Economics**
 
-Fellows learn the capital stack — how xCelero funds ventures, how external capital works, and how to pitch.
+Months 7–12 are dedicated to proving unit economics at baseline. Revenue is the sole proof of product-market fit. No substitutes accepted.
 
-- **Days 1–2:** Capital stack session — Studio Fund, Thematic Funds, Solidarity Fund, grants.
-- **Days 3–4:** Pitch workshop — craft the venture pitch (problem, solution, market, ask).
-- **Day 5:** Mock pitch — fellows pitch to xCelero VPs; brutal feedback.
-- **Days 6–7:** Pitch refinement.
+- **Months 7–8:** Revenue activation. The Pod transitions from deployment to monetization.
+- **Months 9–10:** Metrics debugging. Every metric — CAC, LTV, churn, throughput — must hit precise mathematical thresholds. Technical failures are debugged in real-time.
+- **Months 11–12:** Operational patching. Gaps in operations are closed. The Pod stabilizes into sustainable unit economics.
 
-**Deliverable:** A 5-minute venture pitch (deck + verbal).
+**Gate 2 (Month 12):** The Pod must demonstrate:
+- Revenue (not projections — actual revenue)
+- Sustainable unit economics at baseline (CAC < LTV, churn within threshold)
+- Operational stability
 
----
+**Consequence of failure:** The Kill Switch. This phase is where romantic visions die and operational reality takes hold.
 
-### WEEK 7 (Feb 12–18): THE NETWORK
-
-**Theme: You Don't Build Alone**
-
-The community week. Fellows plug into the XCitizen network — mentors, co-founders, investors, and operators.
-
-- **Days 1–2:** Mentor matching — each fellow is matched with 2 XCitizen mentors.
-- **Days 3–4:** Cross-hub collaboration — virtual sessions with XCitizens in other hubs (future).
-- **Day 5:** Co-founder speed-dating — fellows find potential co-founders within the cohort.
-- **Days 6–7:** Network planning — each fellow maps their post-fellowship network.
-
-**Deliverable:** A network map + 2 mentor relationships established.
+**Deliverable:** Demonstrated revenue and sustainable unit economics.
 
 ---
 
-### WEEK 8 (Feb 19–25): THE DEMO
+### PHASE 3: Q3 — EXPANSION (Months 13–18 | September 2026 – March 2027)
 
-**Theme: Ship It**
+**Theme: Replicate or Die**
 
-The final week. Fellows finalize their ProtoCos, rehearse their pitches, and present at Demo Day.
+The pilot must be replicated in 3–5 new geographies with different constraints, regulatory environments, supply chains, and customer behaviors. Scaling is not optional — it is the proof that the model transfers.
 
-- **Days 1–3:** Final polish — ProtoCo briefs, pitches, and pilot plans locked.
-- **Day 4:** Dress rehearsal — full cohort run-through.
-- **Day 5:** **DEMO DAY** — fellows pitch to investors, XCitizens, and the xCelero team. (This is a real Demo Day — investors attend with real capital.)
-- **Day 6:** Decisions — fellows choose their next step: join a venture, spin out a ProtoCo, or join the XCitizen network.
-- **Day 7:** Graduation. The 24-month commitment begins.
+- **Months 13–14:** Site selection. 3–5 new geographies identified for replication.
+- **Months 15–16:** Parallel deployment. The ProtoCo is deployed in the new geographies simultaneously.
+- **Months 17–18:** Playbook authoring. The Pod codifies a step-by-step operational manual that any future operator can execute without the original team.
 
-**Deliverable:** A Demo Day pitch + a post-fellowship commitment (venture / ProtoCo / XCitizen).
+**Gate 3 (Month 18):** The Pod must deliver:
+- Successful replication in 3+ geographies
+- The permanent Playbook (a codified, transferable operational manual)
+
+**Consequence of failure:** The Kill Switch.
+
+**Deliverable:** A replicated ProtoCo across 3+ geographies + the permanent Playbook.
 
 ---
 
-## POST-FELLOWSHIP (The 24-Month Commitment)
+### PHASE 4: Q4 — INSTITUTIONALIZATION (Months 19–24 | March – July 2027)
 
-| Months | Phase | What Happens |
-|--------|-------|--------------|
-| 1–3 | Placement | Fellows are placed into ventures, ProtoCos, or XCitizen roles |
-| 3–12 | Build | Fellows build full-time within the xCelero network |
-| 12–18 | Scale | Ventures/ProtoCos scale; fellows take on leadership |
-| 18–24 | Compound | Fellows become mentors for Cohort 2+; the network compounds |
-| 24+ | Lifelong XCitizen | Fellows are lifelong members of the xCelero network |
+**Theme: Replace Yourself**
+
+The final phase ensures the venture can survive without its original builders. Local permanent operators are recruited and trained. The Pod transitions out.
+
+- **Months 19–20:** Local operator recruitment. Permanent operators are identified in each deployment geography.
+- **Months 21–22:** Training and handover. The Pod trains the local operators on the Playbook.
+- **Month 23:** Operational efficiency audit. All KPIs must exceed 80% under local operator control.
+- **Month 24:** **The Cliff.** The stipend stops instantly. No grace period.
+
+**Gate 4 (Month 24):** The Cliff. Outcomes:
+- **The Keepers (top 3%):** Transition to permanent payroll within the spun-out entity.
+- **The Cycled (remaining 97%):** Severed with performance equity grants carrying 36-month vesting schedules.
+
+This is not a failure. It is the design. The League builds ventures, not careers.
+
+**Deliverable:** A spun-out venture operating independently with local permanent operators.
 
 ---
 
@@ -162,24 +127,64 @@ The final week. Fellows finalize their ProtoCos, rehearse their pitches, and pre
 
 | Date | Milestone |
 |------|-----------|
-| Dec 1, 2025 | Applications open |
-| Dec 22, 2025 | Decisions begin (rolling) |
-| Jan 1, 2026 | Cohort 1 arrives at XEmbassy Nairobi |
-| Jan 7, 2026 | Week 1 — Immersion complete |
-| Jan 28, 2026 | Week 4 — ProtoCos formed |
-| Feb 18, 2026 | Week 7 — Network established |
-| **Feb 25, 2026** | **DEMO DAY** |
-| Feb 26, 2026 | Graduation; 24-month commitment begins |
-| Q3 2026 | Cohort 2 applications open |
+| March 1, 2025 | Applications open |
+| May 15, 2025 | Applications close |
+| May – June 2025 | Typing Assessment + Pod Formation |
+| July 2025 | Deployment begins — The Crucible (8 weeks) |
+| September 2025 | Gate 0 — Crucible certification |
+| September 2025 – March 2026 | Q1 — 0-to-1 Pilot |
+| March 2026 | Gate 1 — Minimal Version + Anchor LOI |
+| March – September 2026 | Q2 — First Revenue |
+| September 2026 | Gate 2 — Revenue + unit economics |
+| September 2026 – March 2027 | Q3 — Expansion |
+| March 2027 | Gate 3 — Replication + Playbook |
+| March – July 2027 | Q4 — Institutionalization |
+| **July 2027** | **Gate 4 — The Cliff.** Ventures spin out. |
+| March 2026 | Cohort 4, 2026 applications open |
+
+---
+
+## THE NINE CIVILIZATIONAL FIELDS
+
+Every ProtoCo is commissioned against one of these fields:
+
+1. **Water Systems** — Atmospheric generation, desalination, purification, distribution
+2. **Energy Systems** — Microgrids, generation, storage, distribution
+3. **Food & Agriculture** — Vertical farms, supply chains, crop science, post-harvest
+4. **Health & Mobility** — Diagnostics, cold-chain, last-mile delivery, therapeutics
+5. **Built Environment** — Modular construction, housing, urban systems
+6. **Data & Intelligence** — Connectivity, compute, AI, mesh networks
+7. **Logistics & Trade** — Cross-border, freight, payments, market access
+8. **Governance & Identity** — Digital identity, land registry, civic tech
+9. **Education & Human Capital** — Learning platforms, maker spaces, skills
+
+---
+
+## THE SIX ARCHETYPES
+
+Every Pod is composed of all six:
+
+| Archetype | Role |
+|-----------|------|
+| **Pilot** | Sets direction. Sees the path before others. |
+| **Builder** | Constructs. Turns ideas into working things. |
+| **Hustler** | Closes. Gets the deal, the partner, the customer. |
+| **Operator** | Maintains. Keeps the system running when others are spent. |
+| **Tracker** | Surveils. Finds the data, the signal, the risk before it hits. |
+| **Comms** | Translates. Makes the complex legible to the people who need it. |
 
 ---
 
 ## THE FINE PRINT
 
-- **Stipend:** ~$500/month + housing during the 8 weeks
-- **Equity:** No equity taken for the fellowship itself. ProtoCos spun out after the fellowship follow standard xCelero venture terms (xCelero takes 10% at ProtoCo stage).
-- **Commitment:** 24 months in the xCelero network post-fellowship
-- **Cohort size:** 25 fellows
-- **Location:** XEmbassy Nairobi (physical presence required)
+- **Stipend:** $500–$1,200/month, needs-based, tied to outcomes (not time served)
+- **No salary. No benefits.** Xcitizens are deployed operators, not employees.
+- **Equity:** Performance equity grants with 36-month vesting for The Cycled. The Keepers (top 3%) transition to permanent payroll.
+- **Commitment:** 24 months, no exit before the cliff. Early departure = total forfeiture of equity.
+- **The Gate System:** Quarterly binary pass/fail. No subjective evaluation.
+- **The Kill Switch:** Miss a Gate, the Pod is dissolved within 48 hours. No appeals.
+- **IP:** Subordinate to the League Commons (the Supremacy Clause).
+- **Cohort size:** 1,000 Xcitizens (100 Pods of 10)
+- **Location:** 190 XEmbassies across 39 countries
 
-*The xHansa Fellowship is the first pipeline of the xCelero engine. The people who walk this path first will shape it for the thousands who follow.*
+*The xHansa Fellowship is the human capital engine of the Hanseatic League. It builds ventures, not careers. The people who deploy first will shape the path for every cohort that follows.*

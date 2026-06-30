@@ -2,54 +2,47 @@
 
 ---
 
-The next century won't build itself.
+Critical technology for emerging markets.
 
-So we built the engine that will.
+That's what xCelero Labs builds. Not as a slogan — as an operating model.
 
-**xCelero Labs is live.**
+**The website is live.**
 
-A venture studio and infrastructure platform building critical technology across 190 hubs, 39 countries, and 20 domains — the pillars a civilization of ten billion depends on.
+xCelero is a venture studio and infrastructure platform. We build the critical technology that emerging markets need most — across 39 countries, 190 hubs, and the domains that determine whether a civilization of ten billion thrives or stalls.
 
-Food. Energy. Water. Health. Education. Finance. Transport. Cities. The Moon. Mars.
+**The model has four pillars, fused into one flywheel:**
 
-Twenty bottlenecks. One commercialization engine. One century.
+🏗️ **Infrastructure** — 190 XEmbassies. Physical nodes (foundries, labs, studios, commons) placed in the markets that need them. Each hub lowers the cost of building a venture by 60%.
 
-We don't forecast the future. We build it. Domain by domain, venture by venture, hub by hub — until the bottlenecks break open and the future is not something we wait for, but something we ship.
+🚀 **Ventures** — We don't invest in companies. We build them. The studio model: xCelero provides the idea, the team, the capital, the infrastructure, and the go-to-market. The founder provides the obsession.
 
-**The thesis:**
-The 21st century will be built — or lost — in the markets that need its breakthroughs most. The capital exists. The talent exists. What's missing is the commercialization rail that turns both into compounding infrastructure at the speed the century demands.
+💰 **Capital** — Six vehicles, one thesis. From $500 solidarity tickets (democratized access) to $250K+ anchor positions. Solidarity pricing lets the market form before it's squeezed.
 
-That rail is xCelero.
+🤝 **Community** — The XCitizen network. Operators, founders, investors, and mentors compounding across every hub. TownSquare is the digital forum where the network convenes.
 
-**Four pillars. One flywheel.**
-🏗️ Infrastructure — 190 XEmbassies lowering the cost of building by 60%
-🚀 Ventures — 5,000+ companies solving the 20 domain bottlenecks
-💰 Capital — from $500 solidarity tickets to $250K+ anchor positions
-🤝 Community — 100,000+ XCitizens compounding across every route
+**The gap we're closing:**
+Capital, infrastructure, and talent sit on one side; the markets that need them sit on the other. What's missing is the commercialization rail that turns all three into deployed, compounding infrastructure. That rail is xCelero.
 
-The flywheel turns slowly at first. Then faster. Then vertiginously.
+**The numbers (10-year targets, not today's):**
+- 190 hubs across 39 countries
+- 5,000+ ventures built
+- 200 unicorns projected
+- $1.97Bn capital under management
+- 100,000+ XCitizens
+- 20,000+ jobs created
 
-**We're going from zero to one.**
-1 hub → 190 hubs.
-3 ventures → 5,000+.
-$2M → $1.97Bn.
-15 jobs → 20,000+.
+**We're at zero. The plan goes to one.**
+The first hub opens in Nairobi. The first ventures ship this year. The xHansa Fellowship — our 24-month human capital deployment engine — is taking applications now.
 
-In ten years.
-
-The plan is published. The website is live. The first hub opens in Nairobi this year. The first ventures (Energy, Water, Finance) ship in Q2.
-
-If you're a founder, an operator, an investor, or a builder who believes the next century is something to be engineered — not waited for:
+If you build, operate, invest, or deploy in emerging markets:
 
 **xCelero is hiring. xCelero is raising. xCelero is building.**
 
-The future isn't a forecast. It's a blueprint.
-
-🔗 xcelero.com (link in comments)
+🔗 xcelero.com
 📥 The full 10-Year Workplan is downloadable on the site.
 
-#xCeleroLabs #VentureStudio #CriticalTechnology #EmergingMarkets #Infrastructure #DeepTech #Africa #BuildTheNextCentury #CivilizationEngine
+#xCeleroLabs #CriticalTechnology #EmergingMarkets #VentureStudio #Infrastructure #DeepTech #Africa #BuildForTheSouth
 
 ---
 
-*Tag in comments: 5-10 founders, operators, investors in your network who should see this. Visibility matters.*
+*Tag founders, operators, and investors working in emerging-market tech. Visibility matters.*

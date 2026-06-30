@@ -353,3 +353,34 @@ Work Log:
 
 Stage Summary:
 - 7 deliverables in download/: 2 LinkedIn posts (viral/bold), 2 landscape posters (1920×1080, VLM-verified), 1 application form (7 sections), 1 program timeline (8-week crucible + 24-month commitment), 1 press release (full format). All xCelero-branded (dark + orange, Space Grotesk + JetBrains Mono). Ready for distribution.
+
+---
+Task ID: launch-materials-revised
+Agent: main
+Task: User feedback — "next century" is vague/wrong summary of xCelero; also I hadn't read the xHansa program page before drafting. Re-read the actual source data and revise all materials.
+
+Work Log:
+- Read the actual xHansa Fellowship data in src/artemis/data/programs.ts (lines 32-146). Discovered my prior materials were dramatically wrong:
+  - xHansa is NOT 25 fellows — it's 1,000 Xcitizens per cohort
+  - xHansa is NOT an 8-week program — it's a 24-month deployment (the 8-week Crucible is just onboarding Phase 0)
+  - xHansa does NOT operate across 20 domains — it uses 9 Civilizational Fields (Water, Energy, Food, Health/Mobility, Built Env, Data/Intelligence, Logistics/Trade, Governance/Identity, Education/Human Capital)
+  - The real structure is: Crucible (8wk) → Q1 0-to-1 Pilot → Q2 First Revenue → Q3 Expansion → Q4 Institutionalization → The Cliff
+  - Stipend is $500-$1,200 (needs-based), not flat $500
+  - 100 ten-person Pods, Six Archetypes (Pilot/Builder/Hustler/Operator/Tracker/Comms), Gate System (binary pass/fail), Kill Switch (48hr dissolution), Supremacy Clause (IP to League Commons), 24-month cliff (3% Keepers / 97% Cycled with 36-mo vesting)
+  - It's the "human capital engine of the Hanseatic League" — military-grade deployment language
+  - Application cycles: Cohort 3, 2025 (Mar 1-May 15, starts Jul 2025) is OPEN
+- Read the actual xCelero positioning from layout.tsx metadata + footer + hero: "Critical Technology for Emerging Markets" / "Venture studio and infrastructure platform building critical technology across 39 countries. Invest from $500." — NOT "next century."
+
+REVISED ALL 7 DELIVERABLES:
+1. LinkedIn_Post_Website_Launch.md — replaced "Build the next century" with "Critical technology for emerging markets." Real positioning: venture studio + infrastructure platform, 39 countries, 190 hubs, invest from $500, four pillars.
+2. LinkedIn_Post_xHansa_Launch.md — rewrote with real facts: 1,000 Xcitizens, 24-month deployment, 100 Pods, 9 Civilizational Fields, the 5-phase structure (Crucible + 4 Gates), the Gate System, Kill Switch, the Cliff (3% Keepers / 97% Cycled), stipend $500-$1,200.
+3. xHansa_Fellowship_Application_Form.md — rewrote 8 sections: commitment terms (24-mo cliff, Kill Switch, Supremacy Clause, Gate system), 9 Civilizational Fields selection, Six Archetypes self-assessment, behavioral-under-stress questions. Honest about the military-grade nature.
+4. xHansa_Fellowship_Timeline.md — rewrote with real 5-phase structure: Pre-deployment → Crucible (8wk) → Q1 Pilot (mo 1-6) → Q2 Revenue (mo 7-12) → Q3 Expansion (mo 13-18) → Q4 Institutionalization (mo 19-24) → The Cliff. Key dates for Cohort 3 (Jul 2025 - Jul 2027). Added 9 Fields + 6 Archetypes reference tables.
+5. xHansa_Fellowship_Press_Release.md — rewrote with accurate quotes from the xHansa Director (Strategic Command), real numbers (1,000 Xcitizens, 24 months, 9 fields, 100 Pods), the 5-phase structure, Gate System, Kill Switch, the Cliff, Cohort 3 2025 dates.
+6. Poster_Website_Launch.png — headline changed to "Critical technology for emerging markets." Stats: 190 hubs / 39 countries / 5,000+ ventures / Invest from $500. CTA: "Build. Venture. Capital. Community." No "next century."
+7. Poster_xHansa_Launch.png — stats changed to 1,000 Xcitizens / 24 mo deployment / 9 Civ Fields / 100 Pods. Right panel shows the real 5-phase deployment (Crucible → Q1 → Q2 → Q3 → Q4 The Cliff) with Gate labels. Footer: "THE CLIFF · Month 24 · No grace period."
+
+VLM-verified both posters: Website poster confirms "critical technology for emerging markets" visible, no "next century." xHansa poster confirms 1,000 fellows, 24 months, 9 fields, Crucible + 4 Gates, The Cliff mentioned.
+
+Stage Summary:
+- All 7 launch materials revised to match the actual xCelero positioning ("Critical Technology for Emerging Markets") and the real xHansa Fellowship program data (1,000 Xcitizens, 24-month deployment, 9 Civilizational Fields, 5-phase structure, Gate System, Kill Switch, the Cliff). No code changed. Nothing pushed to GitHub. VLM-verified.
