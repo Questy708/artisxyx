@@ -935,16 +935,31 @@ function VentureGallery() {
    ══════════════════════════════════════════════════════════════════════════ */
 const nowFutureSlides = [
   {
+    domain: "Food",
+    now: {
+      stat: "8,000 yrs",
+      caption: "We must produce more food in the next four decades than all farmers in history have harvested over the past 8,000 years. By 2050, ten billion people will sit at the table. A billion may face starvation — hunger could be the century's most urgent problem.",
+      image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+    future: {
+      stat: "10×",
+      caption: "Vertical farms stacked forty stories high. AI-bred crops that double yield per drop of water. Lab-grown protein at a tenth of the cost of a cow. We feed ten billion on less land than we farmed in 1950 — and return the rest to forest.",
+      image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1920&q=80",
+      position: "center 50%",
+    },
+  },
+  {
     domain: "Energy",
     now: {
-      stat: "600M",
-      caption: "Africans live without reliable electricity. Diesel generators bleed $0.40+/kWh into every city's sky.",
+      stat: "1.3B",
+      caption: "One in five humans has no electricity. The rest burn the cheapest fuel they can find — coal, diesel, wood — and the sky over half the world's cities is a brown smear. Energy poverty is the silent tax on four billion lives.",
       image: "https://images.unsplash.com/photo-1605647540924-852290f6b0d5?auto=format&fit=crop&w=1920&q=80",
       position: "center 40%",
     },
     future: {
-      stat: "10,000+",
-      caption: "AI-managed microgrid nodes trading power peer-to-peer. The sun, financed — for everyone.",
+      stat: "Too cheap to meter",
+      caption: "Fusion reactors the size of a shipping container. Solar paint on every wall. Microgrids that trade power peer-to-peer. A kilowatt costs less than a glass of water, and the carbon curve bends not by sacrifice but by abundance.",
       image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1920&q=80",
       position: "center 45%",
     },
@@ -952,44 +967,59 @@ const nowFutureSlides = [
   {
     domain: "Water",
     now: {
-      stat: "500M",
-      caption: "People in water-stressed regions. 1.8 million children lost each year to waterborne disease.",
+      stat: "2B",
+      caption: "Two billion people drink water that makes them sick. A child dies every eighty seconds from a waterborne disease. By 2030, half of humanity will live in water-stressed basins — the next wars may be fought over a river, not a border.",
       image: "https://images.unsplash.com/photo-1606112219348-204d7d8b94ee?auto=format&fit=crop&w=1920&q=80",
       position: "center 50%",
     },
     future: {
-      stat: "$0.01/L",
-      caption: "Solar atmospheric water kiosks in every off-grid town, billed through a USSD phone.",
+      stat: "Anywhere",
+      caption: "Solar atmospheric generators pull clean water from desert air. Desalination at a tenth of today's energy. Every village has a tap. The well is no longer a matter of geography — it is a matter of engineering.",
       image: "https://images.unsplash.com/photo-1559825481-12a05cc00344?auto=format&fit=crop&w=1920&q=80",
       position: "center 40%",
     },
   },
   {
-    domain: "Food",
+    domain: "Health",
     now: {
-      stat: "40%",
-      caption: "Of every harvest lost before it reaches a plate. $48 billion of value erased, every single year.",
-      image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1920&q=80",
+      stat: "1 in 5",
+      caption: "One in five humans has access to basic diagnostics. The rest find out they are sick when it is already too late — a tumor the size of a fist, a heart half gone. More people die of preventable disease than of every war on earth combined.",
+      image: "https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&w=1920&q=80",
       position: "center 45%",
     },
     future: {
-      stat: "2 hours",
-      caption: "From the farmer's hand to the family's table — no middlemen, near-zero waste.",
-      image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1920&q=80",
-      position: "center 50%",
+      stat: "Predicted",
+      caption: "The hospital of the future is a sensor in your bathroom mirror, a lab on your phone, an AI that catches your cancer at cell zero. Therapeutics printed on demand, priced like antibiotics. The ward empties — we stop treating disease and start preventing it.",
+      image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1920&q=80",
+      position: "center 40%",
+    },
+  },
+  {
+    domain: "Longevity",
+    now: {
+      stat: "73 yrs",
+      caption: "Global life expectancy is seventy-three — and climbing only for the wealthy. The diseases of aging — dementia, cancer, heart failure — consume the majority of every health budget on earth. We spend a trillion dollars a year managing decline.",
+      image: "https://images.unsplash.com/photo-1582719471384-894fbb16e074?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+    future: {
+      stat: "120+",
+      caption: "Cellular reprogramming resets the clock on aging tissues. Senolytics clear the dead cells that drag the body down. Gene therapy edits out the inherited sentence. A hundred and twenty becomes the new sixty — not for the few, but as a baseline.",
+      image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=1920&q=80",
+      position: "center 40%",
     },
   },
   {
     domain: "Education",
     now: {
       stat: "617M",
-      caption: "Youth without basic literacy. A child's zip code still decides their ceiling — and the syllabus is a century behind.",
+      caption: "Six hundred and seventeen million children lack basic literacy. A child's zip code still decides their ceiling. The syllabus is a century behind the science. We have the sum of human knowledge on a server in California — and a billion kids who can't read the search box.",
       image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1920&q=80",
       position: "center 45%",
     },
     future: {
       stat: "1:1",
-      caption: "An AI tutor for every child — the best teacher on earth, free, in any language, on a $20 phone.",
+      caption: "An AI tutor for every child — patient, fluent in every language, carrying the pedagogy of the best teacher who ever lived. Free. On a twenty-dollar phone. The gap between a kid in Kibera and a kid in Palo Alto collapses in a single generation.",
       image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1920&q=80",
       position: "center 40%",
     },
@@ -998,13 +1028,13 @@ const nowFutureSlides = [
     domain: "Finance",
     now: {
       stat: "1.4B",
-      caption: "Adults locked out of banking. Capital routes through everyone except the people who actually need it.",
+      caption: "One point four billion adults are unbanked. Capital routes through everyone except the people who need it — remittances bleed fifteen percent in fees, a loan requires collateral the poor don't have. Money moves at the speed of a banker's lunch.",
       image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1920&q=80",
       position: "center 50%",
     },
     future: {
-      stat: "Universal",
-      caption: "A digital wallet on every phone — credit, savings, and markets without a bank branch in sight.",
+      stat: "Instant",
+      caption: "Money becomes a native protocol of the internet — instant, borderless, costing a fraction of a cent to move. A farmer in Niger receives payment for her crop before the truck leaves the farm. The bank branch becomes a museum. Credit flows to the productive, not the connected.",
       image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=1920&q=80",
       position: "center 45%",
     },
@@ -1013,73 +1043,193 @@ const nowFutureSlides = [
     domain: "Transport",
     now: {
       stat: "75%",
-      caption: "Of product cost eaten by logistics across emerging markets. Goods wait weeks at broken borders.",
+      caption: "Three quarters of the cost of a product in emerging markets is eaten by logistics. Goods wait weeks at broken borders. The average Lagos commuter spends more time in traffic than with their children. The road network was built for a population a tenth of today's.",
       image: "https://images.unsplash.com/photo-1494412651409-8963ce7935a7?auto=format&fit=crop&w=1920&q=80",
       position: "center 45%",
     },
     future: {
-      stat: "1 system",
-      caption: "Seamless multimodal transit — rail, drone, and river routed by a single operating system.",
+      stat: "Point-to-point",
+      caption: "Electric vertical-takeoff aircraft hop between rooftops at two hundred miles an hour. Hyperloop tubes move freight and people at airline speed on the ground. One operating system routes rail, drone, river, and sky. The commute collapses from hours to minutes.",
       image: "https://images.unsplash.com/photo-1473042904451-00171c69419d?auto=format&fit=crop&w=1920&q=80",
       position: "center 40%",
     },
   },
   {
-    domain: "Health",
+    domain: "Cities",
     now: {
-      stat: "1 in 5",
-      caption: "Have access to basic diagnostics. Brain drain hollows out the clinics that remain standing.",
-      image: "https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&w=1920&q=80",
+      stat: "70%",
+      caption: "By 2050, seven in ten humans will live in cities — most of them cities that don't exist yet, built without a plan, on land without sewers or power. The slum is the fastest-growing settlement type on earth. A billion people live in housing that would be condemned anywhere else.",
+      image: "https://images.unsplash.com/photo-1496564203457-11bb12075d90?auto=format&fit=crop&w=1920&q=80",
       position: "center 45%",
     },
     future: {
-      stat: "Distributed",
-      caption: "Diagnostics in every ward. Therapeutics designed, manufactured, and priced locally.",
-      image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1920&q=80",
+      stat: "Built for a century",
+      caption: "Cities that grow like coral — modular, prefabricated, self-powering, self-cleaning. Roads that charge the vehicles on them. Buildings that sequester carbon as they stand. The city is no longer a drain on the grid; it is the grid.",
+      image: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=1920&q=80",
       position: "center 40%",
     },
   },
   {
-    domain: "Industry",
+    domain: "The Moon",
+    now: {
+      stat: "12",
+      caption: "Twelve humans have walked on the Moon — and none since 1972. The last bootprint is older than most of the people reading this. We went, planted a flag, went home — and then stopped. The launch pad rusted for fifty years.",
+      image: "https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+    future: {
+      stat: "Open",
+      caption: "A permanent settlement at the lunar south pole, mining water for fuel. A launchpad for Mars and beyond, free of Earth's gravity well. Industry moves off-world — the heavy, dirty, energy-intensive work of civilization happens where there is no biosphere to harm.",
+      image: "https://images.unsplash.com/photo-1517976547714-720226b864c1?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+  },
+  {
+    domain: "Mars",
+    now: {
+      stat: "0",
+      caption: "Zero humans have set foot on Mars. The closest planet that could ever be home is a thirty-million-mile desert, and we have sent only robots to look at it. For fifty years, Mars has been a photograph — not a destination.",
+      image: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1920&q=80",
+      position: "center 40%",
+    },
+    future: {
+      stat: "A second Earth",
+      caption: "A self-sustaining city of a million — building their own steel, growing their own food, manufacturing their own rockets. Humanity becomes a multi-planetary species. The lights stay on even if one planet goes dark. The backup is no longer a server in Iceland; it is a world.",
+      image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1920&q=80",
+      position: "center 50%",
+    },
+  },
+  {
+    domain: "Humanoid Robots",
+    now: {
+      stat: "Manual",
+      caption: "Every phone, every shirt, every harvested field is made by human hands — hands that tire, that age, that cost. The global labor market is a hundred trillion dollars a year of human effort, much of it dull, dangerous, or beneath dignity. We are the only intelligent species that cleans its own sewers.",
+      image: "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+    future: {
+      stat: "One per home",
+      caption: "A humanoid robot that costs twenty thousand dollars and works twenty-four hours a day. It folds the laundry, builds the car, harvests the grain. The cost of labor falls by an order of magnitude. The question of the century is no longer how we find work for everyone — but what we do when work is optional.",
+      image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1920&q=80",
+      position: "center 40%",
+    },
+  },
+  {
+    domain: "Intelligence",
+    now: {
+      stat: "1%",
+      caption: "The compute that trains a frontier AI model now costs a hundred million dollars and doubles every few months. The intelligence that will define this century is being concentrated in a handful of data centers owned by a handful of companies. Ninety-five percent of humanity has no seat at that table.",
+      image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+    future: {
+      stat: "Distributed",
+      caption: "Compute becomes a utility — as cheap and ambient as electricity. Every phone, every car, every appliance runs frontier intelligence locally. The model isn't a walled garden; it is open infrastructure. The next Einstein could be a girl with a tablet in a village — and the AI that helps her think.",
+      image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+  },
+  {
+    domain: "Manufacturing",
     now: {
       stat: "10×",
-      caption: "Import-dependent economies ship raw materials out and buy finished goods back at ten times the price.",
+      caption: "Import-dependent economies ship raw materials out and buy the finished goods back at ten times the price. A country with the lithium sells the lithium, then buys back the battery. The value is added somewhere else. This is the cargo cult of the twenty-first century.",
       image: "https://images.unsplash.com/photo-1565043666747-69f6646db940?auto=format&fit=crop&w=1920&q=80",
       position: "center 45%",
     },
     future: {
       stat: "Local",
-      caption: "Distributed micro-factories turning local inputs into local products — the end of the cargo cult.",
+      caption: "Distributed micro-factories turn local inputs into local products — a 3D printer in every town, a CNC mill in every city. The supply chain shrinks from twelve thousand miles to twelve blocks. The factory of the future is the size of a garage and runs itself.",
       image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1920&q=80",
       position: "center 40%",
     },
   },
   {
-    domain: "Space",
+    domain: "Materials",
     now: {
-      stat: "0.04%",
-      caption: "Of global GDP reaches orbit. The off-world economy is closed to ninety-five percent of humanity.",
-      image: "https://images.unsplash.com/photo-1517976547714-720226b864c1?auto=format&fit=crop&w=1920&q=80",
+      stat: "Finite",
+      caption: "Every material we build with — steel, concrete, plastic, rare earth — is dug from a hole in the ground, used once, and thrown into another hole. We have mined the easy stuff; what's left is deeper, dirtier, and more expensive. The materials economy is a one-way pipe from mine to landfill.",
+      image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1920&q=80",
       position: "center 45%",
     },
     future: {
-      stat: "Open",
-      caption: "Launch access for every nation, in-situ resource utilization, and industry built beyond gravity's well.",
-      image: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1920&q=80",
+      stat: "Programmed",
+      caption: "Materials designed atom by atom — concrete that heals its own cracks, steel that grows like bone, plastic that eats itself. We mine the landfill, not the mountain. The material economy becomes a loop, not a line.",
+      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+  },
+  {
+    domain: "Connectivity",
+    now: {
+      stat: "2.6B",
+      caption: "Two point six billion people have no internet. They are invisible to the digital economy — no bank account, no market, no voice. The connection that transformed the rich world in a single generation still hasn't reached a third of humanity.",
+      image: "https://images.unsplash.com/photo-1591115765373-5207764f72e7?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+    future: {
+      stat: "100%",
+      caption: "A constellation of low-orbit satellites blankets the earth in bandwidth. Connectivity costs fall to zero. The last billion come online — not as consumers, but as producers. The network effect compounds by a billion new minds at once.",
+      image: "https://images.unsplash.com/photo-1568438350562-2cae6d394ad0?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+  },
+  {
+    domain: "Governance",
+    now: {
+      stat: "Static",
+      caption: "The nation-state, designed in the seventeenth century for a world of horseback and sail, now governs a planet of satellites and software. Institutions built for millions strain under billions. Trust in government is at historic lows across every democracy on earth.",
+      image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+    future: {
+      stat: "Fluid",
+      caption: "Governance becomes a protocol, not a geography — opt-in communities with their own rules, currency, and dispute resolution, competing for citizens the way cities compete for talent today. The state is no longer where you were born, but what you choose to belong to.",
+      image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1920&q=80",
       position: "center 40%",
+    },
+  },
+  {
+    domain: "Defense",
+    now: {
+      stat: "$2.4T",
+      caption: "The world spends two point four trillion dollars a year on defense — more than the GDP of all but a handful of nations. Most of it buys hardware designed to fight the last war. A single cyberattack can now shut down a country's power grid for less than the cost of a used car.",
+      image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+    future: {
+      stat: "Deterred",
+      caption: "Defense becomes software — autonomous systems that detect and neutralize threats in milliseconds, AI that maps every vulnerability before an adversary finds it. The cost of aggression rises until war is no longer rational. The standing army is a fleet of machines, not a generation of men.",
+      image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1920&q=80",
+      position: "center 40%",
+    },
+  },
+  {
+    domain: "Science",
+    now: {
+      stat: "0.1%",
+      caption: "We spend a tenth of a percent of global GDP on basic research — the well everything else drinks from. A new particle accelerator costs more than a hundred universities can afford. The discoveries that could unlock the next century sit in a queue behind the budget of a single quarter's profits.",
+      image: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+    future: {
+      stat: "Accelerated",
+      caption: "AI runs a billion experiments in simulation before a single one is done in a lab. A fusion breakthrough that took sixty years of human effort arrives in six months of machine effort. The rate of discovery — flat for half a century — bends vertical.",
+      image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
     },
   },
   {
     domain: "Knowledge",
     now: {
       stat: "Locked",
-      caption: "Talent sealed off from capital, markets, and mentorship — the largest waste on earth.",
+      caption: "The largest waste on earth is human talent — sealed off from capital, markets, and mentorship by the accident of where it was born. A genius in a village without a road is a genius who never gets to be one. We have no idea what we are missing.",
       image: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=1920&q=80",
       position: "center 50%",
     },
     future: {
-      stat: "190 hubs",
-      caption: "Operators, founders, and mentors compounding across every route — a single nervous system for a century.",
+      stat: "Unlocked",
+      caption: "A single network of operators, founders, and mentors compounding across every route on earth — talent finds capital in a day, not a decade. The next hundred thousand world-changing ideas don't die in a village. They ship.",
       image: "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1920&q=80",
       position: "center 40%",
     },
@@ -1097,7 +1247,7 @@ function NowFutureSection() {
     if (!isInView) return;
     const interval = setInterval(() => {
       setCurrent((p) => (p + 1) % nowFutureSlides.length);
-    }, 5500);
+    }, 7000);
     return () => clearInterval(interval);
   }, [isInView, mode]);
 
@@ -1106,7 +1256,7 @@ function NowFutureSection() {
   const [showPrompt, setShowPrompt] = useState(false);
   useEffect(() => {
     if (mode !== "now" || !isInView) return;
-    const t = setTimeout(() => setShowPrompt(true), 7000);
+    const t = setTimeout(() => setShowPrompt(true), 12000);
     return () => clearTimeout(t);
   }, [mode, isInView]);
 
@@ -1151,7 +1301,7 @@ function NowFutureSection() {
           transition={{ duration: 0.6, delay: 0.2, ease: EASE }}
           className="text-white/45 text-[15px] md:text-[17px] font-medium leading-[1.6] max-w-2xl mt-7"
         >
-          The future isn&apos;t forecast — it&apos;s built. Domain by domain, these are the pillars a civilization stands on, where humanity stands today, and the picture we are engineering into being.
+          The case for acceleration, in twenty domains. Each &ldquo;Now&rdquo; is the bottleneck the century hangs on — framed bluntly. Each &ldquo;Future&rdquo; is what we are building to break it open. This is not a forecast. It is a blueprint.
         </motion.p>
       </div>
 
@@ -1260,7 +1410,7 @@ function NowFutureSection() {
                       {data.stat}
                     </span>
                   </div>
-                  <p className="text-white/70 text-[15px] md:text-[19px] font-medium leading-[1.5] max-w-xl">
+                  <p className="text-white/70 text-[14px] md:text-[17px] font-medium leading-[1.55] max-w-2xl">
                     {data.caption}
                   </p>
                 </motion.div>

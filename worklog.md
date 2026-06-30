@@ -211,3 +211,38 @@ VERIFICATION (Agent Browser, desktop 1440px):
 
 Stage Summary:
 - 6 quick wins delivered, all browser-verified: (1) search now works (debounced, ?search=), (2) vote/heart use PATCH response (no refetch), (3) comment vote buttons wired + working end-to-end, (4) share buttons wired (Web Share API + clipboard fallback with "Copied!" feedback), (5) Cache-Control headers on GET routes (s-maxage=30-60 + stale-while-revalidate), (6) per-IP rate limiting on all 10 open route handlers (429 + Retry-After). These fix the broken UX and add baseline abuse protection. The deeper scale work (Postgres, real auth, Redis, FTS, real-time, notifications, moderation, AI-assisted posting) remains as outlined in the prior assessment.
+
+---
+Task ID: nowfuture-20domains + scale-answer
+Agent: main
+Task: (1) Answer whether TownSquare scales like Reddit/LinkedIn + Netlify deployment; (2) Rebuild Now × Future with ~20 civilization-scale domains, apocalyptic NOW framing + expansive 10x FUTURE scenarios
+
+SCALE ANSWER (delivered to user):
+No — won't scale like Reddit/LinkedIn as built. Netlify is fine for the marketing site, wrong for the forum at scale (serverless timeouts, cold starts, no persistent DB connections, no WebSockets, SQLite can't be shared across instances). Honest path to 1M+: Postgres → real auth → Redis → move API off serverless → cursor pagination → FTS → WebSocket real-time → notifications + moderation.
+
+NOW × FUTURE REWORK (20 domains):
+Rewrote the entire nowFutureSlides array from 10 → 20 domains, each with the framing the user specified (apocalyptic, civilization-scale NOW; expansive 10x FUTURE). Verified all 40 Unsplash image URLs via batch curl (0 broken). Domains:
+1. Food — "8,000 yrs": must produce more food in 4 decades than all farmers in 8,000 years; 10B by 2050; billion may starve → 10×: vertical farms 40 stories, AI crops, lab protein
+2. Energy — 1.3B without power; brown smear over cities → too cheap to meter: fusion, solar paint, peer-to-peer microgrids
+3. Water — 2B drink sick water; child dies every 80s; next wars over rivers → anywhere: atmospheric generators, desal at 1/10 energy
+4. Health — 1 in 5 have diagnostics; find out too late → predicted: hospital of the future = sensor in mirror, lab on phone, AI catches cancer at cell zero
+5. Longevity — 73 yrs, climbing only for wealthy; $1T/yr managing decline → 120+: cellular reprogramming, senolytics, gene therapy
+6. Education — 617M illiterate; syllabus a century behind → 1:1 AI tutor per child, free, on $20 phone
+7. Finance — 1.4B unbanked; remittances bleed 15% → instant: money as native internet protocol, bank branch becomes museum
+8. Transport — 75% of product cost is logistics; Lagos commuter in traffic more than with children → point-to-point: eVTOL rooftop hops, hyperloop, one OS for rail/drone/river/sky
+9. Cities — 70% urban by 2050; slum fastest-growing settlement → built for a century: cities grow like coral, modular, self-powering, self-cleaning
+10. The Moon — 12 walked it, none since 1972; launch pad rusted 50 yrs → open: permanent south pole settlement, mining water for fuel, industry moves off-world
+11. Mars — 0 humans; 30M-mile desert, only robots → a second Earth: self-sustaining city of 1M, multi-planetary species
+12. Humanoid Robots — manual: $100T/yr of human effort, dull/dangerous/beneath dignity; only species that cleans own sewers → one per home: $20K robot works 24/7, cost of labor falls 10×, work becomes optional
+13. Intelligence — 1%: frontier model costs $100M, doubling; concentrated in handful of data centers → distributed: compute as utility, frontier AI on every phone, next Einstein could be a girl with a tablet
+14. Manufacturing — 10×: sell lithium, buy back battery; cargo cult of 21st century → local: micro-factories, supply chain shrinks from 12,000 miles to 12 blocks
+15. Materials — finite: mine-to-landfill one-way pipe → programmed: atom-by-atom design, self-healing concrete, mine the landfill not the mountain
+16. Connectivity — 2.6B offline, invisible to digital economy → 100%: low-orbit satellite blanket, last billion come online as producers
+17. Governance — static: 17th-century nation-state for a planet of satellites; trust at historic lows → fluid: governance as protocol not geography, opt-in communities compete for citizens
+18. Defense — $2.4T/yr, buys hardware for last war; cyberattack shuts grid for cost of used car → deterred: defense as software, cost of aggression rises until war irrational
+19. Science — 0.1% of GDP on basic research; discoveries queued behind a quarter's profits → accelerated: AI runs billion experiments in simulation, fusion breakthrough in 6 months not 60 years
+20. Knowledge — locked: largest waste on earth is talent sealed off by birthplace → unlocked: single network, talent finds capital in a day not a decade
+
+Also: bumped auto-advance 5.5s→7s (longer captions need more read time), widened caption max-w-xl→max-w-2xl, prompt timer 7s→12s (appears after 2 slides), updated section subtext to "The case for acceleration, in twenty domains... This is not a forecast. It is a blueprint."
+
+VERIFICATION: Lint clean. Browser-verified: counter "01/20", 20 slide indicators, 0 broken images (65 total), apocalyptic captions confirmed for Food/Mars/Robots/Moon, Now→Future transition works, mobile no overflow (390px), VLM confirmed caption readable multiple lines. dev.log: zero errors.
