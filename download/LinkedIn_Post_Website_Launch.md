@@ -2,47 +2,54 @@
 
 ---
 
-Critical technology for emerging markets.
+**The challenges:**
 
-That's what xCelero Labs builds. Not as a slogan — as an operating model.
+🍽️ We must produce more food in the next four decades than all farmers in history have harvested over the past 8,000 years. By 2050, ten billion people will sit at the table.
 
-**The website is live.**
+⚡ 1.3 billion people have no electricity.
 
-xCelero is a venture studio and infrastructure platform. We build the critical technology that emerging markets need most — across 39 countries, 190 hubs, and the domains that determine whether a civilization of ten billion thrives or stalls.
+💧 2 billion drink water that makes them sick. A child dies every 80 seconds.
 
-**The model has four pillars, fused into one flywheel:**
+🩺 1 in 5 humans has access to basic diagnostics. The rest find out they're sick when it's already too late.
 
-🏗️ **Infrastructure** — 190 XEmbassies. Physical nodes (foundries, labs, studios, commons) placed in the markets that need them. Each hub lowers the cost of building a venture by 60%.
+📚 617 million children cannot read.
 
-🚀 **Ventures** — We don't invest in companies. We build them. The studio model: xCelero provides the idea, the team, the capital, the infrastructure, and the go-to-market. The founder provides the obsession.
+🏦 1.4 billion adults are locked out of banking.
 
-💰 **Capital** — Six vehicles, one thesis. From $500 solidarity tickets (democratized access) to $250K+ anchor positions. Solidarity pricing lets the market form before it's squeezed.
+🧠 And the largest waste on earth — human talent — is sealed off from capital and opportunity by the accident of where it was born.
 
-🤝 **Community** — The XCitizen network. Operators, founders, investors, and mentors compounding across every hub. TownSquare is the digital forum where the network convenes.
+**These are not separate problems. They are the bottlenecks on which a civilization of ten billion depends.**
 
-**The gap we're closing:**
-Capital, infrastructure, and talent sit on one side; the markets that need them sit on the other. What's missing is the commercialization rail that turns all three into deployed, compounding infrastructure. That rail is xCelero.
+The capital exists. The talent exists. The science exists. What doesn't exist is the commercialization engine that turns all three into deployed, compounding infrastructure at the speed the century demands.
 
-**The numbers (10-year targets, not today's):**
-- 190 hubs across 39 countries
-- 5,000+ ventures built
-- 200 unicorns projected
-- $1.97Bn capital under management
-- 100,000+ XCitizens
-- 20,000+ jobs created
+**That engine is xCelero Labs. And the website is live.**
+
+xCelero is a venture studio and infrastructure platform. We build the critical technology that solves these bottlenecks — across 39 countries, 190 hubs, and the domains that determine whether human progress accelerates or stalls.
+
+**Four pillars. One flywheel.**
+
+🏗️ **Infrastructure** — 190 XEmbassies. Physical nodes (foundries, labs, studios, commons) in the markets that need them. Each hub lowers the cost of building a venture by 60%.
+
+🚀 **Ventures** — We don't invest in companies. We build them. The studio model: xCelero provides the idea, the team, the capital, the infrastructure, the go-to-market. The founder provides the obsession.
+
+💰 **Capital** — From $500 solidarity tickets to $250K+ anchor positions. Six vehicles, one thesis: back the technology that breaks the bottlenecks open.
+
+🤝 **Community** — 100,000+ XCitizens. Operators, founders, investors, and mentors compounding across every hub.
+
+**The targets (10-year horizon):**
+190 hubs · 39 countries · 5,000+ ventures · 200 unicorns · $1.97Bn capital · 20,000+ jobs
 
 **We're at zero. The plan goes to one.**
 The first hub opens in Nairobi. The first ventures ship this year. The xHansa Fellowship — our 24-month human capital deployment engine — is taking applications now.
 
-If you build, operate, invest, or deploy in emerging markets:
+If you build, operate, invest, or deploy — and you believe human progress is something to engineer, not wait for:
 
 **xCelero is hiring. xCelero is raising. xCelero is building.**
 
 🔗 xcelero.com
-📥 The full 10-Year Workplan is downloadable on the site.
 
-#xCeleroLabs #CriticalTechnology #EmergingMarkets #VentureStudio #Infrastructure #DeepTech #Africa #BuildForTheSouth
+#xCeleroLabs #CriticalTechnology #EmergingMarkets #HumanProgress #VentureStudio #Infrastructure #DeepTech #Africa #BuildForTheSouth
 
 ---
 
-*Tag founders, operators, and investors working in emerging-market tech. Visibility matters.*
+*Tag founders, operators, and investors working on civilization-scale problems. Visibility matters.*
