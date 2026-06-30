@@ -168,8 +168,10 @@ function Nav() {
   // Primary pages shown directly in the bar — no longer hidden behind hover
   const primaryLinks = [
     { name: "Ventures", path: "/ventures" },
+    { name: "Routes", path: "/routes" },
     { name: "Programs", path: "/programs" },
     { name: "Capital", path: "/capital" },
+    { name: "Community", path: "/community" },
   ];
 
   // Secondary pages grouped inside a single "More" mega-panel
@@ -187,8 +189,6 @@ function Nav() {
       label: "Platform & Network",
       links: [
         { name: "Infrastructure", path: "/infrastructure" },
-        { name: "Routes", path: "/routes" },
-        { name: "Community", path: "/community" },
         { name: "Insights", path: "/insights" },
       ],
     },
@@ -246,7 +246,7 @@ function Nav() {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`px-4 py-2 text-[12px] tracking-[0.05em] font-semibold rounded-full transition-colors ${
+                  className={`px-3 lg:px-4 py-2 text-[12px] tracking-[0.05em] font-semibold rounded-full transition-colors ${
                     isActive
                       ? "text-[#FF4D00] bg-[#FF4D00]/5"
                       : "text-[#111111]/70 hover:text-[#111111] hover:bg-[#111111]/5"

@@ -47,3 +47,30 @@ Work Log:
 Stage Summary:
 - Navigation: pages are no longer hidden. 3 primary pages (Ventures/Programs/Capital) are always visible as direct links at md+ widths; all 8 secondary pages surface in a single "More" mega-panel. Tablet users now get the real nav. Mobile keeps the hamburger with full link list.
 - New "Now × Future" animated section on the home page, positioned directly above Upcoming Events. Scroll-triggered staggered animations compare current-world bottlenecks (the problems ventures solve) against the future being built, with per-row orange transform bars and hover-reactive arrows. Fully responsive and browser-verified.
+
+---
+Task ID: nav-nowfuture-v2
+Agent: main
+Task: (1) Add Community + Routes up to primary nav; (2) Redesign Now × Future as full-bleed sliding-image cinematic at humanity's scale — "the now" plays as a slideshow, a prompt invites the user to transition, "the future" reveals what can be
+
+Work Log:
+- Nav: expanded primaryLinks from 3→5 (Ventures · Routes · Programs · Capital · Community), all directly visible in the bar at md+ widths. Reduced link padding to px-3 lg:px-4 so all 5 + "More" fit at tablet (768px). More mega-panel now holds 6 secondary pages (About, How We Work, Manifesto, Careers, Infrastructure, Insights). Community + Routes no longer hidden behind hover.
+- Replaced the tabular Now × Future section with a full-bleed cinematic slideshow matching the hero's exact dimensions (max-w-[1400px], h-[60vh]→lg:h-[82vh], crossfade + 1.06 scale, 5.5s auto-advance, grid overlay, gradient overlays).
+- 6 humanity-scale domains (not just venture-specific): Energy, Water, Food, Climate, Health, Knowledge — each with a NOW image/stat/caption (the bottleneck) and a FUTURE image/stat/caption (the painted possibility). 12 Unsplash images total. Stats: 600M→10,000+, 500M→$0.01/L, 40%→2 hours, +1.5°C→Net-positive, 1 in 5→Distributed, Locked→190 hubs.
+- Mechanism: "The Now" auto-plays as a slideshow. After 7s a glowing orange "IMAGINE WHAT'S POSSIBLE" prompt (with pulsing arrow) surfaces bottom-right, inviting the viewer to transition. Clicking it (or the "See the future" toggle below the frame) crossfades all images into "The Future" mode — same domain index, brighter future imagery, orange stats, "The Future · Reveal" badge. "Back to the now" toggle returns. Both now+future image layers are pre-rendered and crossfaded by opacity for seamless mode switching.
+- Fixed prompt-timer bug: originally had `current` in the useEffect deps, so the 9s timer reset every 5.5s (slide advance) and the prompt never appeared. Removed `current` from deps, reduced to 7s → prompt reliably fires while Now plays.
+- Moved the mode toggle from inside the frame's bottom bar to below the frame (always in normal document flow) so the sticky Invest bar never covers it. Slide indicators stay inside the frame.
+- Imports: added Fragment (for keyed image-layer groups); removed now-unused Droplets/Sprout/GraduationCap; removed unused userInteracted state. Lint passes clean (0 errors).
+- Browser-verified (desktop 1440px + mobile iPhone 14):
+  - Nav: all 5 primary links visible + More; mobile menu has all links incl. Routes + Community.
+  - NowFuture frame: 715px tall (~79vh, hero-scale), full-bleed, 1400px wide.
+  - Now mode: 600M/Energy stat renders, slide counter "01/06", "The Now · Live" badge, auto-advances.
+  - Prompt: "IMAGINE WHAT'S POSSIBLE" appears after 7s (orange, glowing, pulsing arrow).
+  - Transition: click prompt → Future mode (brighter image, orange "10,000+" stat, "The Future · Reveal" badge, "Back to the now" toggle). Click back → Now mode restored. Full cycle confirmed.
+  - VLM confirmation (Now + Future + mobile screenshots): "full-bleed image fills frame, large stat visible, orange glowing button present, slide indicators at bottom, no cramping/cutoff, brighter futuristic future scene, orange future stats" — across desktop and mobile.
+  - Mobile (390px): no horizontal overflow (scrollW=innerW=390), full-bleed image fills width, stat readable, prompt + toggle accessible.
+  - dev.log: zero runtime errors, all GET / 200, fast compiles.
+
+Stage Summary:
+- Navigation: Community and Routes promoted to primary top-level links (5 direct links now visible: Ventures, Routes, Programs, Capital, Community). Nothing important is hidden behind hover.
+- Now × Future: rebuilt as a full-bleed cinematic slideshow at humanity's scale (6 domains: Energy, Water, Food, Climate, Health, Knowledge). "The Now" auto-plays as a slideshow of bottlenecks; a glowing "IMAGINE WHAT'S POSSIBLE" prompt invites the viewer to transition; "The Future" reveals the painted picture of what can be (same domains, reimagined). Same size as the hero, fully responsive, zero errors. Browser- and VLM-verified.

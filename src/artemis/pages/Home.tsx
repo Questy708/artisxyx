@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useMemo, useEffect, useCallback } from "react";
+import { useRef, useState, useMemo, useEffect, useCallback, Fragment } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Link } from "@/artemis/router";
 import {
@@ -24,9 +24,6 @@ import {
   ChevronRight,
   X,
   Sparkles,
-  Droplets,
-  Sprout,
-  GraduationCap,
 } from "lucide-react";
 import { ReviewSection } from "@/artemis/components/ReviewSection";
 import { routeLegs, MAP_LOCATIONS } from "@/artemis/data/routes";
@@ -931,140 +928,357 @@ function VentureGallery() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   NOW × FUTURE — animated "the world as it is" vs "the world we're building"
-   Side-by-side comparison of the bottlenecks ventures solve → the unlocked future
+   NOW × FUTURE — full-bleed cinematic slideshow at humanity's scale.
+   "The Now" auto-plays as a slideshow of the bottlenecks humanity faces;
+   a pulsing prompt invites the viewer to transition, revealing "The Future"
+   we are painting — the same domains, reimagined.
    ══════════════════════════════════════════════════════════════════════════ */
-const nowFutureDomains = [
+const nowFutureSlides = [
   {
-    icon: Zap,
     domain: "Energy",
-    now: { stat: "600M", caption: "Africans without reliable electricity. Diesel runs $0.40+/kWh." },
-    future: { stat: "10,000+", caption: "AI-managed microgrid nodes trading power peer-to-peer." },
-    venture: "Helios · Ember",
-    link: "/ventures",
+    now: {
+      stat: "600M",
+      caption: "Africans live without reliable electricity. Diesel generators bleed $0.40+/kWh into every city's sky.",
+      image: "https://images.unsplash.com/photo-1605647540924-852290f6b0d5?auto=format&fit=crop&w=1920&q=80",
+      position: "center 40%",
+    },
+    future: {
+      stat: "10,000+",
+      caption: "AI-managed microgrid nodes trading power peer-to-peer. The sun, financed — for everyone.",
+      image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
   },
   {
-    icon: Droplets,
     domain: "Water",
-    now: { stat: "500M", caption: "People in water-stressed regions. 1.8M child deaths a year." },
-    future: { stat: "$0.01/L", caption: "Solar atmospheric water kiosks, billed through USSD." },
-    venture: "Nimbus",
-    link: "/ventures",
+    now: {
+      stat: "500M",
+      caption: "People in water-stressed regions. 1.8 million children lost each year to waterborne disease.",
+      image: "https://images.unsplash.com/photo-1606112219348-204d7d8b94ee?auto=format&fit=crop&w=1920&q=80",
+      position: "center 50%",
+    },
+    future: {
+      stat: "$0.01/L",
+      caption: "Solar atmospheric water kiosks in every off-grid town, billed through a USSD phone.",
+      image: "https://images.unsplash.com/photo-1541252260730-0412e8e2108e?auto=format&fit=crop&w=1920&q=80",
+      position: "center 40%",
+    },
   },
   {
-    icon: Sprout,
-    domain: "Food & Agriculture",
-    now: { stat: "40%", caption: "Of harvest lost post-farm — $48B of value destroyed yearly." },
-    future: { stat: "2 hrs", caption: "Farmer-to-consumer, no middlemen, near-zero waste." },
-    venture: "Bounty · Ceres · Meridian",
-    link: "/ventures",
+    domain: "Food",
+    now: {
+      stat: "40%",
+      caption: "Of every harvest lost before it reaches a plate. $48 billion of value erased, every single year.",
+      image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+    future: {
+      stat: "2 hours",
+      caption: "From the farmer's hand to the family's table — no middlemen, near-zero waste.",
+      image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1920&q=80",
+      position: "center 50%",
+    },
   },
   {
-    icon: Coins,
-    domain: "Capital",
-    now: { stat: "<15%", caption: "Of the end price ever reaches the smallholder." },
-    future: { stat: "$500", caption: "Entry to back the technology the next century needs." },
-    venture: "xCelero Capital",
-    link: "/capital",
+    domain: "Climate",
+    now: {
+      stat: "+1.5°C",
+      caption: "The bill is already here — floods, fire, and displacement, paid by those who emitted the least.",
+      image: "https://images.unsplash.com/photo-1602491453631-e6a1a9d4b9ad?auto=format&fit=crop&w=1920&q=80",
+      position: "center 40%",
+    },
+    future: {
+      stat: "Net-positive",
+      caption: "Regenerative systems that restore the carbon balance and repay the atmospheric debt.",
+      image: "https://images.unsplash.com/photo-1444930694458-01babe71870e?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
   },
   {
-    icon: GraduationCap,
+    domain: "Health",
+    now: {
+      stat: "1 in 5",
+      caption: "Have access to basic diagnostics. Brain drain hollows out the clinics that remain standing.",
+      image: "https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+    future: {
+      stat: "Distributed",
+      caption: "Diagnostics in every ward. Therapeutics designed, manufactured, and priced locally.",
+      image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1920&q=80",
+      position: "center 40%",
+    },
+  },
+  {
     domain: "Knowledge",
-    now: { stat: "Locked", caption: "Talent sealed off from capital, markets, and mentorship." },
-    future: { stat: "190 hubs", caption: "Operators, founders, and mentors compounding across every route." },
-    venture: "Programs · Community",
-    link: "/programs",
+    now: {
+      stat: "Locked",
+      caption: "Talent sealed off from capital, markets, and mentorship — the largest waste on earth.",
+      image: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=1920&q=80",
+      position: "center 50%",
+    },
+    future: {
+      stat: "190 hubs",
+      caption: "Operators, founders, and mentors compounding across every route — a single nervous system for a century.",
+      image: "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1920&q=80",
+      position: "center 40%",
+    },
   },
 ];
 
 function NowFutureSection() {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const [mode, setMode] = useState<"now" | "future">("now");
+  const [current, setCurrent] = useState(0);
+
+  // Auto-advance the slideshow (pauses briefly after a user interacts)
+  useEffect(() => {
+    if (!isInView) return;
+    const interval = setInterval(() => {
+      setCurrent((p) => (p + 1) % nowFutureSlides.length);
+    }, 5500);
+    return () => clearInterval(interval);
+  }, [isInView, mode]);
+
+  // After ~7s in "now" mode, gently surface the transition prompt.
+  // (Independent of slide changes so it reliably appears while "now" plays.)
+  const [showPrompt, setShowPrompt] = useState(false);
+  useEffect(() => {
+    if (mode !== "now" || !isInView) return;
+    const t = setTimeout(() => setShowPrompt(true), 7000);
+    return () => clearTimeout(t);
+  }, [mode, isInView]);
+
+  const slide = nowFutureSlides[current];
+  const data = mode === "now" ? slide.now : slide.future;
+
+  const handleTransition = () => {
+    setMode((m) => (m === "now" ? "future" : "now"));
+    setShowPrompt(false);
+  };
 
   return (
-    <section className="bg-[#0A0A0A] text-white py-24 md:py-32 relative overflow-hidden">
-      {/* Ambient glow */}
-      <div className="absolute top-1/3 -right-20 w-[600px] h-[600px] bg-[#FF4D00]/8 rounded-full blur-[160px] pointer-events-none" />
-      <div className="absolute -bottom-20 left-1/4 w-[420px] h-[420px] bg-[#FF4D00]/5 rounded-full blur-[140px] pointer-events-none" />
-
-      <div ref={ref} className="relative w-full max-w-[1400px] mx-auto px-6 md:px-10 lg:px-14">
-        {/* Header */}
-        <div className="grid lg:grid-cols-12 gap-8 mb-14 md:mb-20">
-          <div className="lg:col-span-7">
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, ease: EASE }}
-              className="flex items-center gap-3 mb-6"
-            >
-              <span className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00]">Now × Future</span>
-              <div className="h-px w-16 bg-[#FF4D00]/40" />
-            </motion.div>
-            <motion.h2
-              initial={{ opacity: 0, y: 18 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.65, delay: 0.05, ease: EASE }}
-              className="font-display font-medium tracking-[-0.025em] leading-[0.98] text-[34px] sm:text-[48px] md:text-[60px] lg:text-[68px]"
-            >
-              The world as it is.<br />
-              <span className="text-white/35">The world we&apos;re </span>
-              <span className="text-[#FF4D00]">building.</span>
-            </motion.h2>
-          </div>
-          <div className="lg:col-span-5 lg:pt-8">
-            <motion.p
-              initial={{ opacity: 0, y: 12 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.18, ease: EASE }}
-              className="text-white/50 text-[15px] font-medium leading-[1.7] max-w-md"
-            >
-              Every venture starts with a bottleneck the markets that need breakthroughs most have lived with for decades. Here is the gap — and the future we are engineering shut.
-            </motion.p>
-          </div>
-        </div>
-
-        {/* Column headers */}
-        <div className="grid grid-cols-[1fr_auto_1fr] gap-3 md:gap-6 mb-5 md:mb-7 px-1">
-          <motion.div
-            initial={{ opacity: 0, x: -10 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.22, ease: EASE }}
-            className="flex items-center gap-2.5"
+    <section className="bg-[#0A0A0A] text-white relative">
+      {/* Section intro */}
+      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-10 lg:px-14 pt-24 md:pt-32 pb-10 md:pb-14">
+        <div className="flex items-center gap-3 mb-6">
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.5, ease: EASE }}
+            className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-[#FF4D00]"
           >
-            <span className="text-[10px] font-mono font-bold tracking-[0.25em] uppercase text-white/30">The Now</span>
-            <div className="h-px flex-1 bg-white/10" />
-          </motion.div>
-          <div className="w-8 md:w-12" />
-          <motion.div
-            initial={{ opacity: 0, x: 10 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.22, ease: EASE }}
-            className="flex items-center gap-2.5"
+            Now × Future
+          </motion.span>
+          <div className="h-px w-16 bg-[#FF4D00]/40" />
+        </div>
+        <motion.h2
+          initial={{ opacity: 0, y: 18 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.65, delay: 0.05, ease: EASE }}
+          className="font-display font-medium tracking-[-0.025em] leading-[0.98] text-[32px] sm:text-[44px] md:text-[56px] lg:text-[64px] max-w-4xl"
+        >
+          The world as it is.{" "}
+          <span className="text-white/35">The world we&apos;re </span>
+          <span className="text-[#FF4D00]">painting.</span>
+        </motion.h2>
+      </div>
+
+      {/* Full-bleed cinematic slideshow — same size as the hero */}
+      <div ref={ref} className="w-full px-6 md:px-12 lg:px-20 pb-24 md:pb-32">
+        <div className="relative w-full max-w-[1400px] mx-auto overflow-hidden bg-[#0A0A0A] rounded-sm">
+          <div className="relative h-[60vh] sm:h-[68vh] md:h-[78vh] lg:h-[82vh]">
+            {/* Sliding images — both now and future layers, crossfaded by mode */}
+            {nowFutureSlides.map((s, i) => (
+              <Fragment key={s.domain}>
+                {/* NOW layer */}
+                <motion.div
+                  initial={false}
+                  animate={{
+                    opacity: mode === "now" && i === current ? 1 : 0,
+                    scale: mode === "now" && i === current ? 1 : 1.06,
+                  }}
+                  transition={{ duration: 1.1, ease: EASE }}
+                  className="absolute inset-0"
+                  aria-hidden={!(mode === "now" && i === current)}
+                >
+                  <img
+                    src={s.now.image}
+                    alt={`${s.domain} — the now`}
+                    className="w-full h-full object-cover"
+                    style={{ objectPosition: s.now.position }}
+                    loading={i === 0 ? "eager" : "lazy"}
+                  />
+                </motion.div>
+                {/* FUTURE layer */}
+                <motion.div
+                  initial={false}
+                  animate={{
+                    opacity: mode === "future" && i === current ? 1 : 0,
+                    scale: mode === "future" && i === current ? 1 : 1.06,
+                  }}
+                  transition={{ duration: 1.1, ease: EASE }}
+                  className="absolute inset-0"
+                  aria-hidden={!(mode === "future" && i === current)}
+                >
+                  <img
+                    src={s.future.image}
+                    alt={`${s.domain} — the future`}
+                    className="w-full h-full object-cover"
+                    style={{ objectPosition: s.future.position }}
+                    loading="lazy"
+                  />
+                </motion.div>
+              </Fragment>
+            ))}
+
+            {/* Overlays */}
+            <div
+              className={`absolute inset-0 transition-colors duration-1000 ${
+                mode === "now"
+                  ? "bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/55 to-[#0A0A0A]/30"
+                  : "bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/45 to-[#FF4D00]/8"
+              }`}
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0A]/70 via-transparent to-transparent" />
+            <div
+              className="absolute inset-0 opacity-[0.06] pointer-events-none"
+              style={{
+                backgroundImage:
+                  "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+                backgroundSize: "80px 80px",
+              }}
+            />
+
+            {/* Top-left: live mode badge */}
+            <div className="absolute top-6 left-6 md:top-8 md:left-10 flex items-center gap-2.5 z-20">
+              <span className={`w-1.5 h-1.5 ${mode === "now" ? "bg-white/60" : "bg-[#FF4D00]"} animate-pulse`} />
+              <span className="text-[10px] font-mono font-bold tracking-[0.3em] uppercase text-white/60">
+                {mode === "now" ? "The Now · Live" : "The Future · Reveal"}
+              </span>
+            </div>
+            {/* Top-right: domain counter */}
+            <div className="absolute top-6 right-6 md:top-8 md:right-10 z-20 text-[10px] font-mono tracking-[0.3em] uppercase text-white/40">
+              {String(current + 1).padStart(2, "0")} / {String(nowFutureSlides.length).padStart(2, "0")}
+            </div>
+
+            {/* Content — domain label + stat + caption */}
+            <div className="relative z-10 w-full h-full flex flex-col justify-end px-6 md:px-12 lg:px-16 pb-20 md:pb-24">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`${mode}-${current}`}
+                  initial={{ opacity: 0, y: 22 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -14 }}
+                  transition={{ duration: 0.55, ease: EASE }}
+                  className="max-w-2xl"
+                >
+                  <span
+                    className={`text-[11px] md:text-[12px] font-mono font-bold tracking-[0.3em] uppercase block mb-4 ${
+                      mode === "now" ? "text-white/45" : "text-[#FF4D00]"
+                    }`}
+                  >
+                    {slide.domain}
+                  </span>
+                  <div className="flex items-baseline gap-4 md:gap-6 mb-4">
+                    <span
+                      className={`font-display font-medium leading-[0.9] tracking-[-0.03em] text-[18vw] sm:text-[14vw] md:text-[10vw] lg:text-[120px] ${
+                        mode === "now" ? "text-white" : "text-[#FF4D00]"
+                      }`}
+                    >
+                      {data.stat}
+                    </span>
+                  </div>
+                  <p className="text-white/70 text-[15px] md:text-[19px] font-medium leading-[1.5] max-w-xl">
+                    {data.caption}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* Transition prompt — invites the viewer from Now → Future */}
+            <AnimatePresence>
+              {showPrompt && mode === "now" && (
+                <motion.button
+                  initial={{ opacity: 0, y: 16, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 16, scale: 0.96 }}
+                  transition={{ duration: 0.5, ease: EASE }}
+                  onClick={handleTransition}
+                  className="absolute right-6 md:right-10 bottom-20 md:bottom-24 z-30 group flex items-center gap-3 pl-5 pr-2 py-2 bg-[#FF4D00] text-white rounded-full shadow-[0_0_40px_rgba(255,77,0,0.5)] hover:bg-[#FF6A28] transition-colors"
+                >
+                  <span className="text-[11px] font-bold tracking-[0.05em] uppercase">Imagine what&apos;s possible</span>
+                  <span className="relative w-9 h-9 rounded-full bg-white/15 flex items-center justify-center overflow-hidden">
+                    <motion.span
+                      animate={{ x: [0, 4, 0] }}
+                      transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      <ArrowRight className="w-4 h-4 text-white" />
+                    </motion.span>
+                  </span>
+                </motion.button>
+              )}
+            </AnimatePresence>
+
+            {/* Bottom bar — slide indicators */}
+            <div className="absolute bottom-0 left-0 right-0 z-20 px-6 md:px-12 lg:px-16 pb-5 md:pb-7">
+              <div className="flex items-center gap-4">
+                {/* Slide indicators — clickable */}
+                <div className="flex gap-1.5 flex-wrap">
+                  {nowFutureSlides.map((s, i) => (
+                    <button
+                      key={s.domain}
+                      suppressHydrationWarning
+                      onClick={() => { setCurrent(i); setShowPrompt(false); }}
+                      aria-label={`Go to ${s.domain}`}
+                      className="min-h-[32px] min-w-[32px] flex items-center"
+                    >
+                      <span
+                        className={`block h-[2px] transition-all duration-500 ${
+                          i === current
+                            ? mode === "now"
+                              ? "bg-white w-10"
+                              : "bg-[#FF4D00] w-10"
+                            : "bg-white/25 w-6"
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Mode toggle — below the frame, always accessible (never covered by sticky bars) */}
+        <div className="mt-5 flex justify-center">
+          <button
+            onClick={handleTransition}
+            className="inline-flex items-center gap-2 px-5 py-2.5 border border-white/20 rounded-full text-white/80 hover:text-white hover:border-white/50 hover:bg-white/5 transition-colors text-[11px] font-bold tracking-[0.1em] uppercase"
           >
-            <div className="h-px flex-1 bg-[#FF4D00]/20" />
-            <span className="text-[10px] font-mono font-bold tracking-[0.25em] uppercase text-[#FF4D00]">The Future</span>
-          </motion.div>
+            {mode === "now" ? (
+              <>See the future <ArrowRight className="w-3.5 h-3.5" /></>
+            ) : (
+              <><ArrowRight className="w-3.5 h-3.5 rotate-180" /> Back to the now</>
+            )}
+          </button>
         </div>
+      </div>
 
-        {/* Rows */}
-        <div className="flex flex-col">
-          {nowFutureDomains.map((d, i) => (
-            <NowFutureRow key={d.domain} domain={d} index={i} isInView={isInView} />
-          ))}
-        </div>
-
-        {/* CTA */}
+      {/* CTA strip */}
+      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-10 lg:px-14 pb-24 md:pb-32">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.55, ease: EASE }}
-          className="mt-14 flex flex-col sm:flex-row items-start sm:items-center gap-4"
+          transition={{ duration: 0.5, delay: 0.3, ease: EASE }}
+          className="flex flex-col sm:flex-row items-start sm:items-center gap-4"
         >
           <Link
             to="/ventures"
             className="group inline-flex items-center gap-2 px-6 py-3 bg-[#FF4D00] text-white text-[11px] font-bold tracking-[0.05em] rounded-full hover:bg-[#FF6A28] transition-colors"
           >
-            See the ventures rewriting the map
+            See the ventures painting it
             <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
           </Link>
           <Link
@@ -1076,75 +1290,6 @@ function NowFutureSection() {
         </motion.div>
       </div>
     </section>
-  );
-}
-
-function NowFutureRow({
-  domain,
-  index,
-  isInView,
-}: {
-  domain: (typeof nowFutureDomains)[number];
-  index: number;
-  isInView: boolean;
-}) {
-  const Icon = domain.icon;
-  const [hovered, setHovered] = useState(false);
-  const rowDelay = 0.28 + index * 0.12;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 22 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.55, delay: rowDelay, ease: EASE }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="group relative grid grid-cols-[1fr_auto_1fr] gap-3 md:gap-6 items-center py-6 md:py-7 border-t border-white/8 last:border-b hover:bg-white/[0.015] transition-colors"
-    >
-      {/* NOW cell */}
-      <div className="flex items-start gap-3 md:gap-4 min-w-0">
-        <div className="shrink-0 w-9 h-9 md:w-10 md:h-10 rounded-xl border border-white/10 flex items-center justify-center text-white/40 group-hover:border-white/25 group-hover:text-white/70 transition-colors">
-          <Icon className="w-4 h-4 md:w-[18px] md:h-[18px]" />
-        </div>
-        <div className="min-w-0">
-          <div className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-white/30 mb-1.5">{domain.domain}</div>
-          <div className="flex items-baseline gap-3">
-            <span className="text-[26px] md:text-[38px] font-display font-medium leading-none text-white/90 tabular-nums">{domain.now.stat}</span>
-            <span className="text-[12px] md:text-[13px] text-white/45 font-medium leading-[1.5] hidden sm:block max-w-[230px]">{domain.now.caption}</span>
-          </div>
-          <span className="sm:hidden text-[11px] text-white/40 font-medium leading-[1.5] mt-1 block">{domain.now.caption}</span>
-        </div>
-      </div>
-
-      {/* Center — animated transform bar + arrow */}
-      <div className="relative flex flex-col items-center justify-center w-8 md:w-12">
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={isInView ? { scaleX: 1 } : {}}
-          transition={{ duration: 0.6, delay: rowDelay + 0.2, ease: EASE }}
-          className="origin-left h-px w-full bg-gradient-to-r from-white/15 via-[#FF4D00]/60 to-[#FF4D00] mb-2"
-        />
-        <motion.div
-          animate={{ x: hovered ? 3 : 0, scale: hovered ? 1.12 : 1 }}
-          transition={{ duration: 0.25, ease: EASE }}
-          className="w-6 h-6 rounded-full bg-[#FF4D00] flex items-center justify-center shadow-[0_0_20px_rgba(255,77,0,0.45)]"
-        >
-          <ArrowRight className="w-3 h-3 text-white" />
-        </motion.div>
-      </div>
-
-      {/* FUTURE cell */}
-      <div className="flex items-start justify-end gap-3 md:gap-4 text-right min-w-0">
-        <div className="min-w-0">
-          <div className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00]/70 mb-1.5 truncate">{domain.venture}</div>
-          <div className="flex items-baseline gap-3 justify-end">
-            <span className="text-[12px] md:text-[13px] text-white/55 font-medium leading-[1.5] hidden sm:block max-w-[230px]">{domain.future.caption}</span>
-            <span className="text-[26px] md:text-[38px] font-display font-medium leading-none text-[#FF4D00] tabular-nums whitespace-nowrap">{domain.future.stat}</span>
-          </div>
-          <span className="sm:hidden text-[11px] text-white/55 font-medium leading-[1.5] mt-1 block">{domain.future.caption}</span>
-        </div>
-      </div>
-    </motion.div>
   );
 }
 
