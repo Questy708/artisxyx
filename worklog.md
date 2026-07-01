@@ -384,3 +384,33 @@ VLM-verified both posters: Website poster confirms "critical technology for emer
 
 Stage Summary:
 - All 7 launch materials revised to match the actual xCelero positioning ("Critical Technology for Emerging Markets") and the real xHansa Fellowship program data (1,000 Xcitizens, 24-month deployment, 9 Civilizational Fields, 5-phase structure, Gate System, Kill Switch, the Cliff). No code changed. Nothing pushed to GitHub. VLM-verified.
+
+---
+Task ID: xhansa-launch-resources
+Agent: main
+Task: Draft possible resources for launching and running the xHansa Fellowship (applications, operations, etc.)
+
+Work Log:
+- Re-read the actual xHansa program data (programs.ts lines 32-146) to ground every resource in the real program: 1,000 Xcitizens, 24-month deployment, 100 Pods, 9 Civilizational Fields, 6 Archetypes, Crucible + 4 Gates, Kill Switch, Supremacy Clause, 3%/97% cliff, $500-$1,200 stipend.
+- Drafted 8 comprehensive resources (13,398 words total) in download/:
+
+1. **xHansa_Resource_Applicant_FAQ.md** (1,737 words) — The honest answers to every question an applicant would have: basics (is it a job? accelerator?), commitment (24-mo, no exit, forfeit equity), compensation (stipend, not salary; the cliff; the 97%), the Crucible (what it is, can you prepare), Pods (how formed, can you switch), Gates (binary, Kill Switch), Fields (the 9, can you choose), IP (League Commons), application (who should/shouldn't apply, no degree needed). Ends with "the honest part."
+
+2. **xHansa_Resource_Selection_Rubric_Typing.md** (1,551 words) — Internal. 4-dimension scoring rubric (Operating, Commitment, Field, Self-Awareness; 0-5 each, 12+ to advance). The 5-station Typing Assessment protocol (The Wreckage, The Deal, The Crowd, The Wall, The Debrief) with Archetype signals per station. Scoring matrix example. Deployment Classification rules. Decision thresholds (~10% acceptance). Assessor training + bias mitigation.
+
+3. **xHansa_Resource_Pod_Formation_Algorithm.md** (959 words) — Internal. The 5-pass deterministic algorithm: Field Bucketing (with Field Adjacency Map), Location Clustering, Archetype Balancing (greedy, target composition per ProtoCo), Risk-Flag Deconfliction, Validation. Edge cases (incomplete Pods, flat Archetypes, dropouts). Historical data feedback loop for retraining.
+
+4. **xHansa_Resource_Gate_Criteria_Kill_Switch.md** (1,757 words) — Internal. Full criteria for all 5 Gates: Gate 0 (Crucible cert — 4 criteria), Gate 1 (Minimal Version deployed + Anchor LOI + operational baseline), Gate 2 (field-specific revenue thresholds + unit economics CAC/LTV/churn + stability), Gate 3 (3+ geographies + Playbook tested + replication economics), Gate 4 (local operators + 80%+ efficiency). Kill Switch protocol (48hr timeline, reassignment options, no appeals). Reporting + transparency + escalation.
+
+5. **xHansa_Resource_Onboarding_Agreement.md** (1,281 words) — Part A: Onboarding checklist (administrative, Pod integration, ProtoCo commissioning, infrastructure, knowledge/culture). Part B: The binding Xcitizen Deployment Agreement (term, compensation, commitment, Gate system, Supremacy Clause, the cliff, Neural Link Protocol, confidentiality, code of conduct, acknowledgment with affirmation statement).
+
+6. **xHansa_Resource_Marketing_Launch_Checklist.md** (1,419 words) — Full launch timeline (pre-launch tease, launch week daily posts, sustain, close urgency). Pre-launch asset checklist. Channel plan (LinkedIn/email/partners/Twitter/press with yield targets). Geographic targeting (Tier 1/2/3 markets). 4 messaging pillars (Stakes, Model, Who It's For, Transparency). Key metrics + weekly review. Final-week urgency push. Post-launch PR.
+
+7. **xHansa_Resource_Cohort_Operations_Runbook.md** (2,065 words) — Week-by-week from pre-deployment (Week -4) through the Crucible (Weeks 1-8 with daily breakdown of The Shock and The Wall) through all 4 quarterly phases (Q1 scope/build/deploy/Gate 1, Q2 revenue/debug/Gate 2, Q3 replicate/Playbook/Gate 3, Q4 handover/cliff/Gate 4) to post-cliff. Daily/weekly/monthly/quarterly rhythms. Kill Switch watch protocol.
+
+8. **xHansa_Resource_Email_Outreach_Templates.md** (2,629 words) — Ready-to-send templates for every stakeholder: Applicant (received, shortlisted/Typing invite, deploy offer, waitlist, decline), Partner (co-promotion request, Anchor Partner LOI pitch), Media (embargoed pitch), Internal (Kill Switch notification, Keeper notification, Cycled notification). Each template is copy-paste-ready with [bracketed] customization fields.
+
+- All resources cross-reference each other and the real program data. No code changed. Nothing pushed to GitHub.
+
+Stage Summary:
+- 8-resource kit (13,398 words) covering the complete xHansa Fellowship lifecycle: applicant-facing (FAQ, application form, onboarding), internal operations (selection rubric, Pod formation algorithm, Gate criteria, cohort runbook), marketing (launch checklist, channel plan), and communications (11 email/outreach templates). Grounded entirely in the actual program data from programs.ts. Ready to use for launching and running Cohort 3, 2025.
