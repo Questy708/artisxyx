@@ -964,7 +964,7 @@ function BlueprintMap({
         className="w-full overflow-x-auto bg-white [-webkit-overflow-scrolling:touch]"
       >
       <div
-        className="relative min-w-[600px] md:min-w-0"
+        className="relative w-full md:min-w-[600px]"
         style={mapTransform}
         onClick={(e) => {
           if (e.target === e.currentTarget) {

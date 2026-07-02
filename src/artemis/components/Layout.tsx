@@ -149,6 +149,11 @@ function Nav() {
         e.preventDefault();
         setIsSearchOpen((prev) => !prev);
       }
+      // Hidden admin access: Ctrl+Shift+A
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === "A" || e.key === "a")) {
+        e.preventDefault();
+        window.location.hash = "/admin";
+      }
       if (e.key === "Escape") {
         setIsMobileMenuOpen(false);
       }
@@ -619,9 +624,6 @@ function Footer() {
               <span className="text-[10px] font-mono font-bold tracking-[0.15em] uppercase text-white/25">Legal</span>
               <Link to="/" className="text-[13px] font-medium text-white/60 hover:text-white transition-colors">Terms</Link>
               <Link to="/" className="text-[13px] font-medium text-white/60 hover:text-white transition-colors">Privacy</Link>
-              <Link to="/admin" className="text-[13px] font-medium text-white/40 hover:text-[#FF4D00] transition-colors inline-flex items-center gap-1.5">
-                <Shield className="w-3 h-3" /> Admin
-              </Link>
             </div>
           </div>
         </div>

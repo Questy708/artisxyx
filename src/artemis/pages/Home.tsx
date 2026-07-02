@@ -1000,7 +1000,7 @@ const nowFutureSlides = [
     now: {
       stat: "73 yrs",
       caption: "Global life expectancy is seventy-three — and climbing only for the wealthy. The diseases of aging — dementia, cancer, heart failure — consume the majority of every health budget on earth. We spend a trillion dollars a year managing decline.",
-      image: "https://images.unsplash.com/photo-1582719471384-894fbb16e074?auto=format&fit=crop&w=1920&q=80",
+      image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1920&q=80",
       position: "center 45%",
     },
     future: {
@@ -1075,7 +1075,7 @@ const nowFutureSlides = [
     now: {
       stat: "12",
       caption: "Twelve humans have walked on the Moon — and none since 1972. The last bootprint is older than most of the people reading this. We went, planted a flag, went home — and then stopped. The launch pad rusted for fifty years.",
-      image: "https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&w=1920&q=80",
+      image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?auto=format&fit=crop&w=1920&q=80",
       position: "center 45%",
     },
     future: {
@@ -1210,7 +1210,7 @@ const nowFutureSlides = [
     now: {
       stat: "0.1%",
       caption: "We spend a tenth of a percent of global GDP on basic research — the well everything else drinks from. A new particle accelerator costs more than a hundred universities can afford. The discoveries that could unlock the next century sit in a queue behind the budget of a single quarter's profits.",
-      image: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1920&q=80",
+      image: "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?auto=format&fit=crop&w=1920&q=80",
       position: "center 45%",
     },
     future: {
@@ -1218,6 +1218,51 @@ const nowFutureSlides = [
       caption: "AI runs a billion experiments in simulation before a single one is done in a lab. A fusion breakthrough that took sixty years of human effort arrives in six months of machine effort. The rate of discovery — flat for half a century — bends vertical.",
       image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=1920&q=80",
       position: "center 45%",
+    },
+  },
+  {
+    domain: "SpaceX & Starship",
+    now: {
+      stat: "1 planet",
+      caption: "All of human civilization, all of our history, all of our dreams — on a single rock. One asteroid, one pandemic, one nuclear exchange, and it's over. We have no backup. We have no second chance. We are one species on one planet with no exit.",
+      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+    future: {
+      stat: "Multi-planetary",
+      caption: "Starship — fully reusable, refuelable in orbit, capable of carrying 100 people to Mars. The cost of access to space drops by 99%. The species becomes multi-planetary. The backup is no longer a server in Iceland; it is a world.",
+      image: "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1920&q=80",
+      position: "center 40%",
+    },
+  },
+  {
+    domain: "Mega-Infrastructure",
+    now: {
+      stat: "Fragmented",
+      caption: "The world's infrastructure is a patchwork — built by different nations, in different centuries, to different standards. Roads end at borders. Power grids don't connect. Rail gauges change. The global supply chain works despite the infrastructure, not because of it.",
+      image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+    future: {
+      stat: "Connected",
+      caption: "China's Belt & Road: 140+ countries, $1T in infrastructure, high-speed rail from Beijing to London. Trans-African highways. Cross-continental power grids. The world's infrastructure becomes one connected system — goods, power, data, and people flowing at the speed of engineering, not the speed of bureaucracy.",
+      image: "https://images.unsplash.com/photo-1606112219348-204d7d8b94ee?auto=format&fit=crop&w=1920&q=80",
+      position: "center 40%",
+    },
+  },
+  {
+    domain: "Future Cities",
+    now: {
+      stat: "1.1B slums",
+      caption: "A billion people live in housing that would be condemned anywhere else. The slum is the fastest-growing settlement type on earth. Cities grow by accident — sprawl, congestion, pollution, inequality. The city of the future is a slogan, not a blueprint.",
+      image: "https://images.unsplash.com/photo-1496564203457-11bb12075d90?auto=format&fit=crop&w=1920&q=80",
+      position: "center 45%",
+    },
+    future: {
+      stat: "Engineered",
+      caption: "Floating cities on the ocean. Vertical farms stacked forty stories high. Roads that charge vehicles wirelessly. Buildings that sequester carbon. Cities that grow like coral — modular, self-powering, self-cleaning. The city is no longer a drain on the grid; it is the grid.",
+      image: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=1920&q=80",
+      position: "center 40%",
     },
   },
   {
