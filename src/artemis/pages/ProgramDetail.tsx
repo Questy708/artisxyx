@@ -484,6 +484,119 @@ function IdealCandidates({ title, traits, programId, navigate }: { title: string
   );
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   AFTER APPLY — timeline of what happens after submission
+   Replaces the old "BUILD THE EXCEPTIONAL" banner with something useful.
+   ══════════════════════════════════════════════════════════════════════════ */
+function AfterApplySection({ programId, programTitle, navigate }: { programId: string; programTitle: string; navigate: (path: string) => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+
+  const steps = [
+    { num: "01", title: "Application Received", desc: "You get a confirmation within 1 hour. We read every application — no auto-rejects.", timeline: "Day 0" },
+    { num: "02", title: "Review", desc: "Our team reviews your application against the selection criteria. No credentials required — we look for evidence of operating.", timeline: "Within 21 days" },
+    { num: "03", title: "Assessment", desc: "If shortlisted, you'll be invited to an assessment (format varies by program). This is where we see how you operate.", timeline: "Weeks 3–5" },
+    { num: "04", title: "Decision", desc: "Accept, waitlist, or decline. You'll hear from us regardless of outcome — no ghosting.", timeline: "Weeks 5–6" },
+    { num: "05", title: "Onboarding", desc: "If accepted: paperwork, logistics, travel arrangements. You're deployed.", timeline: "Weeks 6–8" },
+  ];
+
+  const ctaText = programId === 'xhansa-fellowship' ? 'Deploy Now' :
+    programId === 'xcelero-accelerator' ? 'Accelerate Now' :
+    programId === 'inception-studios' ? 'Co-Create Now' :
+    programId === 'quest-fellowship' ? 'Begin Your Quest' :
+    programId === 'xroute-expedition' ? 'Join the Expedition' : 'Apply Now';
+
+  const applyRoutes: Record<string, string> = {
+    'xhansa-fellowship': '/apply/xhansa',
+    'xcelero-accelerator': '/apply/accelerator',
+    'inception-studios': '/apply/inception-studios',
+    'quest-fellowship': '/apply/quest-fellowship',
+    'xroute-expedition': '/apply/xroute-expedition',
+  };
+
+  return (
+    <section className="py-0">
+      <div ref={ref} className="max-w-[1400px] mx-auto bg-[#0A0A0A] text-white px-6 md:px-12 lg:px-16 py-20 md:py-28 rounded-sm relative overflow-hidden">
+        {/* Ambient glow */}
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] rounded-full bg-[#FF4D00]/8 blur-[120px] pointer-events-none" />
+
+        <div className="relative z-10 max-w-3xl mx-auto text-center mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, ease: EASE }}
+            className="flex items-center justify-center gap-3 mb-6"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00]" />
+            <span className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-white/50">What Happens Next</span>
+          </motion.div>
+          <motion.h2
+            initial={{ opacity: 0, y: 18 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.65, delay: 0.05, ease: EASE }}
+            className="font-display text-3xl md:text-5xl font-medium tracking-tight leading-[1.05] mb-5"
+          >
+            From application to deployment.<br />
+            <span className="text-white/35">Here's the path.</span>
+          </motion.h2>
+        </div>
+
+        {/* Timeline steps */}
+        <div className="relative z-10 max-w-2xl mx-auto">
+          {steps.map((step, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, x: -20 }}
+              animate={isInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.2 + idx * 0.1, ease: EASE }}
+              className="flex gap-5 items-start pb-8 last:pb-0 relative"
+            >
+              {/* Connecting line */}
+              {idx < steps.length - 1 && (
+                <div className="absolute left-[19px] top-12 bottom-0 w-px bg-white/10" />
+              )}
+              {/* Number badge */}
+              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[#FF4D00] flex items-center justify-center font-display text-sm font-bold text-white z-10">
+                {step.num}
+              </div>
+              {/* Content */}
+              <div className="flex-1 pt-1">
+                <div className="flex items-baseline justify-between gap-4 mb-1">
+                  <h3 className="font-display text-lg font-medium text-white">{step.title}</h3>
+                  <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00]/70 flex-shrink-0">{step.timeline}</span>
+                </div>
+                <p className="text-sm text-white/45 leading-relaxed">{step.desc}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.8, ease: EASE }}
+          className="relative z-10 text-center mt-14"
+        >
+          <button
+            onClick={() => {
+              const route = applyRoutes[programId];
+              if (route) navigate(route);
+            }}
+            className="group inline-flex items-center gap-2 px-8 py-4 bg-[#FF4D00] text-white text-sm font-bold tracking-wider rounded-full hover:bg-[#FF6A28] transition-colors"
+          >
+            {ctaText}
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+          </button>
+          <p className="text-xs text-white/30 mt-4">
+            Questions? Email <span className="text-[#FF4D00]/60">apply@xcelero.com</span>
+          </p>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 export function ProgramDetail() {
   const { params, navigate } = useRouter();
   const id = params?.id;
@@ -1153,33 +1266,9 @@ export function ProgramDetail() {
            </div>
         </section>
       )}
-      
-      {/* ── Build the exceptional today Footer Banner ── */}
-      <section>
-         <div className="max-w-[1400px] mx-auto relative h-[800px] flex items-center justify-center overflow-hidden rounded-sm">
-            <div className="absolute inset-0 bg-[#1B1C1E]">
-               <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop" alt="Build" className="w-full h-full object-cover opacity-30 mix-blend-luminosity" />
-            </div>
-            <div className="relative z-10 text-center space-y-12">
-               <h2 className="text-3xl sm:text-5xl md:text-[80px] lg:text-[120px] font-display font-medium text-white uppercase leading-[0.9] tracking-tighter">
-                  BUILD THE <br /> EXCEPTIONAL <br /> TODAY AND <br /> LAUNCH NOW
-               </h2>
-               <button onClick={() => {
-                 const applyRoutes: Record<string, string> = {
-                   'xhansa-fellowship': '/apply/xhansa',
-                   'xcelero-accelerator': '/apply/accelerator',
-                   'inception-studios': '/apply/inception-studios',
-                   'quest-fellowship': '/apply/quest-fellowship',
-                 };
-                 const route = applyRoutes[program.id];
-                 if (route) navigate(route); else openApplyModal();
-               }} className="button relative inline-flex items-center justify-center bg-white text-[#1B1C1E] px-12 py-5 text-sm font-bold uppercase tracking-widest transition-transform hover:scale-105 group overflow-hidden rounded-md">
-                  <span className="relative z-10 transition-colors group-hover:text-white">Apply</span>
-                  <div className="button-gradient !opacity-0 group-hover:!opacity-100 transition-opacity" />
-               </button>
-            </div>
-         </div>
-      </section>
+
+      {/* ── What Happens After You Apply ── */}
+      <AfterApplySection programId={program.id} programTitle={program.title} navigate={navigate} />
 
       {/* ── APPLICATION MODAL ── */}
       <AnimatePresence>
