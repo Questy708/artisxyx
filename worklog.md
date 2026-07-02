@@ -439,3 +439,27 @@ VERIFICATION (Agent Browser, desktop 1440px):
 
 Stage Summary:
 - Live xHansa Fellowship application form is built and working at /#/apply/xhansa. 7-step multi-step wizard with the full Hansa dark/orange branding, all 8 form sections, per-step validation, rate limiting, duplicate detection, success confirmation, and DB storage. Cohort timeline updated to Cohort 1 (2026), Cohort 3 (2027), Cohort 4 (2028). Apply Now buttons on the program detail page link directly to the form. Admin API for viewing applications created. Handles 5k+ entries easily (SQLite, batch-processed, no concurrency issues). Browser-verified end-to-end.
+
+---
+Task ID: all-program-application-forms
+Agent: main
+Task: Build application forms for all programs (xCelero Accelerator, Inception Studios, Quest Fellowship) in the same format as xHansa, and wire all Apply buttons on individual program pages to their respective forms
+
+Work Log:
+- Built a shared ProgramApplyForm component (src/artemis/pages/ProgramApplyForm.tsx) — a configurable 4-step multi-step wizard (About You → Your Motivation → Program-Specific Questions → Review & Submit) with the same dark/orange Hansa design, framer-motion transitions, per-step validation, and success screen.
+- Created 3 program-specific form pages, each with tailored questions based on the actual program data:
+  1. AcceleratorApply.tsx — 5 venture-specific questions (venture description, traction, team, why accelerator, use of funds). Deal terms: 4 months, $620k package, 3% equity, 19 cities. "This is for you if" list from the actual isForYouIf data.
+  2. InceptionStudiosApply.tsx — 5 expertise/vision questions (domain expertise, systemic bottleneck, partner experience, ProtoCo idea, IP perspective). Deal terms: Studio model, Fortune 500 partners, IP held by Studio initially.
+  3. QuestFellowshipApply.tsx — 5 idea/Ikigai questions (Ikigai statement, venture idea, target market, commitment level, impact vision). Deal terms: Queen's University, semester-long, MIT 24-step, 3 stages (Explore→Ignite→Launch).
+- Added all 3 routes to page.tsx: /apply/accelerator, /apply/inception-studios, /apply/quest-fellowship.
+- Rewired BOTH Apply buttons on ProgramDetail.tsx (the "Apply Now" in Application Cycles + the "Apply" final CTA) to use a route lookup table that maps each program ID to its form URL. All 4 programs now route to their respective forms; unknown programs fall back to the generic modal.
+- The forms submit to the existing /api/programs/apply API (already built, validated, and rate-limited from a prior session).
+
+VERIFICATION (Agent Browser, desktop 1440px):
+- All 4 forms load: /#/apply/xhansa ✓, /#/apply/accelerator ✓, /#/apply/inception-studios ✓, /#/apply/quest-fellowship ✓
+- All 4 Apply buttons on program pages work: xHansa → /apply/xhansa ✓, Accelerator → /apply/accelerator ✓, Inception → /apply/inception-studios ✓, Quest → /apply/quest-fellowship ✓
+- End-to-end test (Accelerator): filled all 4 steps → submitted → success screen → confirmed in DB (Jane Smith, jane.smith@example.com, xcelero-accelerator, pending) → POST /api/programs/apply returned 201
+- Lint: 0 errors. dev.log: zero runtime errors.
+
+Stage Summary:
+- All 4 programs now have live, tailored application forms. Each form has program-specific questions grounded in the actual program data (not generic). All Apply buttons on all program detail pages navigate to the correct form. xHansa uses its own 7-step form (with the commitment/fields/archetypes sections); the other 3 use the shared 4-step ProgramApplyForm with per-program configuration. All forms submit to the DB via the existing API. Browser-verified end-to-end.
