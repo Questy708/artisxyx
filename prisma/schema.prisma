@@ -106,6 +106,69 @@ model ProgramApplication {
   updatedAt DateTime @updatedAt
 }
 
+// ─── xHansa Fellowship Application Model ───
+
+model XHansaApplication {
+  id              String   @id @default(cuid())
+  cohort          String   // "Cohort 1, 2026", "Cohort 3, 2027", etc.
+
+  // Section 1: Who You Are
+  fullName        String
+  email           String
+  phone           String?
+  location        String?
+  dateOfBirth     String?
+  links           String?  // LinkedIn / GitHub / portfolio
+
+  // Section 2: What You've Operated
+  mostSignificantBuild String?  // 200-400 words
+  buildLink       String?
+  currentOperations String?
+
+  // Section 3: The Commitment (accepted/questions/declined for each)
+  commitment24mo      String  // yes / questions / no
+  stipendAcceptance   String
+  supremacyClause     String
+  gateSystem          String
+  cliffAcceptance     String
+  cruciblePreparedness String
+
+  // Section 4: The Nine Civilizational Fields
+  fieldPreferences    String?  // comma-separated field names
+  whyFields           String?  // 100-200 words
+  whatWouldYouBuild   String?  // 200-400 words
+
+  // Section 5: The Six Archetypes
+  archetypeSelf       String?  // Pilot / Builder / Hustler / Operator / Tracker / Comms
+  archetypeStory      String?  // 150-300 words
+  weakestArchetype    String?
+
+  // Section 6: The Honest Part
+  hardestThing        String?
+  cognitiveExhaustion String?
+  disagreementBelief  String?
+  whyXHansa           String?
+  ifRejected          String?
+
+  // Section 7: Referral (optional)
+  referrer            String?
+  voucher             String?
+
+  // Section 8: Anything Else
+  additionalInfo      String?
+
+  // Admin
+  status    String   @default("pending") // pending, reviewing, contacted, accepted, declined, waitlisted
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([cohort])
+  @@index([status])
+  @@index([email])
+  @@index([createdAt(sort: Desc)])
+}
+
 // ─── Town Square / Forum Models ───
 
 model ForumUser {

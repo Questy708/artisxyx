@@ -24,6 +24,7 @@ import { About } from "@/artemis/pages/About";
 import { InvestorDashboard } from "@/artemis/pages/InvestorDashboard";
 import { AdminDashboard } from "@/artemis/pages/AdminDashboard";
 import { Infrastructure } from "@/artemis/pages/Infrastructure";
+import { XHansaApply } from "@/artemis/pages/xHansaApply";
 
 function Router() {
   const { path } = useRouter();
@@ -51,6 +52,7 @@ function Router() {
     if (path === "/townsquare") return <TownSquare />;
     if (path === "/about") return <About />;
     if (path === "/infrastructure") return <Infrastructure />;
+    if (path === "/apply/xhansa") return <XHansaApply />;
     if (path === "/admin") return <AdminDashboard />;
     // 404 fallback — branded dark experience
     return (

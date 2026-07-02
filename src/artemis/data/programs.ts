@@ -128,8 +128,9 @@ export const programsData: ProgramDetail[] = [
       { name: "TerraHash", desc: "the blockchain layer for managing independent land registries.", focus: "Land Registry", field: "Built Env", funding: "$3M Seed", teamSize: "15-30", categories: "Blockchain / GovTech", location: "Accra" }
     ],
     applicationCycles: [
-      { cycle: "Cohort 3, 2025", opens: "Mar 1, 2025", closes: "May 15, 2025", cohortStart: "Jul 2025", status: "open" },
-      { cycle: "Cohort 4, 2026", opens: "Mar 1, 2026", closes: "May 15, 2026", cohortStart: "Jul 2026", status: "upcoming" },
+      { cycle: "Cohort 1, 2026", opens: "Mar 1, 2026", closes: "May 15, 2026", cohortStart: "Jul 2026", status: "open" },
+      { cycle: "Cohort 3, 2027", opens: "Mar 1, 2027", closes: "May 15, 2027", cohortStart: "Jul 2027", status: "upcoming" },
+      { cycle: "Cohort 4, 2028", opens: "Mar 1, 2028", closes: "May 15, 2028", cohortStart: "Jul 2028", status: "upcoming" },
     ],
     whatYouGet: [
       { title: "Needs-Based Stipend", desc: "$500–$1,200/month operational stipend. No salary, no benefits. Mission-deployed compensation tied to outcomes, not time served.", icon: "Zap" },

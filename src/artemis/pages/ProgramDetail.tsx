@@ -683,7 +683,7 @@ export function ProgramDetail() {
               </div>
               <div>
                 {program.applicationCycles!.some(c => c.status === 'open') && (
-                  <button onClick={openApplyModal} className="inline-flex items-center justify-center gap-2 bg-[#FF4D00] text-white px-8 py-4 rounded-full text-sm font-bold uppercase tracking-widest hover:bg-[#E54300] transition-colors">
+                  <button onClick={() => program.id === 'xhansa-fellowship' ? navigate('/apply/xhansa') : openApplyModal()} className="inline-flex items-center justify-center gap-2 bg-[#FF4D00] text-white px-8 py-4 rounded-full text-sm font-bold uppercase tracking-widest hover:bg-[#E54300] transition-colors">
                     Apply Now <ArrowRight className="w-4 h-4" />
                   </button>
                 )}
@@ -1118,7 +1118,7 @@ export function ProgramDetail() {
                <h2 className="text-3xl sm:text-5xl md:text-[80px] lg:text-[120px] font-display font-medium text-white uppercase leading-[0.9] tracking-tighter">
                   BUILD THE <br /> EXCEPTIONAL <br /> TODAY AND <br /> LAUNCH NOW
                </h2>
-               <button onClick={openApplyModal} className="button relative inline-flex items-center justify-center bg-white text-[#1B1C1E] px-12 py-5 text-sm font-bold uppercase tracking-widest transition-transform hover:scale-105 group overflow-hidden rounded-md">
+               <button onClick={() => program.id === 'xhansa-fellowship' ? navigate('/apply/xhansa') : openApplyModal()} className="button relative inline-flex items-center justify-center bg-white text-[#1B1C1E] px-12 py-5 text-sm font-bold uppercase tracking-widest transition-transform hover:scale-105 group overflow-hidden rounded-md">
                   <span className="relative z-10 transition-colors group-hover:text-white">Apply</span>
                   <div className="button-gradient !opacity-0 group-hover:!opacity-100 transition-opacity" />
                </button>
