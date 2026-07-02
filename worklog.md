@@ -463,3 +463,20 @@ VERIFICATION (Agent Browser, desktop 1440px):
 
 Stage Summary:
 - All 4 programs now have live, tailored application forms. Each form has program-specific questions grounded in the actual program data (not generic). All Apply buttons on all program detail pages navigate to the correct form. xHansa uses its own 7-step form (with the commitment/fields/archetypes sections); the other 3 use the shared 4-step ProgramApplyForm with per-program configuration. All forms submit to the DB via the existing API. Browser-verified end-to-end.
+
+---
+Task ID: restore-capital-layout
+Agent: main
+Task: Restore the Capital page's first two sections (Hero + CapitalBridge) to their original layout, after an experimental redesign; keep the Capital2/Routes2 removal; push all changes to GitHub.
+
+Work Log:
+- Read prior worklog and confirmed prior session removed Capital2.tsx/Routes2.tsx and added an experimental asymmetric redesign to Capital.tsx Hero + CapitalBridge (committed in auto-commit 810b349, unpushed).
+- Restored Capital.tsx Hero to the original centered editorial layout: "xCelero Capital" label, centered headline "Invest in critical technology from $500*", original paragraph ("...xCelero is designed to give you access to that pipeline."), 5-stat row ($4B Capital target / 238 Projected ventures / 39+ Countries / 6 Investment vehicles / 190 Route hubs), and two pill buttons (Invest Now, Get Updates).
+- Restored Capital.tsx CapitalBridge to the original: 3 overlapping grayscale images (financial analytics / collaborative workspace / global network) + two-column thesis (text left, dotted-matrix world map with Africa highlighted in orange right) + "$4B Target · 6 Vehicles Planned" label.
+- Removed the experimental constants (capitalThesisImages, thesisVehicles) and restored the original constants (capitalBridgeImages, capitalWorldDots).
+- Verified with Agent Browser (desktop 1440x900): Hero innerText confirms full original content (5 stats, original paragraph, both buttons); CapitalBridge confirms 3 images, dotted SVG map, thesis text, traditional-VC paragraph. VLM confirms centered hero, no right-side portrait image, two buttons.
+- Lint: 0 errors. dev.log: zero runtime errors. Browser console: clean.
+- Capital2/Routes2 removal already committed (in 810b349); only Capital.tsx restore is the new change.
+
+Stage Summary:
+- Capital page first two sections restored to original layout (centered Hero + 3-image strip + dotted world map CapitalBridge). Capital2/Routes2 removal stands (committed). Ready to commit restore + push all to GitHub.

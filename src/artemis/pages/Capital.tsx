@@ -378,7 +378,7 @@ export function Capital() {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   HERO, Asymmetric editorial split — copy left, featured image right
+   HERO, Editorial centered with serif accent
    ══════════════════════════════════════════════════════════════════════════ */
 function Hero({ onSubscribe }: { onSubscribe: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -386,223 +386,244 @@ function Hero({ onSubscribe }: { onSubscribe: () => void }) {
 
   const heroStats = [
     { value: capitalTarget, label: "Capital target" },
-    { value: String(totalVentures), label: "Ventures" },
+    { value: String(totalVentures), label: "Projected ventures" },
     { value: `${totalCountries}+`, label: "Countries" },
-    { value: "6", label: "Vehicles" },
+    { value: "6", label: "Investment vehicles" },
+    { value: String(totalHubs), label: "Route hubs" },
   ];
 
   return (
-    <section className="relative bg-white text-[#111111] pt-24 pb-16 sm:pt-32 sm:pb-20 md:pt-40 md:pb-28 px-6 md:px-12 lg:px-20 border-b border-[#111111]/8 overflow-hidden">
-      <div ref={ref} className="w-full max-w-[1400px] mx-auto">
-        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-          {/* Left: editorial copy */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-7"
-          >
-            <span className="text-[10px] font-mono font-bold tracking-[0.25em] uppercase text-[#FF4D00] mb-6 md:mb-8 block">
-              xCelero Capital
-            </span>
+    <section className="relative bg-white text-[#111111] pt-24 pb-16 sm:pt-32 sm:pb-20 md:pt-44 md:pb-28 px-6 md:px-12 lg:px-20 border-b border-[#111111]/8">
+      <div ref={ref} className="w-full max-w-4xl mx-auto text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="flex flex-col items-center"
+        >
+          {/* Small label */}
+          <span className="text-[10px] font-mono font-bold tracking-[0.25em] uppercase text-[#FF4D00] mb-8 md:mb-12">
+            xCelero Capital
+          </span>
 
-            <h1 className="text-[40px] sm:text-[52px] md:text-[64px] lg:text-[76px] leading-[1.02] font-display font-medium tracking-[-0.03em] mb-7 md:mb-9">
-              Invest in{" "}
-              <em className="italic font-serif text-[#FF4D00]">critical</em>{" "}
-              technology from $500*
-            </h1>
+          <h1 className="text-[36px] sm:text-[48px] md:text-[60px] lg:text-[72px] leading-[1.05] font-display font-medium tracking-[-0.02em] mb-8 md:mb-10">
+            Invest in{" "}
+            <em className="italic font-serif text-[#FF4D00]">critical</em>{" "}
+            technology from $500*
+          </h1>
 
-            <p className="text-base sm:text-lg md:text-xl leading-[1.6] text-[#111111]/55 font-medium max-w-xl mb-9 md:mb-11">
-              Six investment vehicles being structured. One thesis: the technology that defines
-              the next century will be built in the markets that need it most.
-            </p>
+          <p className="text-base sm:text-lg md:text-xl lg:text-[22px] leading-[1.6] text-[#111111]/50 font-medium max-w-2xl mb-10 sm:mb-14 md:mb-20">
+            Six investment vehicles being structured. One thesis: the technology that defines
+            the next century will be built in the markets that need it most.
+            xCelero is designed to give you access to that pipeline.
+          </p>
 
-            <div className="flex flex-wrap gap-3 items-center mb-10 md:mb-12">
-              <Link
-                to="#invest-tiers"
-                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                  e.preventDefault();
-                  document
-                    .getElementById("invest-tiers")
-                    ?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="inline-flex items-center gap-2 px-7 py-3.5 bg-[#111111] text-white text-[12px] font-bold uppercase tracking-[0.12em] rounded-full hover:bg-[#FF4D00] transition-all hover:scale-105"
+          {/* Stats metrics row, matching Route page style */}
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-5 sm:gap-x-10 md:gap-x-16 mb-10 sm:mb-14 md:mb-20">
+            {heroStats.map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 10 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: 0.4 + i * 0.08, ease: "easeOut" }}
+                className="text-center min-w-[60px]"
               >
-                Invest Now
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <button
-                onClick={onSubscribe}
-                className="inline-flex items-center gap-2 px-7 py-3.5 border border-[#111111]/20 text-[12px] font-bold uppercase tracking-[0.12em] rounded-full hover:border-[#111111] hover:bg-[#111111] hover:text-white transition-all bg-white hover:scale-105"
-              >
-                Get Updates
-                <Mail className="w-4 h-4" />
-              </button>
-            </div>
+                <div className="text-[26px] sm:text-[32px] md:text-[40px] font-display font-medium tracking-[-0.02em] text-[#111111]">
+                  {stat.value}
+                </div>
+                <div className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#111111]/35 mt-1">
+                  {stat.label}
+                </div>
+              </motion.div>
+            ))}
+          </div>
 
-            {/* Compact stats row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-5 max-w-xl">
-              {heroStats.map((stat, i) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.5, delay: 0.4 + i * 0.08, ease: "easeOut" }}
-                >
-                  <div className="text-[24px] sm:text-[28px] md:text-[32px] font-display font-medium tracking-[-0.02em] text-[#111111] leading-none">
-                    {stat.value}
-                  </div>
-                  <div className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#111111]/35 mt-2">
-                    {stat.label}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Right: large featured image */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={isInView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-5 relative"
-          >
-            <div className="relative aspect-[4/5] overflow-hidden rounded-3xl shadow-2xl bg-[#F5F5F5]">
-              <img
-                src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&w=1000&q=80"
-                alt="xCelero Capital deployment workspace"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/30 via-transparent to-transparent" />
-            </div>
-            {/* Floating accent badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute -bottom-5 -left-3 sm:-left-6 bg-white rounded-2xl shadow-xl px-5 py-4 border border-[#111111]/8"
+          <div className="flex flex-wrap gap-4 items-center justify-center">
+            <Link
+              to="#invest-tiers"
+              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                e.preventDefault();
+                document
+                  .getElementById("invest-tiers")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="inline-flex items-center gap-2 px-8 py-4 bg-[#111111] text-white text-[12px] font-bold uppercase tracking-[0.12em] rounded-full hover:bg-[#FF4D00] transition-all hover:scale-105"
             >
-              <div className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#111111]/40 mb-1">
-                Entry from
-              </div>
-              <div className="text-[26px] font-display font-medium tracking-[-0.02em] text-[#FF4D00] leading-none">
-                $500
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
+              Invest Now
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <button
+              onClick={onSubscribe}
+              className="inline-flex items-center gap-2 px-8 py-4 border border-[#111111]/20 text-[12px] font-bold uppercase tracking-[0.12em] rounded-full hover:border-[#111111] hover:bg-[#111111] hover:text-white transition-all bg-white hover:scale-105"
+            >
+              Get Updates
+              <Mail className="w-4 h-4" />
+            </button>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   CAPITAL BRIDGE: Two staggered images + thesis text + vehicle pills
+   CAPITAL BRIDGE: Image strip + two-column capital thesis with dotted map
    ══════════════════════════════════════════════════════════════════════════ */
 
-const capitalThesisImages = [
+const capitalBridgeImages = [
   {
     src: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
-    alt: "Capital deployment analytics",
+    alt: "Financial analytics",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&w=800&q=80",
+    alt: "Collaborative workspace",
   },
   {
     src: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
-    alt: "Global infrastructure network",
+    alt: "Global network",
   },
 ];
 
-const thesisVehicles = [
-  "xCelero Fund",
-  "SPV Syndicates",
-  "Thematic Funds",
-  "Catalyst Notes",
-  "Non-Dilutive Desk",
-  "Anchor Mandate",
-];
+/* Dot-matrix world map for Capital page */
+const capitalWorldDots = (() => {
+  const rows = [
+    ".......##..........###.............#####..####..............",
+    "......####.........####............######.######............",
+    ".....######........#####...........########.######..........",
+    ".....#######.......#####..........#########..######.........",
+    "....#########......######.........#########...######........",
+    "....##########.....#######........#########....#####........",
+    "...############....########.......########.....#####........",
+    "...############....########.......########......####........",
+    "....###########....#########......#######.......####........",
+    "....##########.....##########.....######........###.........",
+    ".....#########.....##########.....######........###.........",
+    "......########.....###########....#####.........##..........",
+    ".......#######.....###########....#####.........##..........",
+    "........######.....############...######.........#..........",
+    ".........#####.....####.#####....########...................",
+    "..........####.....####..####...#########...................",
+    "...........###.....####...####..#########...................",
+    "............##.....####....###..########....................",
+    ".............#......###....###..#######.....................",
+    "....................###.....##...######.....................",
+    ".....................##.....##...#####......................",
+    "......................##.....#...####.......................",
+    ".......................#.........###........................",
+    "................................##.........................",
+    "................................#..........................",
+    "............................................................",
+    "............................................................",
+    "............................................................",
+    "............................................................",
+    "............................................................",
+  ];
+  const dots: { row: number; col: number }[] = [];
+  rows.forEach((row, r) => {
+    [...row].forEach((ch, c) => {
+      if (ch === "#") dots.push({ row: r, col: c });
+    });
+  });
+  return dots;
+})();
 
 function CapitalBridge() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section ref={ref} className="px-6 md:px-12 lg:px-20 py-20 md:py-28 bg-[#FAFAFA]">
+    <section ref={ref} className="px-6 md:px-12 lg:px-20 pb-16 md:pb-24">
       <div className="w-full max-w-[1400px] mx-auto">
-        <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-          {/* Left: two staggered images */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-6 relative"
-          >
-            <div className="grid grid-cols-2 gap-4 md:gap-6">
-              {capitalThesisImages.map((img, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.7, delay: 0.15 + i * 0.18, ease: [0.22, 1, 0.36, 1] }}
-                  className={`aspect-[3/4] overflow-hidden rounded-2xl shadow-lg bg-[#F0F0F0] ${
-                    i === 1 ? "mt-12 md:mt-20" : ""
-                  }`}
-                >
-                  <img
-                    src={img.src}
-                    alt={img.alt}
-                    className="w-full h-full object-cover"
-                  />
-                </motion.div>
-              ))}
-            </div>
-            {/* Decorative corner accent */}
-            <div className="absolute -top-3 -left-3 w-14 h-14 border-t-2 border-l-2 border-[#FF4D00]/40 rounded-tl-2xl pointer-events-none" />
-          </motion.div>
+        {/* Image strip: three overlapping images */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="relative flex items-end justify-start gap-0 mb-16 md:mb-24"
+        >
+          {capitalBridgeImages.map((img, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.1 + i * 0.15, ease: [0.22, 1, 0.36, 1] }}
+              className={`relative overflow-hidden bg-[#F5F5F5] shadow-lg rounded-2xl ${
+                i === 0
+                  ? "w-[36%] md:w-[32%] aspect-[4/3] z-10"
+                  : i === 1
+                  ? "w-[44%] md:w-[40%] aspect-[4/3] z-30 -mt-3 -ml-[8%] md:-ml-[4%]"
+                  : "w-[36%] md:w-[32%] aspect-[4/3] z-10 -ml-[8%] md:-ml-[4%]"
+              }`}
+            >
+              <img
+                src={img.src}
+                alt={img.alt}
+                className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+              />
+            </motion.div>
+          ))}
+        </motion.div>
 
-          {/* Right: thesis text */}
+        {/* Two-column layout: text left, dotted map right */}
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          {/* Left: Capital thesis text */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-6"
           >
-            <span className="text-[10px] font-mono font-bold tracking-[0.25em] uppercase text-[#FF4D00] mb-6 block">
-              The Thesis
-            </span>
-
-            <h2 className="text-[30px] sm:text-[36px] md:text-[44px] lg:text-[52px] leading-[1.08] font-display font-medium tracking-[-0.025em] text-[#111111] mb-8">
-              Capital designed to understand the terrain,{" "}
-              <span className="text-[#111111]/30">not just the</span>{" "}
-              <em className="italic font-serif text-[#FF4D00]">return profile</em>.
-            </h2>
-
-            <p className="text-[15px] md:text-[17px] leading-[1.7] text-[#111111]/60 font-medium mb-8">
-              Traditional venture capital flows where returns are proven. xCelero is designed to
-              deploy capital where the technology is most needed, in the geographies building the
-              next century&apos;s infrastructure. Six vehicles, one thesis:{" "}
-              <span className="text-[#111111] font-semibold">
-                critical technology in the markets that need it most
-              </span>
-              .
+            <p className="text-[22px] sm:text-[28px] md:text-[34px] leading-[1.25] font-display font-medium tracking-[-0.02em] text-[#111111] mb-6 md:mb-8">
+              Capital designed to understand the terrain, not just the <span className="text-[#FF4D00]">return profile</span>.
             </p>
+            <p className="text-[15px] md:text-[17px] leading-[1.7] text-[#111111]/60 font-medium max-w-xl">
+              Traditional venture capital flows where returns are proven. xCelero is designed to deploy capital where the technology is most needed, in the geographies building the next century&apos;s infrastructure. Six vehicles, one thesis: <span className="text-[#111111] font-semibold">critical technology in the markets that need it most</span>.
+            </p>
+          </motion.div>
 
-            {/* Vehicle pills — the "and something" */}
-            <div className="border-t border-[#111111]/10 pt-7">
-              <div className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#111111]/40 mb-4">
-                Six vehicles · One thesis
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {thesisVehicles.map((v, i) => (
-                  <motion.span
-                    key={v}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.4, delay: 0.5 + i * 0.06, ease: "easeOut" }}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white border border-[#111111]/12 rounded-full text-[11px] font-semibold text-[#111111]/70 hover:border-[#FF4D00] hover:text-[#FF4D00] transition-colors cursor-default"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00]" />
-                    {v}
-                  </motion.span>
+          {/* Right: Dotted world map */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-6 flex items-center justify-center"
+          >
+            <div className="relative w-full max-w-lg">
+              <svg
+                viewBox="0 0 60 30"
+                className="w-full h-auto"
+                style={{ imageRendering: "auto" }}
+              >
+                {/* All land dots in dark color */}
+                {capitalWorldDots.map((dot, i) => (
+                  <circle
+                    key={i}
+                    cx={dot.col * 1}
+                    cy={dot.row * 1}
+                    r="0.35"
+                    className="fill-[#111111]/70"
+                  />
                 ))}
+                {/* Africa highlighted region: cols 23-33, rows 3-21 */}
+                {capitalWorldDots
+                  .filter(
+                    (d) =>
+                      d.col >= 23 && d.col <= 33 && d.row >= 3 && d.row <= 21
+                  )
+                  .map((dot, i) => (
+                    <circle
+                      key={`af-${i}`}
+                      cx={dot.col * 1}
+                      cy={dot.row * 1}
+                      r="0.4"
+                      className="fill-[#FF4D00]"
+                    />
+                  ))}
+              </svg>
+              {/* Label */}
+              <div className="absolute bottom-2 right-4 text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00]">
+                $4B Target · 6 Vehicles Planned
               </div>
             </div>
           </motion.div>
