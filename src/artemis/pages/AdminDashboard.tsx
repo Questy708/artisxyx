@@ -73,7 +73,6 @@ export function AdminDashboard() {
   const [lastRefreshed, setLastRefreshed] = useState(new Date());
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [appFilter, setAppFilter] = useState<string>("all");
   const [programFilter, setProgramFilter] = useState<string>("all");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -159,7 +158,7 @@ export function AdminDashboard() {
   };
 
   const handleExport = async (type: string) => {
-    const res = await authedFetch(`/api/admin/export?type=${type}`);
+    const res = await authedFetch(`/api/admin/export?section=${type}`);
     if (res.ok) { const blob = await res.blob(); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = `${type}.csv`; a.click(); URL.revokeObjectURL(url); }
   };
 
@@ -358,7 +357,7 @@ export function AdminDashboard() {
         </header>
 
         {/* Content area */}
-        <main className="p-5 md:p-8 max-w-[1200px] mx-auto">
+        <main className="p-5 md:p-8 max-w-[1400px] mx-auto">
           <AnimatePresence mode="wait">
             {/* OVERVIEW */}
             {activeTab === "overview" && (
@@ -445,9 +444,6 @@ export function AdminDashboard() {
                   onDelete={(id) => deleteRecord("application", id)}
                   onUpdateStatus={(id, status) => updateStatus("application", id, status)}
                   updatingStatus={updatingStatus}
-                  expandable
-                  expandedId={expandedId}
-                  onToggleExpand={setExpandedId}
                   columns={[
                     { key: "type", label: "Type", badge: true },
                     { key: "firstName", label: "Name", primary: true, format: (_v: string, row: Application) => `${row.firstName} ${row.lastName}` },
@@ -497,7 +493,6 @@ export function AdminDashboard() {
                     { key: "currentRole", label: "Role" },
                     { key: "companyName", label: "Company" },
                     { key: "location", label: "Location" },
-                    { key: "motivation", label: "Motivation", expandable: true },
                     { key: "status", label: "Status", badge: true },
                     { key: "createdAt", label: "Date", format: formatDate },
                   ]}
@@ -543,114 +538,219 @@ function StatCard({ icon, label, value, sub, loading, delay = 0, accent = false,
    DATA TABLE — Apple-style table with rounded container
    ══════════════════════════════════════════════════════════════════════════ */
 interface Column {
-  key: string; label: string; primary?: boolean; badge?: boolean; expandable?: boolean;
   format?: (value: any, row?: any) => string;
 }
 
 function DataTable<T extends { id: string; status?: string }>({
-  title, data, loading, columns, onExport, onDelete, onUpdateStatus, updatingStatus, expandable, expandedId, onToggleExpand,
+  title, data, loading, columns, onExport, onDelete, onUpdateStatus, updatingStatus,
 }: {
   title: string; data: T[]; loading: boolean; columns: Column[];
   onExport?: () => void; onDelete?: (id: string) => void;
   onUpdateStatus?: (id: string, status: string) => void; updatingStatus?: string | null;
-  expandable?: boolean; expandedId?: string | null; onToggleExpand?: (id: string | null) => void;
 }) {
   const [search, setSearch] = useState("");
+  const [selectedRow, setSelectedRow] = useState<T | null>(null);
+
   const filtered = data.filter(row =>
     columns.some(col => String(row[col.key as keyof T] ?? "").toLowerCase().includes(search.toLowerCase()))
   );
 
   return (
-    <div className="bg-white/[0.02] border border-white/5 rounded-2xl overflow-hidden">
-      {/* Table header */}
-      <div className="flex items-center justify-between gap-3 p-4 border-b border-white/5">
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          <h3 className="text-[14px] font-semibold whitespace-nowrap">{title}</h3>
-          <span className="text-[11px] font-mono text-white/30">({filtered.length})</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/20" />
-            <input
-              value={search} onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search..."
-              className="bg-white/5 border border-white/5 rounded-lg pl-8 pr-3 py-1.5 text-[12px] text-white placeholder:text-white/20 focus:outline-none focus:border-[#FF4D00]/30 w-32 sm:w-48"
-            />
+    <>
+      <div className="bg-white/[0.02] border border-white/5 rounded-2xl overflow-hidden">
+        {/* Table header */}
+        <div className="flex items-center justify-between gap-3 p-4 border-b border-white/5">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <h3 className="text-[14px] font-semibold whitespace-nowrap">{title}</h3>
+            <span className="text-[11px] font-mono text-white/30">({filtered.length})</span>
           </div>
-          {onExport && (
-            <button onClick={onExport} className="p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/5 transition-colors" title="Export CSV">
-              <Download className="w-4 h-4" />
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/20" />
+              <input
+                value={search} onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search..."
+                className="bg-white/5 border border-white/5 rounded-lg pl-8 pr-3 py-1.5 text-[12px] text-white placeholder:text-white/20 focus:outline-none focus:border-[#FF4D00]/30 w-32 sm:w-48"
+              />
+            </div>
+            {onExport && (
+              <button onClick={onExport} className="p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/5 transition-colors" title="Export CSV">
+                <Download className="w-4 h-4" />
+              </button>
+            )}
+          </div>
         </div>
+
+        {/* Table */}
+        {loading ? (
+          <div className="p-6 space-y-3">
+            {[...Array(4)].map((_, i) => <SkeletonRow key={i} />)}
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="p-12 text-center">
+            <p className="text-[13px] text-white/30">No records found.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-white/5">
+                  {columns.map(col => (
+                    <th key={col.key} className="text-left px-4 py-2.5 text-[10px] font-mono font-bold tracking-[0.1em] uppercase text-white/30 whitespace-nowrap">
+                      {col.label}
+                    </th>
+                  ))}
+                  {(onUpdateStatus || onDelete) && <th className="w-10" />}
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((row) => (
+                  <tr
+                    key={row.id}
+                    onClick={() => setSelectedRow(row)}
+                    className="border-b border-white/5 hover:bg-white/[0.04] transition-colors group cursor-pointer"
+                  >
+                    {columns.map(col => {
+                      const rawValue = row[col.key as keyof T];
+                      const formatted = col.format ? col.format(rawValue, row) : String(rawValue ?? "—");
+                      return (
+                        <td key={col.key} className={`px-4 py-3 text-[12px] ${col.primary ? "font-medium text-white" : "text-white/60"} whitespace-nowrap max-w-[220px] truncate`}>
+                          {col.badge ? <StatusPill value={formatted} /> : formatted}
+                        </td>
+                      );
+                    })}
+                    {(onUpdateStatus || onDelete) && (
+                      <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {onUpdateStatus && row.status && (
+                            <select
+                              value={row.status}
+                              onChange={(e) => onUpdateStatus(row.id, e.target.value)}
+                              disabled={updatingStatus === row.id}
+                              className="bg-white/5 border border-white/10 rounded text-[10px] text-white/60 px-1.5 py-1 focus:outline-none focus:border-[#FF4D00]/30"
+                            >
+                              <option value="pending">Pending</option>
+                              <option value="reviewing">Reviewing</option>
+                              <option value="contacted">Contacted</option>
+                              <option value="accepted">Accepted</option>
+                              <option value="declined">Declined</option>
+                            </select>
+                          )}
+                          {onDelete && (
+                            <button onClick={() => onDelete(row.id)} className="p-1 text-white/20 hover:text-red-400 transition-colors">
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
-      {/* Table */}
-      {loading ? (
-        <div className="p-6 space-y-3">
-          {[...Array(4)].map((_, i) => <SkeletonRow key={i} />)}
-        </div>
-      ) : filtered.length === 0 ? (
-        <div className="p-12 text-center">
-          <p className="text-[13px] text-white/30">No records found.</p>
-        </div>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-white/5">
-                {columns.map(col => (
-                  <th key={col.key} className="text-left px-4 py-2.5 text-[10px] font-mono font-bold tracking-[0.1em] uppercase text-white/30 whitespace-nowrap">
-                    {col.label}
-                  </th>
-                ))}
-                {(onUpdateStatus || onDelete) && <th className="w-10" />}
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((row) => (
-                <tr key={row.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
-                  {columns.map(col => {
-                    const rawValue = row[col.key as keyof T];
-                    const formatted = col.format ? col.format(rawValue, row) : String(rawValue ?? "—");
+      {/* Record Detail Modal */}
+      <AnimatePresence>
+        {selectedRow && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedRow(null)}
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-[#111] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col"
+            >
+              {/* Modal header */}
+              <div className="flex items-center justify-between p-5 border-b border-white/5">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#FF4D00]/20 flex items-center justify-center text-[14px] font-bold text-[#FF4D00]">
+                    {(String(selectedRow[columns.find(c => c.primary)?.key as keyof T] ?? "?")[0] || "?").toUpperCase()}
+                  </div>
+                  <div>
+                    <h3 className="text-[15px] font-semibold">
+                      {columns.find(c => c.primary)
+                        ? (columns.find(c => c.primary)!.format
+                            ? columns.find(c => c.primary)!.format(selectedRow[columns.find(c => c.primary)!.key as keyof T], selectedRow)
+                            : String(selectedRow[columns.find(c => c.primary)!.key as keyof T] ?? "Record"))
+                        : "Record"}
+                    </h3>
+                    <span className="text-[11px] text-white/30">{title}</span>
+                  </div>
+                </div>
+                <button onClick={() => setSelectedRow(null)} className="p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/5 transition-colors">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Modal body — all fields */}
+              <div className="flex-1 overflow-y-auto p-5">
+                <div className="space-y-3">
+                  {Object.entries(selectedRow).map(([key, value]) => {
+                    if (key === "id") return null;
+                    const col = columns.find(c => c.key === key);
+                    const displayValue = col?.format ? col.format(value, selectedRow) : String(value ?? "—");
+                    const isLong = String(value ?? "").length > 80;
                     return (
-                      <td key={col.key} className={`px-4 py-3 text-[12px] ${col.primary ? "font-medium text-white" : "text-white/60"} whitespace-nowrap max-w-[200px] truncate`}>
-                        {col.badge ? <StatusPill value={formatted} /> : formatted}
-                      </td>
+                      <div key={key} className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4 py-2 border-b border-white/5">
+                        <span className="text-[10px] font-mono font-bold tracking-[0.15em] uppercase text-white/30 sm:w-40 flex-shrink-0 pt-0.5">
+                          {key.replace(/([A-Z])/g, " $1").replace(/^./, c => c.toUpperCase())}
+                        </span>
+                        <span className={`text-[13px] ${isLong ? "text-white/70 leading-relaxed whitespace-pre-wrap" : "text-white/90 font-medium"} flex-1`}>
+                          {col?.badge ? <StatusPill value={displayValue} /> : displayValue}
+                        </span>
+                      </div>
                     );
                   })}
-                  {(onUpdateStatus || onDelete) && (
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        {onUpdateStatus && row.status && (
-                          <select
-                            value={row.status}
-                            onChange={(e) => onUpdateStatus(row.id, e.target.value)}
-                            disabled={updatingStatus === row.id}
-                            className="bg-white/5 border border-white/10 rounded text-[10px] text-white/60 px-1.5 py-1 focus:outline-none focus:border-[#FF4D00]/30"
-                          >
-                            <option value="pending">Pending</option>
-                            <option value="reviewing">Reviewing</option>
-                            <option value="contacted">Contacted</option>
-                            <option value="accepted">Accepted</option>
-                            <option value="declined">Declined</option>
-                          </select>
-                        )}
-                        {onDelete && (
-                          <button onClick={() => onDelete(row.id)} className="p-1 text-white/20 hover:text-red-400 transition-colors">
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                      </div>
-                    </td>
+                </div>
+              </div>
+
+              {/* Modal footer — actions */}
+              {(onUpdateStatus || onDelete) && (selectedRow as any).status && (
+                <div className="flex items-center gap-2 p-4 border-t border-white/5 bg-white/[0.02]">
+                  <span className="text-[11px] font-mono text-white/30 mr-2">Status:</span>
+                  {onUpdateStatus && (
+                    <select
+                      value={(selectedRow as any).status}
+                      onChange={(e) => {
+                        onUpdateStatus(selectedRow.id, e.target.value);
+                        setSelectedRow({ ...selectedRow, status: e.target.value } as T);
+                      }}
+                      disabled={updatingStatus === selectedRow.id}
+                      className="bg-white/5 border border-white/10 rounded-lg text-[12px] text-white/80 px-3 py-2 focus:outline-none focus:border-[#FF4D00]/30"
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="reviewing">Reviewing</option>
+                      <option value="contacted">Contacted</option>
+                      <option value="accepted">Accepted</option>
+                      <option value="declined">Declined</option>
+                    </select>
                   )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
+                  <div className="flex-1" />
+                  {onDelete && (
+                    <button
+                      onClick={() => { onDelete(selectedRow.id); setSelectedRow(null); }}
+                      className="inline-flex items-center gap-1.5 px-3 py-2 text-[11px] font-semibold text-red-400/70 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Delete
+                    </button>
+                  )}
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
