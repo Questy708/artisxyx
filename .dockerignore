@@ -1,0 +1,18 @@
+# Reduce Docker build context size — faster builds on Railway
+node_modules
+.next
+.git
+.gitignore
+dev.log
+server.log
+*.md
+download
+skills
+mini-services
+agent-ctx
+.vscode
+.idea
+.env.local
+.env.production
+# NOTE: .env IS included (needed for build-time env if any), but Railway
+# uses its own env vars at runtime anyway.

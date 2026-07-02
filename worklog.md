@@ -540,3 +540,57 @@ NETLIFY DEPLOYMENT INSTRUCTIONS (user action required):
 
 Stage Summary:
 - Code fixes committed and pushed. The "Server configuration error" on Netlify is resolved once the 3 env vars are set in Netlify's UI. Security leak (hardcoded password in client bundle) also fixed. Local dev verified working.
+
+---
+Task ID: railway-deployment-fix
+Agent: main
+Task: Fix "Application failed to respond" when deploying to Railway.com.
+
+Work Log:
+- Diagnosed 6 root causes:
+  1. No Dockerfile/railway.toml — Railway's Nixpacks guessed wrong build/start commands
+  2. `start` script used `bun .next/standalone/server.js 2>&1 | tee server.log` — the `tee` pipe means Railway tracks `tee` as PID 1, not the server (SIGTERM goes to wrong process on redeploy)
+  3. `bun` may not be in PATH in runtime image (Nixpacks installs it for build only)
+  4. Next.js standalone server may bind to `localhost` not `0.0.0.0` — Railway health check (external) can't reach it
+  5. Prisma generated client (node_modules/.prisma) not traced into standalone output — server crashes on any DB query
+  6. DATABASE_URL used absolute path `file:/home/z/my-project/db/custom.db` — doesn't exist on Railway
+  7. No `postinstall: prisma generate` — client not generated if install doesn't trigger it
+
+- Created `Dockerfile` (multi-stage):
+  - Stage 1 (deps): bun install, copies prisma schema first so postinstall works
+  - Stage 2 (builder): prisma generate + next build, then copies .prisma and @prisma into standalone
+  - Stage 3 (runtime): minimal image, sets HOSTNAME=0.0.0.0 + PORT=3000, creates /data for SQLite volume, runs `node server.js`
+
+- Created `railway.toml`: healthcheckPath="/", timeout=100s, restart on failure (max 3 retries). Documents required env vars and SQLite volume setup.
+
+- Created `.dockerignore`: excludes node_modules, .next, .git, logs, etc. for faster builds.
+
+- Fixed `package.json`:
+  - `start` → `NODE_ENV=production node .next/standalone/server.js` (node not bun, no tee pipe)
+  - Added `start:dev` for local bun+tee usage
+  - Added `postinstall: prisma generate` for non-Docker deployments
+
+- Fixed `.env`: DATABASE_URL changed to relative `file:./db/custom.db` (works in any working directory)
+
+VERIFICATION (local):
+- Lint: 0 errors
+- Admin API login: HTTP 200 + valid token
+- Homepage: HTTP 200
+- Prisma generate: works
+- Env loads correctly: ADMIN_PASSWORD = "Cornerstone$001" (15 chars), ADMIN_SECRET = 64 chars
+- Docker build: couldn't test (docker not in sandbox), but Dockerfile uses standard multi-stage pattern
+
+RAILWAY SETUP INSTRUCTIONS (user action required):
+1. Push to GitHub (done in next step)
+2. In Railway → New Project → Deploy from GitHub repo
+3. Railway auto-detects the Dockerfile and builds
+4. In Railway → Variables tab, set:
+   - ADMIN_PASSWORD = (your password, 16+ chars)
+   - ADMIN_SECRET = (32+ char random string)
+   - DATABASE_URL = file:/data/custom.db (for SQLite) OR postgresql://... (for Postgres)
+5. For SQLite persistence: Railway → Settings → Volumes → Add Volume, mount path = /data
+6. For PostgreSQL: add Railway PostgreSQL addon, use its DATABASE_URL, change prisma/schema.prisma provider to "postgresql", run prisma db push
+7. Railway health check hits "/" with 100s timeout — homepage returns 200, so deploy succeeds
+
+Stage Summary:
+- Dockerfile + railway.toml + .dockerignore + package.json fix + .env fix. All 6 root causes addressed. Pushing to GitHub next. After pushing, user deploys on Railway with env vars set.
