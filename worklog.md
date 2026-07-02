@@ -480,3 +480,17 @@ Work Log:
 
 Stage Summary:
 - Capital page first two sections restored to original layout (centered Hero + 3-image strip + dotted world map CapitalBridge). Capital2/Routes2 removal stands (committed). Ready to commit restore + push all to GitHub.
+
+---
+Task ID: restore-capital-layout (push attempt)
+Agent: main
+Task: Push all changes to GitHub.
+
+Work Log:
+- Committed Capital.tsx restore as ee7dd17 ("Restore Capital page Hero + CapitalBridge to original centered layout...").
+- Local branch main is now 2 commits ahead of artisxyx/main: 810b349 (prior auto-commit: Capital2/Routes2 removal + experimental Capital redesign) and ee7dd17 (this restore).
+- Attempted `git push artisxyx main`: FAILED — "could not read Username for 'https://github.com'". Terminal prompts disabled.
+- Checked all credential sources: no `gh` CLI (not installed), no ~/.netrc, no ~/.git-credentials, no GH_TOKEN/GITHUB_TOKEN in env, no credential.helper configured, .env has no github token. Remote URL is https://github.com/Questy708/artisxyx.git (HTTPS, requires username+token).
+
+Stage Summary:
+- Changes are committed locally and ready (810b349 + ee7dd17) but CANNOT be pushed — no GitHub authentication credentials are available in this environment. User must provide a GitHub token (e.g. set GH_TOKEN env var or configure a credential helper) for the push to succeed. Browser-verified the restored Capital page renders correctly.
