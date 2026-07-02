@@ -714,7 +714,7 @@ function InvestmentVehicles() {
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-12 gap-0 border border-[#111111]/10">
+        <div className="grid lg:grid-cols-12 gap-0 border border-[#111111]/10 rounded-2xl overflow-hidden shadow-sm">
           {/* Left: Vertical tab nav */}
           <div className="lg:col-span-4 xl:col-span-3 border-b lg:border-b-0 lg:border-r border-[#111111]/10">
             {/* Mobile: horizontal scroll */}
@@ -2415,7 +2415,7 @@ function FAQSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: i * 0.05 }}
-                className="border-t border-[#111111]/10"
+                className="border-t border-[#111111]/10 last:border-b last:border-[#111111]/10 hover:bg-[#111111]/[0.01] transition-colors rounded-lg"
               >
                 <button
                   onClick={() => setOpenIndex(openIndex === i ? null : i)}

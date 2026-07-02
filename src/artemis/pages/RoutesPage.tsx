@@ -961,7 +961,7 @@ function BlueprintMap({
 
       {/* Map container with zoom */}
       <div
-        className="w-full overflow-x-auto bg-white [-webkit-overflow-scrolling:touch]"
+        className="w-full overflow-x-auto bg-white rounded-t-2xl [-webkit-overflow-scrolling:touch]"
       >
       <div
         className="relative w-full md:min-w-[600px]"
@@ -1320,8 +1320,8 @@ function LegAccordionPanel({
   return (
     <div
       id={`leg-${leg.id}`}
-      className={`border transition-colors ${
-        isExpanded ? "border-[#111111]/20 bg-white" : "border-[#111111]/10 bg-white hover:border-[#111111]/20"
+      className={`border rounded-2xl overflow-hidden transition-all ${
+        isExpanded ? "border-[#111111]/20 bg-white shadow-sm" : "border-[#111111]/10 bg-white hover:border-[#111111]/20 hover:shadow-sm"
       }`}
     >
       {/* Header row */}
