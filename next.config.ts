@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
+  env: {
+    ADMIN_PASSWORD: "Cornerstone$001",
+  },
 };
 
 export default nextConfig;
