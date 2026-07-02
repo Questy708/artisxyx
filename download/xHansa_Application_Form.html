@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>xHansa Fellowship — Application Form</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  margin: 0; padding: 0;
+  background: #0A0A0A;
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 20mm 18mm;
+  background: #0A0A0A;
+  position: relative;
+  page-break-after: always;
+  break-after: page;
+}
+.page:last-child { page-break-after: auto; break-after: auto; }
+
+/* ── Cover Page ── */
+.cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 297mm;
+  padding: 30mm 25mm;
+  background: #0A0A0A;
+  position: relative;
+  overflow: hidden;
+}
+.cover::before {
+  content: '';
+  position: absolute;
+  top: -100px; right: -100px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(255,77,0,0.15), transparent 70%);
+  border-radius: 50%;
+}
+.cover::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: 20%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(255,77,0,0.08), transparent 70%);
+  border-radius: 50%;
+}
+.cover-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+.cover-content { position: relative; z-index: 2; }
+
+.logo-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 60mm;
+}
+.logo-mark {
+  width: 44px; height: 44px;
+  background: #FF4D00;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 10px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700; font-size: 20px; color: #fff;
+}
+.logo-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700; font-size: 18px;
+  letter-spacing: -0.02em; text-transform: uppercase;
+}
+.logo-text .accent { color: #FF4D00; }
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  color: #FF4D00;
+  margin-bottom: 20px;
+  display: flex; align-items: center; gap: 12px;
+}
+.eyebrow::after {
+  content: ''; width: 60px; height: 1px;
+  background: rgba(255,77,0,0.4);
+}
+
+.cover h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600; font-size: 56px;
+  line-height: 0.95; letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+.cover h1 .accent { color: #FF4D00; }
+.cover h1 .thin { font-weight: 400; color: rgba(255,255,255,0.5); }
+
+.cover-sub {
+  font-size: 16px; font-weight: 400;
+  line-height: 1.6; color: rgba(255,255,255,0.55);
+  max-width: 500px; margin-bottom: 30px;
+}
+
+.cover-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 8px 16px;
+  background: rgba(255,77,0,0.10);
+  border: 1px solid rgba(255,77,0,0.30);
+  border-radius: 999px;
+  margin-bottom: 30px;
+}
+.cover-badge-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #FF4D00;
+}
+.cover-badge-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: #FF4D00;
+}
+
+.cover-meta {
+  display: flex; gap: 40px;
+  margin-top: auto;
+}
+.cover-meta-item {
+  border-left: 2px solid #FF4D00;
+  padding-left: 16px;
+}
+.cover-meta-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 500; font-size: 24px;
+  color: #fff; line-height: 1; margin-bottom: 4px;
+}
+.cover-meta-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+
+/* ── Body Pages ── */
+.page-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.page-header-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+.page-header-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 500;
+  color: rgba(255,255,255,0.25);
+}
+
+.section-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600; font-size: 24px;
+  color: #fff; margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+.section-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  color: #FF4D00;
+  margin-bottom: 4px;
+}
+.section-desc {
+  font-size: 12px; font-weight: 400;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.5; margin-bottom: 24px;
+  max-width: 520px;
+}
+
+/* ── Form Elements ── */
+.field { margin-bottom: 18px; }
+.field-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 6px;
+  display: block;
+}
+.field-label .req { color: #FF4D00; }
+.field-line {
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  height: 24px;
+  width: 100%;
+}
+.field-line.short { width: 60%; }
+
+.field-row {
+  display: flex; gap: 20px; margin-bottom: 18px;
+}
+.field-row .field { flex: 1; margin-bottom: 0; }
+
+.textarea-box {
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 80px;
+  width: 100%;
+}
+.textarea-box.large { min-height: 120px; }
+.textarea-box.xlarge { min-height: 160px; }
+
+/* Checkbox */
+.checkbox {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-bottom: 10px;
+}
+.checkbox-box {
+  width: 16px; height: 16px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.checkbox-label {
+  font-size: 12px; font-weight: 400;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.5;
+}
+.checkbox-label strong { color: #fff; font-weight: 600; }
+
+/* Warning callout */
+.callout {
+  border-left: 3px solid #FF4D00;
+  background: rgba(255,77,0,0.05);
+  padding: 14px 16px;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 24px;
+}
+.callout p {
+  font-size: 11px; font-weight: 400;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.6;
+}
+.callout strong { color: #FF4D00; }
+
+/* Info table */
+.info-table {
+  width: 100%; border-collapse: collapse;
+  margin-bottom: 20px;
+}
+.info-table td {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+}
+.info-table td:first-child {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700; font-size: 10px;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  width: 40%;
+}
+
+/* Domain grid */
+.domain-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.domain-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+}
+.domain-option .checkbox-box { width: 14px; height: 14px; }
+.domain-option span {
+  font-size: 11px; font-weight: 500;
+  color: rgba(255,255,255,0.7);
+}
+
+/* Archetype grid */
+.archetype-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.archetype-option {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+}
+.archetype-option .checkbox-box { width: 14px; height: 14px; margin-top: 2px; }
+.archetype-option .arch-content { flex: 1; }
+.archetype-option .arch-name {
+  font-size: 12px; font-weight: 600; color: #fff;
+  margin-bottom: 2px;
+}
+.archetype-option .arch-desc {
+  font-size: 10px; color: rgba(255,255,255,0.45);
+  line-height: 1.4;
+}
+
+/* Footer */
+.page-footer {
+  position: absolute;
+  bottom: 12mm; left: 18mm; right: 18mm;
+  display: flex; justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px; font-weight: 500;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Process steps */
+.process-step {
+  display: flex; gap: 14px; margin-bottom: 12px;
+  align-items: flex-start;
+}
+.process-num {
+  width: 28px; height: 28px;
+  background: #FF4D00;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600; font-size: 12px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.process-text {
+  font-size: 12px; color: rgba(255,255,255,0.6);
+  line-height: 1.5; padding-top: 4px;
+}
+.process-text strong { color: #fff; }
+
+.divider {
+  text-align: center;
+  margin: 20px 0;
+  color: rgba(255,77,0,0.3);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+}
+
+.submit-box {
+  border: 2px solid #FF4D00;
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 20px;
+  text-align: center;
+}
+.submit-box h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px; font-weight: 600;
+  color: #fff; margin-bottom: 8px;
+}
+.submit-box p {
+  font-size: 12px; color: rgba(255,255,255,0.5);
+  margin-bottom: 4px;
+}
+.submit-box .email {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px; font-weight: 700;
+  color: #FF4D00;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ COVER PAGE ═══════════════ -->
+<div class="cover">
+  <div class="cover-grid"></div>
+  <div class="cover-content">
+    <div class="logo-row">
+      <div class="logo-mark">X</div>
+      <div class="logo-text">xCelero<span class="accent"> Labs</span></div>
+    </div>
+
+    <div class="eyebrow">Hanseatic League · Human Capital Deployment</div>
+
+    <h1>
+      The <span class="accent">xHansa</span><br>
+      <span class="thin">Fellowship</span><br>
+      Application
+    </h1>
+
+    <p class="cover-sub">
+      A 24-month human capital deployment engine. 1,000 Xcitizens per cohort. 100 ten-person Pods. Nine Civilizational Fields. Not an accelerator. Not a course. A deployment.
+    </p>
+
+    <div class="cover-badge">
+      <div class="cover-badge-dot"></div>
+      <div class="cover-badge-text">Cohort 3 · 2025 · Applications Open</div>
+    </div>
+  </div>
+
+  <div class="cover-meta">
+    <div class="cover-meta-item">
+      <div class="cover-meta-value">1,000</div>
+      <div class="cover-meta-label">Xcitizens</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="cover-meta-value">24 mo</div>
+      <div class="cover-meta-label">Deployment</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="cover-meta-value">9</div>
+      <div class="cover-meta-label">Civ Fields</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="cover-meta-value">100</div>
+      <div class="cover-meta-label">Pods</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PAGE 2: INSTRUCTIONS ═══════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="page-header-title">Application Instructions</div>
+    <div class="page-header-num">02</div>
+  </div>
+
+  <div class="section-num">Section 0</div>
+  <div class="section-title">Before You Begin</div>
+  <div class="section-desc">
+    The xHansa Fellowship is a 24-month human capital deployment engine. It is not an educational program, an accelerator, or a job. It is a military-grade knowledge-deployment pipeline. Read this page carefully. Answer honestly. There are no right answers — only real ones. We observe behavior, not stated preference.
+  </div>
+
+  <div class="callout">
+    <p><strong>Before you begin, you must understand:</strong></p>
+    <p style="margin-top: 8px;">• This is a 24-month commitment with no exit option before the cliff.</p>
+    <p>• The stipend is $500–$1,200/month, needs-based. There is no salary. No benefits.</p>
+    <p>• Individual IP is subordinate to the League Commons (the Supremacy Clause).</p>
+    <p>• Quarterly Gates are binary: pass or fail. Failure triggers the Kill Switch (Pod dissolution within 48 hours).</p>
+    <p>• Month 24 is a hard cliff. The top 3% ("Keepers") transition to permanent payroll. The remaining 97% ("The Cycled") are severed with performance equity (36-month vesting).</p>
+    <p style="margin-top: 8px;"><strong>If any of these terms are unacceptable, this program is not for you.</strong></p>
+  </div>
+
+  <div class="section-num" style="margin-top: 24px;">What You'll Need</div>
+  <div style="margin-top: 12px;">
+    <table class="info-table">
+      <tr><td>Time</td><td>20–30 minutes</td></tr>
+      <tr><td>Space</td><td>A quiet space — some questions require you to think under pressure</td></tr>
+      <tr><td>Optional</td><td>Links to anything you've built or operated</td></tr>
+      <tr><td>Documents</td><td>Government ID, emergency contact information</td></tr>
+    </table>
+  </div>
+
+  <div class="section-num" style="margin-top: 24px;">Selection Process</div>
+  <div style="margin-top: 12px;">
+    <div class="process-step">
+      <div class="process-num">1</div>
+      <div class="process-text"><strong>Application review</strong> (within 21 days) — We read every application. You'll hear back regardless of outcome.</div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">2</div>
+      <div class="process-text"><strong>Civilizational Field Typing Assessment</strong> (if shortlisted) — A behavioral assessment, not an interview. We observe how you operate under pressure.</div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">3</div>
+      <div class="process-text"><strong>Deployment Classification</strong> — Based on the assessment, you're matched to a field and an Archetype.</div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">4</div>
+      <div class="process-text"><strong>Pod Formation</strong> — A deterministic algorithm composes your 10-person Pod to maximize complementary strengths.</div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">5</div>
+      <div class="process-text"><strong>The Crucible</strong> (8 weeks) — Onboarding. Neural reprogramming. If you survive, you deploy.</div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">6</div>
+      <div class="process-text"><strong>24-Month Deployment</strong> — Q1 Pilot → Q2 Revenue → Q3 Expansion → Q4 Institutionalization → The Cliff.</div>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top: 20px;">
+    <p><strong>Selection criteria (in order):</strong> Evidence of operating > Acceptance of commitment terms > Field alignment and deployable thinking > Self-awareness under pressure.</p>
+    <p style="margin-top: 6px;">We do not select on credentials, university, or work history. We select on the evidence that you operate — and that you operate for something larger than yourself.</p>
+  </div>
+
+  <div class="page-footer">
+    <span>xCelero Labs · xHansa Fellowship</span>
+    <span>Page 02</span>
+  </div>
+</div>
+
+<!-- ═══════════════ PAGE 3: SECTION 1 — WHO YOU ARE ═══════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="page-header-title">Section 1 · Who You Are</div>
+    <div class="page-header-num">03</div>
+  </div>
+
+  <div class="section-num">Section 1</div>
+  <div class="section-title">Who You Are</div>
+  <div class="section-desc">Basic identification. This information is confidential and used solely for application processing.</div>
+
+  <div class="field-row">
+    <div class="field">
+      <label class="field-label">Full Name <span class="req">*</span></label>
+      <div class="field-line"></div>
+    </div>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <label class="field-label">Email <span class="req">*</span></label>
+      <div class="field-line"></div>
+    </div>
+    <div class="field">
+      <label class="field-label">Phone / WhatsApp <span class="req">*</span></label>
+      <div class="field-line"></div>
+    </div>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <label class="field-label">Location (City, Country) <span class="req">*</span></label>
+      <div class="field-line"></div>
+    </div>
+    <div class="field">
+      <label class="field-label">Date of Birth <span class="req">*</span></label>
+      <div class="field-line"></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">LinkedIn / Twitter / GitHub / Portfolio (any that apply)</label>
+    <div class="field-line"></div>
+  </div>
+
+  <div class="divider">◆ ◆ ◆</div>
+
+  <div class="section-num">Section 2</div>
+  <div class="section-title">What You've Operated</div>
+  <div class="section-desc">
+    We care less about where you've worked and more about what you've operated — built, run, fixed, deployed, or scaled. "Operated" means anything: a business, a supply chain, a community, a machine, a system, a team.
+  </div>
+
+  <div class="field">
+    <label class="field-label">2.1 What is the most significant thing you have ever built or operated? <span class="req">*</span></label>
+    <div style="font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 6px;">(200–400 words. Tell us what it was, why you built it, what happened, and what you learned. It doesn't matter if it succeeded or failed — it matters that you operated it.)</div>
+    <div class="textarea-box xlarge"></div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">2.2 Link to it (if it exists online)</label>
+    <div class="field-line"></div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">2.3 What are you operating right now?</label>
+    <div style="font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 6px;">(If nothing, tell us what you want to operate next.)</div>
+    <div class="textarea-box large"></div>
+  </div>
+
+  <div class="page-footer">
+    <span>xCelero Labs · xHansa Fellowship</span>
+    <span>Page 03</span>
+  </div>
+</div>
+
+<!-- ═══════════════ PAGE 4: SECTION 3 — THE COMMITMENT ═══════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="page-header-title">Section 3 · The Commitment</div>
+    <div class="page-header-num">04</div>
+  </div>
+
+  <div class="section-num">Section 3</div>
+  <div class="section-title">The Commitment</div>
+  <div class="section-desc">
+    The xHansa Fellowship is a 24-month deployment. These questions confirm you understand and accept the terms. Hesitation on any of these — even subtle hesitation — is a signal.
+  </div>
+
+  <div class="field">
+    <label class="field-label">3.1 The Fellowship requires a 24-month commitment with no exit option before the cliff. Early departure means total forfeiture of all equity and performance grants. Do you accept this? <span class="req">*</span></label>
+    <div style="margin-top: 8px;">
+      <div class="checkbox"><div class="checkbox-box"></div><div class="checkbox-label"><strong>Yes</strong> — I accept the 24-month commitment</div></div>
+      <div class="checkbox"><div class="checkbox-box"></div><div class="checkbox-label">I have questions about this</div></div>
+      <div class="checkbox"><div class="checkbox-box"></div><div class="checkbox-label">No — I need an exit option</div></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">3.2 The stipend is $500–$1,200/month, needs-based. There is no salary and no benefits. You are a deployed operator, not an employee. Is this acceptable? <span class="req">*</span></label>
+    <div style="margin-top: 8px;">
+      <div class="checkbox"><div class="checkbox-box"></div><div class="checkbox-label"><strong>Yes</strong></div></div>
+      <div class="checkbox"><div class="checkbox-box"></div><div class="checkbox-label">I need clarification on "needs-based"</div></div>
+      <div class="checkbox"><div class="checkbox-box"></div><div class="checkbox-label">No — I require a salary</div></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">3.3 Individual IP on ventures built during the program is subordinate to the League Commons (the shared IP pool). Breakthroughs are shared across the network. Do you accept the Supremacy Clause? <span class="req">*</span></label>
+    <div style="margin-top: 8px;">
+      <div class="checkbox"><div class="checkbox-box"></div><div class="checkbox-label"><strong>Yes</strong> — I build for the Commons</div></div>
+      <div class="checkbox"><div class="checkbox-box"></div><div class="checkbox-label">I have questions about IP</div></div>
+      <div class="checkbox"><div class="checkbox-box"></div><div class="checkbox-label">No — I need to own my IP</div></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">3.4 Quarterly Gates are binary (pass/fail). If your Pod misses a Gate, it is dissolved within 48 hours (the Kill Switch). There is no appeals process. Do you accept the Gate system? <span class="req">*</span></label>
+    <div style="margin-top: 8px;">
+      <div class="checkbox"><div class="checkbox-box"></div><div class="checkbox-label"><strong>Yes</strong></div></div>
+      <div class="checkbox"><div class="checkbox-box"></div><div class="checkbox-label">I have questions</div></div>
+      <div class="checkbox"><div class="checkbox-box"></div><div class="checkbox-label">No</div></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">3.5 At Month 24 (the cliff), the top 3% of Xcitizens ("Keepers") transition to permanent payroll. The remaining 97% ("The Cycled") are severed with performance equity grants (36-month vesting). This is by design. Do you accept this outcome structure? <span class="req">*</span></label>
+    <div style="margin-top: 8px;">
+      <div class="checkbox"><div class="checkbox-box"></div><div class="checkbox-label"><strong>Yes</strong> — I understand the League builds ventures, not careers</div></div>
+      <div class="checkbox"><div class="checkbox-box"></div><div class="checkbox-label">I'd like to understand this better</div></div>
+      <div class="checkbox"><div class="checkbox-box"></div><div class="checkbox-label">No — I need guaranteed employment</div></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">3.6 The Crucible (the 8-week onboarding) involves "The Shock" and "The Wall" — systematic psychological destabilization and sustained cognitive exhaustion. Are you prepared for this? <span class="req">*</span></label>
+    <div style="margin-top: 8px;">
+      <div class="checkbox"><div class="checkbox-box"></div><div class="checkbox-label"><strong>Yes</strong></div></div>
+      <div class="checkbox"><div class="checkbox-box"></div><div class="checkbox-label">I have questions about what this involves</div></div>
+      <div class="checkbox"><div class="checkbox-box"></div><div class="checkbox-label">No</div></div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>xCelero Labs · xHansa Fellowship</span>
+    <span>Page 04</span>
+  </div>
+</div>
+
+<!-- ═══════════════ PAGE 5: SECTION 4 — THE NINE FIELDS ═══════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="page-header-title">Section 4 · The Nine Civilizational Fields</div>
+    <div class="page-header-num">05</div>
+  </div>
+
+  <div class="section-num">Section 4</div>
+  <div class="section-title">The Nine Civilizational Fields</div>
+  <div class="section-desc">
+    Every ProtoCo is commissioned against one of the Nine Civilizational Fields. We want to know which field calls to you. You express preferences; the needs of the commission come first.
+  </div>
+
+  <div class="field">
+    <label class="field-label">4.1 Which of the Nine Civilizational Fields are you most drawn to? (Pick up to 3) <span class="req">*</span></label>
+    <div class="domain-grid" style="margin-top: 10px;">
+      <div class="domain-option"><div class="checkbox-box"></div><span>Water Systems</span></div>
+      <div class="domain-option"><div class="checkbox-box"></div><span>Energy Systems</span></div>
+      <div class="domain-option"><div class="checkbox-box"></div><span>Food & Agriculture</span></div>
+      <div class="domain-option"><div class="checkbox-box"></div><span>Health & Mobility</span></div>
+      <div class="domain-option"><div class="checkbox-box"></div><span>Built Environment</span></div>
+      <div class="domain-option"><div class="checkbox-box"></div><span>Data & Intelligence</span></div>
+      <div class="domain-option"><div class="checkbox-box"></div><span>Logistics & Trade</span></div>
+      <div class="domain-option"><div class="checkbox-box"></div><span>Governance & Identity</span></div>
+      <div class="domain-option"><div class="checkbox-box"></div><span>Education & Human Capital</span></div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">4.2 Why those? <span class="req">*</span></label>
+    <div style="font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 6px;">(100–200 words)</div>
+    <div class="textarea-box large"></div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">4.3 If you were deployed into a 10-person Pod tomorrow to build a ProtoCo in your chosen field, what would you build? <span class="req">*</span></label>
+    <div style="font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 6px;">(200–400 words. Be specific. We don't want a vision — we want a deployable concept.)</div>
+    <div class="textarea-box xlarge"></div>
+  </div>
+
+  <div class="page-footer">
+    <span>xCelero Labs · xHansa Fellowship</span>
+    <span>Page 05</span>
+  </div>
+</div>
+
+<!-- ═══════════════ PAGE 6: SECTION 5 — THE ARCHETYPES ═══════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="page-header-title">Section 5 · The Six Archetypes</div>
+    <div class="page-header-num">06</div>
+  </div>
+
+  <div class="section-num">Section 5</div>
+  <div class="section-title">The Six Archetypes</div>
+  <div class="section-desc">
+    Pods are composed of six Archetypes: Pilot, Builder, Hustler, Operator, Tracker, and Comms. Your Archetype is determined by observed behavior under stress during the Crucible — not by what you pick here. But we want to know how you see yourself.
+  </div>
+
+  <div class="field">
+    <label class="field-label">5.1 Which Archetype do you think you are? (Pick one) <span class="req">*</span></label>
+    <div class="archetype-grid" style="margin-top: 10px;">
+      <div class="archetype-option">
+        <div class="checkbox-box"></div>
+        <div class="arch-content">
+          <div class="arch-name">Pilot</div>
+          <div class="arch-desc">I set direction. I see the path before others do.</div>
+        </div>
+      </div>
+      <div class="archetype-option">
+        <div class="checkbox-box"></div>
+        <div class="arch-content">
+          <div class="arch-name">Builder</div>
+          <div class="arch-desc">I construct. I turn ideas into working things.</div>
+        </div>
+      </div>
+      <div class="archetype-option">
+        <div class="checkbox-box"></div>
+        <div class="arch-content">
+          <div class="arch-name">Hustler</div>
+          <div class="arch-desc">I close. I get the deal, the partner, the customer.</div>
+        </div>
+      </div>
+      <div class="archetype-option">
+        <div class="checkbox-box"></div>
+        <div class="arch-content">
+          <div class="arch-name">Operator</div>
+          <div class="arch-desc">I maintain. I keep the system running when others are spent.</div>
+        </div>
+      </div>
+      <div class="archetype-option">
+        <div class="checkbox-box"></div>
+        <div class="arch-content">
+          <div class="arch-name">Tracker</div>
+          <div class="arch-desc">I surveil. I find the data, the signal, the risk before it hits.</div>
+        </div>
+      </div>
+      <div class="archetype-option">
+        <div class="checkbox-box"></div>
+        <div class="arch-content">
+          <div class="arch-name">Comms</div>
+          <div class="arch-desc">I translate. I make the complex legible to the people who need it.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">5.2 Tell us about a time you operated in that role under pressure. <span class="req">*</span></label>
+    <div style="font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 6px;">(150–300 words)</div>
+    <div class="textarea-box large"></div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">5.3 Which Archetype do you think you're weakest in?</label>
+    <div class="field-line"></div>
+  </div>
+
+  <div class="divider">◆ ◆ ◆</div>
+
+  <div class="section-num">Section 6</div>
+  <div class="section-title">The Honest Part</div>
+
+  <div class="field">
+    <label class="field-label">6.1 What is the hardest thing you've ever done? <span class="req">*</span></label>
+    <div style="font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 6px;">(Not the most impressive — the hardest.)</div>
+    <div class="textarea-box"></div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">6.2 What happens to you under sustained cognitive exhaustion? <span class="req">*</span></label>
+    <div style="font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 6px;">(Be honest. The Crucible will find out anyway.)</div>
+    <div class="textarea-box"></div>
+  </div>
+
+  <div class="page-footer">
+    <span>xCelero Labs · xHansa Fellowship</span>
+    <span>Page 06</span>
+  </div>
+</div>
+
+<!-- ═══════════════ PAGE 7: SECTIONS 6-8 + SUBMIT ═══════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="page-header-title">Section 6 (cont.) · 7 · 8</div>
+    <div class="page-header-num">07</div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">6.3 What is a belief you hold that most people disagree with? <span class="req">*</span></label>
+    <div class="textarea-box"></div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">6.4 Why xHansa? Why now? <span class="req">*</span></label>
+    <div style="font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 6px;">(100–200 words)</div>
+    <div class="textarea-box"></div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">6.5 If we don't accept you, what will you do? <span class="req">*</span></label>
+    <div style="font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 6px;">(There's no wrong answer. We're curious.)</div>
+    <div class="textarea-box"></div>
+  </div>
+
+  <div class="divider">◆ ◆ ◆</div>
+
+  <div class="section-num">Section 7</div>
+  <div class="section-title">Referral (Optional)</div>
+
+  <div class="field-row">
+    <div class="field">
+      <label class="field-label">7.1 Did someone refer you? If so, who?</label>
+      <div class="field-line"></div>
+    </div>
+    <div class="field">
+      <label class="field-label">7.2 Is there someone in the xCelero/Hansa network who can vouch for you?</label>
+      <div class="field-line"></div>
+    </div>
+  </div>
+
+  <div class="divider">◆ ◆ ◆</div>
+
+  <div class="section-num">Section 8</div>
+  <div class="section-title">Anything Else</div>
+
+  <div class="field">
+    <label class="field-label">8.1 Anything else we should know?</label>
+    <div style="font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 6px;">(A link, a video, a drawing, a recording, a github repo, a farm, a fix. Whatever tells us who you are when the plan fails.)</div>
+    <div class="textarea-box large"></div>
+  </div>
+
+  <div class="divider">◆ ◆ ◆</div>
+
+  <div class="submit-box">
+    <h3>Submit Your Application</h3>
+    <p>Send the completed form to:</p>
+    <div class="email">apply@xcelero.com</div>
+    <p style="margin-top: 10px;">Questions? townsquare@xcelero.com</p>
+    <p style="margin-top: 4px; font-size: 10px; color: rgba(255,255,255,0.35);">Cohort 3, 2025 · Applications: March 1 – May 15 · Deployment begins July 2025</p>
+  </div>
+
+  <div class="callout" style="margin-top: 20px;">
+    <p style="font-size: 10px; font-style: italic; color: rgba(255,255,255,0.35);">
+      The xHansa Fellowship actively seeks Xcitizens from backgrounds underrepresented in technology and venture: informal-economy operators, self-taught builders, and anyone who has been sealed off from capital and opportunity by the accident of where they were born. The League finds talent where it lives.
+    </p>
+  </div>
+
+  <div class="page-footer">
+    <span>xCelero Labs · xHansa Fellowship</span>
+    <span>Page 07</span>
+  </div>
+</div>
+
+</body>
+</html>
