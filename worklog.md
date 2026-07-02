@@ -494,3 +494,18 @@ Work Log:
 
 Stage Summary:
 - Changes are committed locally and ready (810b349 + ee7dd17) but CANNOT be pushed — no GitHub authentication credentials are available in this environment. User must provide a GitHub token (e.g. set GH_TOKEN env var or configure a credential helper) for the push to succeed. Browser-verified the restored Capital page renders correctly.
+
+---
+Task ID: restore-capital-layout (push complete)
+Agent: main
+Task: Push all changes to GitHub using user-provided access token.
+
+Work Log:
+- Received GitHub PAT from user.
+- Pushed main to artisxyx/main using token-authenticated URL (token not stored in remote config; used one-shot URL, redacted in all output).
+- Push succeeded: bcd46d1..fee2a57 main -> main.
+- Verified sync: local HEAD = fee2a57 = artisxyx/main. Working tree clean.
+- Commits now on remote: 810b349 (Capital2/Routes2 removal), ee7dd17 (Capital Hero+Bridge restore), fee2a57 (auto-commit).
+
+Stage Summary:
+- ALL changes pushed to GitHub (github.com/Questy708/artisxyx.git, branch main). Capital2/Routes2 removed; Capital page first two sections restored to original centered layout. Local and remote in sync at fee2a57. Token used one-shot, not persisted.
