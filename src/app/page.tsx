@@ -28,6 +28,7 @@ import { XHansaApply } from "@/artemis/pages/xHansaApply";
 import { AcceleratorApply } from "@/artemis/pages/AcceleratorApply";
 import { InceptionStudiosApply } from "@/artemis/pages/InceptionStudiosApply";
 import { QuestFellowshipApply } from "@/artemis/pages/QuestFellowshipApply";
+import { XRouteExpeditionApply } from "@/artemis/pages/XRouteExpeditionApply";
 
 function Router() {
   const { path } = useRouter();
@@ -59,6 +60,7 @@ function Router() {
     if (path === "/apply/accelerator") return <AcceleratorApply />;
     if (path === "/apply/inception-studios") return <InceptionStudiosApply />;
     if (path === "/apply/quest-fellowship") return <QuestFellowshipApply />;
+    if (path === "/apply/xroute-expedition") return <XRouteExpeditionApply />;
     if (path === "/admin") return <AdminDashboard />;
     // 404 fallback — branded dark experience
     return (

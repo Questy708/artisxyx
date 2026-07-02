@@ -155,11 +155,11 @@ function ProgramJourney({
               const isActive = idx === active;
               const hex = STEP_HEX[idx % STEP_HEX.length];
               return (
-                <motion.button
+                <motion.div
                   key={idx}
                   layout
                   onClick={() => setActive(idx)}
-                  className="relative h-full rounded-2xl overflow-hidden text-left border transition-colors"
+                  className="relative h-full rounded-2xl overflow-hidden text-left border transition-colors cursor-pointer"
                   style={{
                     borderColor: isActive ? hex : "#ffffff14",
                     background: isActive ? `linear-gradient(160deg, ${hex}22, #111)` : "#111",
@@ -237,7 +237,7 @@ function ProgramJourney({
                       )}
                     </AnimatePresence>
                   </div>
-                </motion.button>
+                </motion.div>
               );
             })}
           </motion.div>
@@ -311,7 +311,7 @@ function ProgramJourney({
    bento pattern (first card spans 2 cols) for visual rhythm. A kinetic
    count-up displays the trait total. Dark section with a subtle grid overlay.
    ══════════════════════════════════════════════════════════════════════════ */
-function IdealCandidates({ title, traits }: { title: string; traits: string[] }) {
+function IdealCandidates({ title, traits, programId, navigate }: { title: string; traits: string[]; programId: string; navigate: (path: string) => void }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const [count, setCount] = useState(0);
@@ -453,9 +453,27 @@ function IdealCandidates({ title, traits }: { title: string; traits: string[] })
             transition={{ duration: 0.5, delay: 0.4 + total * 0.1, ease: EASE }}
             className="mt-12 md:mt-16"
           >
-            <button className="button relative inline-flex items-center justify-center bg-[#FF4D00] text-white px-8 py-4 text-sm font-bold uppercase tracking-widest transition-transform hover:scale-105 group overflow-hidden">
+            <button
+              onClick={() => {
+                const applyRoutes: Record<string, string> = {
+                  'xhansa-fellowship': '/apply/xhansa',
+                  'xcelero-accelerator': '/apply/accelerator',
+                  'inception-studios': '/apply/inception-studios',
+                  'quest-fellowship': '/apply/quest-fellowship',
+                  'xroute-expedition': '/apply/xroute-expedition',
+                };
+                const route = applyRoutes[programId];
+                if (route) navigate(route);
+              }}
+              className="button relative inline-flex items-center justify-center bg-[#FF4D00] text-white px-8 py-4 text-sm font-bold uppercase tracking-widest transition-transform hover:scale-105 group overflow-hidden"
+            >
               <span className="relative z-10 inline-flex items-center gap-2">
-                Start your company
+                {programId === 'xhansa-fellowship' ? 'Deploy Now' :
+                 programId === 'xcelero-accelerator' ? 'Accelerate Now' :
+                 programId === 'inception-studios' ? 'Co-Create Now' :
+                 programId === 'quest-fellowship' ? 'Begin Your Quest' :
+                 programId === 'xroute-expedition' ? 'Join the Expedition' :
+                 'Apply Now'}
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </span>
             </button>
@@ -580,8 +598,27 @@ export function ProgramDetail() {
             </p>
           </div>
           <div className="flex-shrink-0 self-start md:self-end">
-            <button className="inline-flex items-center justify-center gap-2 bg-[#1B1C1E] text-white px-8 py-4 rounded-full text-sm font-medium hover:bg-black transition-transform hover:scale-105">
-              Start your company <svg width="18" height="15" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="ml-1"><path d="M11 1L17 7M17 7L11 13M17 7H0" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            <button
+              onClick={() => {
+                const applyRoutes: Record<string, string> = {
+                  'xhansa-fellowship': '/apply/xhansa',
+                  'xcelero-accelerator': '/apply/accelerator',
+                  'inception-studios': '/apply/inception-studios',
+                  'quest-fellowship': '/apply/quest-fellowship',
+                  'xroute-expedition': '/apply/xroute-expedition',
+                };
+                const route = applyRoutes[program.id];
+                if (route) navigate(route);
+              }}
+              className="group inline-flex items-center justify-center gap-2 bg-[#1B1C1E] text-white px-8 py-4 rounded-full text-sm font-medium hover:bg-[#FF4D00] transition-all duration-300 hover:scale-105"
+            >
+              {program.id === 'xhansa-fellowship' ? 'Deploy Now' :
+               program.id === 'xcelero-accelerator' ? 'Accelerate Now' :
+               program.id === 'inception-studios' ? 'Co-Create Now' :
+               program.id === 'quest-fellowship' ? 'Begin Your Quest' :
+               program.id === 'xroute-expedition' ? 'Join the Expedition' :
+               'Apply Now'}
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </button>
           </div>
         </div>
@@ -1061,7 +1098,7 @@ export function ProgramDetail() {
 
       {/* ── Ideal Candidates (animated bento grid) ── */}
       {(program.isForYouIf && program.isForYouIf.length > 0) && (
-        <IdealCandidates title={program.title} traits={program.isForYouIf} />
+        <IdealCandidates title={program.title} traits={program.isForYouIf} programId={program.id} navigate={navigate} />
       )}
 
       {/* ── FAQ ── */}

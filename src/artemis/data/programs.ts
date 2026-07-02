@@ -1,4 +1,4 @@
-import { Users, Globe, Zap, Target, Search, LucideIcon } from "lucide-react";
+import { Users, Globe, Zap, Target, Search, MapPin, LucideIcon } from "lucide-react";
 
 export interface ProgramDetail {
   id: string;
@@ -464,5 +464,111 @@ export const programsData: ProgramDetail[] = [
     color: "bg-[#6366F1]",
     image: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80",
     link: "/programs/quest-fellowship"
+  },
+  {
+    id: "xroute-expedition",
+    title: "xRoute Expedition",
+    tagline: "See the engine. Walk the routes.",
+    desc: "A 14-day immersive expedition along xCelero's six routes. Visit XEmbassies, meet the ventures, witness the infrastructure, and experience the engine in action across 4–6 cities per leg.",
+    longDesc: "The xRoute Expedition is not a tour. It is a field deployment for investors, partners, operators, and future Xcitizens who want to see the xCelero engine with their own eyes. Over 14 days, you travel one of six route legs — the Gulf of Guinea Arc, the Sahel Corridor, the East African Corridor, Central Africa, Southern Africa, or North Africa — visiting XEmbassies, meeting Pod teams, witnessing deployed ProtoCos in the field, and attending Commons Feasts with local XCitizens. You leave with a visceral understanding of what xCelero is building, where it is building it, and why the route geography is the strategy.",
+    details: [
+      { label: "Duration", value: "14 Days" },
+      { label: "Route Legs", value: "6 Available" },
+      { label: "Cities", value: "4–6 per Leg" },
+      { label: "Group Size", value: "12–15 Explorers" },
+    ],
+    stats: [
+      { label: "Route Legs", value: "6" },
+      { label: "Cities Visited", value: "4–6" },
+      { label: "XEmbassies", value: "8+" },
+      { label: "ProtoCos Witnessed", value: "10+" },
+    ],
+    process: [
+      {
+        title: "Pre-Expedition Briefing (Week -1)",
+        desc: "A 2-hour virtual briefing covering the route geography, the ventures you'll visit, the XCitizens you'll meet, and the cultural context of each city on your leg.",
+        extended: "Before you board a plane, you receive the Route Dossier: a detailed briefing on the route leg, the XEmbassies, the active ProtoCos, the Pod teams in residence, and the cultural and operational context of each city. This is not a tourist itinerary — it is an operational briefing that prepares you to understand what you're about to see.",
+      },
+      {
+        title: "Days 1–4: Hub Immersion",
+        desc: "Arrive at the first XEmbassy. Tour the facilities, meet the Hub Manager, shadow a Pod's morning standup, and visit 2–3 deployed ProtoCos in the field.",
+        extended: "The first four days are about seeing the engine from the inside. You tour the XEmbassy (foundry, lab, studio, commons), meet the Hub Manager and resident Pod teams, shadow a morning standup, and visit deployed ProtoCos in the field. You see the Minimal Version running. You meet the customers. You witness the Gate trajectory in real time.",
+      },
+      {
+        title: "Days 5–10: Multi-City Route Walk",
+        desc: "Travel to 2–3 additional cities along the route leg. At each stop: visit the local XEmbassy, meet the XCitizen community, attend a Commons Feast, and see how the model adapts to different geographies.",
+        extended: "The middle of the expedition is the route walk — the core experience. You travel along the route (by road, rail, or short flights), visiting 2–3 additional cities. At each city, you visit the local XEmbassy (or outpost), meet the XCitizen community, attend a Commons Feast (a community dinner where local operators, founders, and partners gather), and see how the ProtoCo model adapts to different regulatory environments, supply chains, and customer behaviors. This is where the 'route is the strategy' thesis becomes visceral.",
+      },
+      {
+        title: "Days 11–14: Synthesis & Departure",
+        desc: "Return to the hub city. Synthesis sessions with Strategic Command. Route debrief. Departure with a Route Report and network access.",
+        extended: "The final days are about synthesis. You return to the hub city for structured debrief sessions with Strategic Command and Pod Leaders. You discuss what you saw, what surprised you, and what you'd invest in, partner with, or join. You receive a Route Report (a personalized summary of the ventures, hubs, and contacts you encountered) and retain TownSquare access as an Expedition Alumnus. You leave with a network, not just a memory.",
+      },
+    ],
+    howWeHelpIntro: "We take you inside the engine — not as a tourist, but as a witness. Across 14 days and 4–6 cities, you will see deployed ProtoCos, meet Pod teams, attend Commons Feasts, and experience the route geography that is xCelero's strategy. You will...",
+    features: [
+      { title: "Six Route Legs", desc: "Choose from six geographic routes — Gulf of Guinea Arc, Sahel Corridor, East African Corridor, Central Africa, Southern Africa, or North Africa. Each leg is a different civilization context, a different set of ventures, and a different market reality.", icon: "Globe" },
+      { title: "XEmbassy Access", desc: "Full access to 4–8 XEmbassies per expedition. Tour the foundries, labs, studios, and commons. See where ventures are built. This is not a coworking space tour — it is an infrastructure inspection.", icon: "Workflow" },
+      { title: "Field Deployments", desc: "Visit 10+ deployed ProtoCos in the field. See the Minimal Version running. Meet the customers. Witness the Gate trajectory in real time. The ventures are not slide decks — they are operating assets.", icon: "Activity" },
+      { title: "Commons Feasts", desc: "At each city, attend a Commons Feast — a community dinner where local XCitizens, founders, operators, and partners gather. Eat, talk, build relationships. The network is the point.", icon: "Users" },
+      { title: "Pod Shadowing", desc: "Shadow a Pod's morning standup. See how 10-person teams operate under the Gate System. Witness the Kill Switch protocol (if one is triggered during your visit). This is the engine, live.", icon: "Target" },
+      { title: "Route Report & Alumni Access", desc: "Depart with a personalized Route Report (ventures, hubs, contacts, investment opportunities) and permanent TownSquare access as an Expedition Alumnus. The expedition doesn't end when you go home — the network continues.", icon: "Shield" },
+    ],
+    unfairAdvantageTitle: "The Expedition Unfair Advantage",
+    unfairAdvantageImages: {
+      left: "https://images.unsplash.com/photo-1530521954074-e64f6810b32d?auto=format&fit=crop&w=800&q=80",
+      right: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=800&q=80",
+    },
+    isForYouIf: [
+      "You are an investor who wants to see ventures in the field, not in a pitch deck.",
+      "You are a partner (corporate, government, NGO) who wants to understand the route geography before committing.",
+      "You are a future Xcitizen who wants to experience the engine before deploying.",
+      "You are an operator who wants to see how infrastructure is built in emerging markets.",
+      "You believe that seeing is believing — and that 14 days on the ground beats 14 months of reports.",
+      "You want a network, not a tour. The Expedition alumni community is permanent.",
+    ],
+    faqs: [
+      { q: "Is this a tourist trip?", a: "No. The xRoute Expedition is a field immersion for people who want to understand the xCelero engine by seeing it in action. You will visit XEmbassies, meet Pod teams, witness deployed ProtoCos, and attend Commons Feasts. It is structured, intensive, and operational — not leisure travel. That said, you will see extraordinary places and meet extraordinary people." },
+      { q: "Which route leg should I choose?", a: "Each of the six route legs offers a different experience: the Gulf of Guinea Arc (Lagos, Accra, Kano) for fintech and trade; the Sahel Corridor (Niamey, Bamako, Ouagadougou) for water and energy; the East African Corridor (Nairobi, Kigali, Dar es Salaam) for health and mobility; Central Africa for mining and materials; Southern Africa (Cape Town, Johannesburg) for manufacturing and cities; North Africa (Cairo, Tunis, Casablanca) for governance and connectivity. Choose the leg that aligns with your interests." },
+      { q: "What is included?", a: "All in-country travel (flights, ground transport), accommodation (mid-range hotels + XEmbassy housing), meals (including Commons Feasts), XEmbassy access, Pod shadowing, field visits, briefings, and the Route Report. International flights to/from the hub city are not included." },
+      { q: "What is the group size?", a: "12–15 explorers per expedition. Small enough for intimate access to Pods and XCitizens; large enough for diverse perspectives and networking." },
+      { q: "Do I need to be an investor or partner to join?", a: "No. The Expedition is open to anyone who wants to see the engine: investors, partners, future Xcitizens, operators, journalists, and curious builders. The only requirement is genuine interest and the ability to handle 14 days of intensive travel in emerging markets." },
+      { q: "What happens after the expedition?", a: "You receive a personalized Route Report, permanent TownSquare access as an Expedition Alumnus, and introductions to any ventures, XCitizens, or partners you connected with. Many alumni go on to invest, partner, or apply to xCelero programs. The expedition is often the beginning, not the end." },
+    ],
+    trackRecord: [
+      { label: "Route Legs", value: "6" },
+      { label: "Cities Visited", value: "4–6" },
+      { label: "XEmbassies", value: "8+" },
+      { label: "ProtoCos Witnessed", value: "10+" },
+    ],
+    ideas: [
+      { partner: "Expedition Alumnus", title: "Investor Route", desc: "A venture capital partner joined the Gulf of Guinea Arc expedition, met 3 Pods, and subsequently led the Series A for a fintech ProtoCo. [Logistics & Trade]" },
+      { partner: "Expedition Alumnus", title: "Partner Route", desc: "A Fortune 500 sustainability executive joined the East African Corridor, witnessed a health ProtoCo deployment, and signed a pilot LOI within 30 days. [Health & Mobility]" },
+      { partner: "Expedition Alumnus", title: "Operator Route", desc: "A self-taught engineer from Nairobi joined the Sahel Corridor, saw the water systems ProtoCos in action, and applied to the xHansa Fellowship the following cohort. [Water Systems]" },
+    ],
+    testimonial: {
+      quote: "I've read hundreds of pitch decks. None of them showed me what I saw in 14 days on the Gulf of Guinea Arc. The engine is real. The ventures are real. The routes are the strategy.",
+      author: "Expedition Alumnus",
+      role: "Venture Partner",
+      image: "",
+    },
+    companies: [],
+    applicationCycles: [
+      { cycle: "Spring 2026 — Gulf of Guinea Arc", opens: "Jan 15, 2026", closes: "Feb 28, 2026", cohortStart: "Apr 2026", status: "open" },
+      { cycle: "Summer 2026 — East African Corridor", opens: "Mar 1, 2026", closes: "Apr 30, 2026", cohortStart: "Jun 2026", status: "upcoming" },
+      { cycle: "Fall 2026 — Sahel Corridor", opens: "Jul 1, 2026", closes: "Aug 31, 2026", cohortStart: "Oct 2026", status: "upcoming" },
+    ],
+    whatYouGet: [
+      { title: "14-Day Immersion", desc: "Two weeks on the ground across 4–6 cities. Not a tour — a field deployment. You see the engine, the ventures, the hubs, the routes.", icon: "Calendar" },
+      { title: "XEmbassy Access", desc: "Full access to 4–8 XEmbassies. Tour foundries, labs, studios. See where ventures are built. This is infrastructure inspection, not sightseeing.", icon: "Globe" },
+      { title: "10+ ProtoCo Visits", desc: "See deployed Minimal Versions in the field. Meet the customers. Witness the Gate trajectory. The ventures are operating assets, not slide decks.", icon: "Activity" },
+      { title: "Commons Feasts", desc: "Community dinners at each city with local XCitizens, founders, operators, and partners. Eat, talk, build relationships. The network is the point.", icon: "Users" },
+      { title: "Pod Shadowing", desc: "Shadow a Pod's morning standup. See how 10-person teams operate under the Gate System. Witness the engine, live.", icon: "Target" },
+      { title: "Route Report & Alumni Access", desc: "Personalized Route Report + permanent TownSquare access. The expedition doesn't end when you go home — the network continues.", icon: "Shield" },
+    ],
+    icon: MapPin,
+    color: "bg-[#059669]",
+    image: "https://images.unsplash.com/photo-1530521954074-e64f6810b32d?auto=format&fit=crop&w=1200&q=80",
+    link: "/programs/xroute-expedition"
   }
 ];

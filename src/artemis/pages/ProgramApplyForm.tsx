@@ -108,7 +108,7 @@ export function ProgramApplyForm({ config }: { config: ProgramFormConfig }) {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-[#0A0A0A] text-white flex items-center justify-center px-6">
+      <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center px-4 md:px-6">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -143,7 +143,7 @@ export function ProgramApplyForm({ config }: { config: ProgramFormConfig }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white px-4 md:px-8 py-12 md:py-20">
+    <div className="min-h-screen bg-[#FAFAFA] py-12 md:py-20">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
