@@ -393,7 +393,7 @@ function Hero({ onSubscribe }: { onSubscribe: () => void }) {
   ];
 
   return (
-    <section className="relative bg-white text-[#111111] pt-24 pb-16 sm:pt-32 sm:pb-20 md:pt-44 md:pb-28 px-6 md:px-12 lg:px-20 border-b border-[#111111]/10">
+    <section className="relative bg-white text-[#111111] pt-24 pb-16 sm:pt-32 sm:pb-20 md:pt-44 md:pb-28 px-6 md:px-12 lg:px-20 border-b border-[#111111]/8">
       <div ref={ref} className="w-full max-w-4xl mx-auto text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -447,14 +447,14 @@ function Hero({ onSubscribe }: { onSubscribe: () => void }) {
                   .getElementById("invest-tiers")
                   ?.scrollIntoView({ behavior: "smooth" });
               }}
-              className="inline-flex items-center gap-2 px-8 py-4 bg-[#111111] text-white text-[12px] font-bold uppercase tracking-[0.12em] hover:bg-[#FF4D00] transition-colors"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-[#111111] text-white text-[12px] font-bold uppercase tracking-[0.12em] rounded-full hover:bg-[#FF4D00] transition-all hover:scale-105"
             >
               Invest Now
               <ArrowRight className="w-4 h-4" />
             </Link>
             <button
               onClick={onSubscribe}
-              className="inline-flex items-center gap-2 px-8 py-4 border border-[#111111]/20 text-[12px] font-bold uppercase tracking-[0.12em] hover:border-[#111111] hover:bg-[#111111] hover:text-white transition-all bg-white"
+              className="inline-flex items-center gap-2 px-8 py-4 border border-[#111111]/20 text-[12px] font-bold uppercase tracking-[0.12em] rounded-full hover:border-[#111111] hover:bg-[#111111] hover:text-white transition-all bg-white hover:scale-105"
             >
               Get Updates
               <Mail className="w-4 h-4" />
@@ -548,7 +548,7 @@ function CapitalBridge() {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.1 + i * 0.15, ease: [0.22, 1, 0.36, 1] }}
-              className={`relative overflow-hidden bg-[#F5F5F5] shadow-lg ${
+              className={`relative overflow-hidden bg-[#F5F5F5] shadow-lg rounded-2xl ${
                 i === 0
                   ? "w-[36%] md:w-[32%] aspect-[4/3] z-10"
                   : i === 1
@@ -651,7 +651,7 @@ function StatsBar() {
   return (
     <section
       ref={ref}
-      className="py-8 md:py-10 px-6 md:px-12 lg:px-20 border-b border-[#111111]/10 bg-white"
+      className="py-8 md:py-10 px-6 md:px-12 lg:px-20 border-b border-[#111111]/8 bg-white"
     >
       <div className="w-full max-w-[1400px] mx-auto">
         <div className="flex flex-wrap justify-between gap-6 md:gap-8">
@@ -690,7 +690,7 @@ function InvestmentVehicles() {
     <section
       ref={ref}
       id="investment-vehicles"
-      className="py-16 md:py-24 px-6 md:px-12 lg:px-20 border-b border-[#111111]/10"
+      className="py-16 md:py-24 px-6 md:px-12 lg:px-20 border-b border-[#111111]/8"
     >
       <div className="w-full max-w-[1400px] mx-auto">
         {/* Header */}
@@ -714,7 +714,7 @@ function InvestmentVehicles() {
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-12 gap-0 border border-[#111111]/10 rounded-2xl overflow-hidden shadow-sm">
+        <div className="grid lg:grid-cols-12 gap-0 border border-[#111111]/8 rounded-2xl overflow-hidden shadow-sm">
           {/* Left: Vertical tab nav */}
           <div className="lg:col-span-4 xl:col-span-3 border-b lg:border-b-0 lg:border-r border-[#111111]/10">
             {/* Mobile: horizontal scroll */}
@@ -889,14 +889,14 @@ function CapitalMedia() {
   return (
     <section
       ref={ref}
-      className="py-16 md:py-24 px-6 md:px-12 lg:px-20 border-t border-[#111111]/10"
+      className="py-16 md:py-24 px-6 md:px-12 lg:px-20 border-t border-[#111111]/8"
     >
       <div className="w-full max-w-[1400px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden bg-[#F5F5F5] shadow-lg"
+          className="relative overflow-hidden bg-[#F5F5F5] shadow-lg rounded-3xl"
         >
           <img
             src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1600&q=80"
@@ -1100,7 +1100,7 @@ function InvestmentTiers() {
     <section
       ref={ref}
       id="invest-tiers"
-      className="py-16 md:py-24 px-6 md:px-12 lg:px-20 bg-[#FAFAFA] border-t border-[#111111]/10"
+      className="py-16 md:py-24 px-6 md:px-12 lg:px-20 bg-[#FAFAFA] border-t border-[#111111]/8"
     >
       <div className="w-full max-w-[1400px] mx-auto">
         {/* Header */}
@@ -1220,10 +1220,10 @@ function InvestmentTiers() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, delay: i * 0.08 }}
                         onClick={() => setSelectedTierId(tier.id)}
-                        className={`text-left border bg-white transition-all p-5 md:p-6 ${
+                        className={`text-left border bg-white transition-all p-5 md:p-6 rounded-2xl ${
                           isSelected
                             ? "border-[#FF4D00] ring-1 ring-[#FF4D00]/20 shadow-md"
-                            : "border-[#111111]/10 hover:border-[#FF4D00]/30 hover:shadow-sm"
+                            : "border-[#111111]/8 hover:border-[#FF4D00]/30 hover:shadow-md hover:scale-[1.02]"
                         }`}
                       >
                         {/* Top accent */}
@@ -2388,7 +2388,7 @@ function FAQSection() {
   return (
     <section
       ref={ref}
-      className="py-16 md:py-24 px-6 md:px-12 lg:px-20 border-t border-[#111111]/10"
+      className="py-16 md:py-24 px-6 md:px-12 lg:px-20 border-t border-[#111111]/8"
     >
       <div className="w-full max-w-[1400px] mx-auto">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-20">
@@ -2415,7 +2415,7 @@ function FAQSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: i * 0.05 }}
-                className="border-t border-[#111111]/10 last:border-b last:border-[#111111]/10 hover:bg-[#111111]/[0.01] transition-colors rounded-lg"
+                className="border-t border-[#111111]/8 last:border-b last:border-[#111111]/10 hover:bg-[#111111]/[0.01] transition-colors rounded-lg"
               >
                 <button
                   onClick={() => setOpenIndex(openIndex === i ? null : i)}

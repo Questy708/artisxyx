@@ -110,10 +110,10 @@ function RoutesBridge() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="border-b border-[#111111]/10">
+    <section ref={ref} className="border-b border-[#111111]/8">
       {/* ── Contained hero image + stat strip ── */}
       <div className="px-6 md:px-12 lg:px-20">
-        <div className="max-w-[1400px] mx-auto overflow-hidden rounded-sm">
+        <div className="max-w-[1400px] mx-auto overflow-hidden rounded-3xl shadow-lg">
           {/* ── Cinematic hero image ── */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -157,7 +157,7 @@ function RoutesBridge() {
               <div
                 key={stat.label}
                 className={`px-6 md:px-10 lg:px-14 py-7 md:py-9 flex flex-col gap-1 ${
-                  i < bridgeStats.length - 1 ? "border-r border-[#111111]/10" : ""
+                  i < bridgeStats.length - 1 ? "border-r border-[#111111]/8" : ""
                 }`}
               >
                 <span className="text-[36px] md:text-[44px] font-display font-medium tracking-[-0.03em] text-[#111111] leading-none">
@@ -481,7 +481,7 @@ function HeroSection() {
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
   return (
-    <section className="relative bg-white text-[#111111] pt-24 pb-16 sm:pt-32 sm:pb-20 md:pt-44 md:pb-28 px-5 sm:px-6 md:px-12 lg:px-20 border-b border-[#111111]/10">
+    <section className="relative bg-white text-[#111111] pt-24 pb-16 sm:pt-32 sm:pb-20 md:pt-44 md:pb-28 px-5 sm:px-6 md:px-12 lg:px-20 border-b border-[#111111]/8">
       <div ref={ref} className="w-full max-w-3xl mx-auto text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -543,7 +543,7 @@ function PreambleSection() {
 
   return (
     <section ref={ref} className="px-6 md:px-12 lg:px-20">
-      <div className="max-w-[1400px] mx-auto bg-[#0A0A0A] rounded-sm overflow-hidden">
+      <div className="max-w-[1400px] mx-auto bg-[#0A0A0A] rounded-3xl overflow-hidden shadow-xl">
 
         {/* ── Opening statement: political cages ── */}
         <div className="px-8 md:px-14 lg:px-20 pt-16 md:pt-24 pb-12 md:pb-16 border-b border-white/[0.06]">
@@ -793,9 +793,9 @@ function MapSection({
   const isInView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section ref={ref} className="border-b border-[#111111]/10">
+    <section ref={ref} className="border-b border-[#111111]/8">
       {/* Section label + filter buttons */}
-      <div className="py-12 md:py-16 px-6 md:px-12 lg:px-20 border-b border-[#111111]/10">
+      <div className="py-12 md:py-16 px-6 md:px-12 lg:px-20 border-b border-[#111111]/8">
         <div className="w-full max-w-[1400px] mx-auto">
           <div className="flex items-center gap-4 mb-6">
             <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00]">
@@ -811,10 +811,10 @@ function MapSection({
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setActiveLeg(null)}
-              className={`px-3 py-1.5 text-[11px] font-mono font-bold tracking-widest uppercase border transition-colors ${
+              className={`px-4 py-2 text-[11px] font-mono font-bold tracking-widest uppercase border rounded-full transition-all ${
                 activeLeg === null
                   ? "bg-[#111111] text-white border-[#111111]"
-                  : "bg-white text-[#111111]/50 border-[#111111]/15 hover:border-[#111111]/30"
+                  : "bg-white text-[#111111]/50 border-[#111111]/12 hover:border-[#111111]/30 hover:scale-105"
               }`}
             >
               All Legs
@@ -823,10 +823,10 @@ function MapSection({
               <button
                 key={leg.id}
                 onClick={() => setActiveLeg(activeLeg === leg.id ? null : leg.id)}
-                className={`px-3 py-1.5 text-[11px] font-mono font-bold tracking-widest uppercase border transition-colors ${
+                className={`px-4 py-2 text-[11px] font-mono font-bold tracking-widest uppercase border rounded-full transition-all ${
                   activeLeg === leg.id
                     ? "text-white border-transparent"
-                    : "bg-white text-[#111111]/50 border-[#111111]/15 hover:border-[#111111]/30"
+                    : "bg-white text-[#111111]/50 border-[#111111]/12 hover:border-[#111111]/30 hover:scale-105"
                 }`}
                 style={activeLeg === leg.id ? { backgroundColor: leg.color, borderColor: leg.color } : {}}
               >
@@ -951,7 +951,7 @@ function BlueprintMap({
     <div className="w-full relative">
       {/* Auto-playing indicator on map */}
       {isAutoPlaying && (
-        <div className="absolute top-3 right-3 z-50 flex items-center gap-1.5 bg-white/90 border border-[#111111]/10 px-3 py-1.5">
+        <div className="absolute top-3 right-3 z-50 flex items-center gap-1.5 bg-white/90 border border-[#111111]/8 px-3 py-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D00] animate-pulse" />
           <span className="text-[9px] font-mono font-bold tracking-[0.12em] uppercase text-[#FF4D00]/70">
             Auto-playing
@@ -1124,7 +1124,7 @@ function BlueprintMap({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 30, transition: { duration: 0.2 } }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute inset-x-0 bottom-0 top-auto sm:inset-x-auto sm:left-auto sm:top-4 sm:bottom-4 sm:right-4 w-full sm:w-72 md:w-80 lg:w-96 max-h-[85vh] sm:max-h-none bg-white border border-[#111111]/10 shadow-2xl p-5 sm:p-6 md:p-8 flex flex-col z-50 overflow-y-auto rounded-t-lg sm:rounded-none"
+              className="absolute inset-x-0 bottom-0 top-auto sm:inset-x-auto sm:left-auto sm:top-4 sm:bottom-4 sm:right-4 w-full sm:w-72 md:w-80 lg:w-96 max-h-[85vh] sm:max-h-none bg-white border border-[#111111]/8 shadow-2xl p-5 sm:p-6 md:p-8 flex flex-col z-50 overflow-y-auto rounded-t-lg sm:rounded-none"
             >
               <button
                 onClick={() => setActiveLocId(null)}
@@ -1257,8 +1257,8 @@ function ArcAccordion({
   const isInView = useInView(ref, { once: true, margin: "-40px" });
 
   return (
-    <section ref={ref} className="border-b border-[#111111]/10">
-      <div className="py-12 md:py-16 px-6 md:px-12 lg:px-20 border-b border-[#111111]/10">
+    <section ref={ref} className="border-b border-[#111111]/8">
+      <div className="py-12 md:py-16 px-6 md:px-12 lg:px-20 border-b border-[#111111]/8">
         <div className="w-full max-w-[1400px] mx-auto">
           <span className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#FF4D00]">
             The Arcs, In Detail
@@ -1321,7 +1321,7 @@ function LegAccordionPanel({
     <div
       id={`leg-${leg.id}`}
       className={`border rounded-2xl overflow-hidden transition-all ${
-        isExpanded ? "border-[#111111]/20 bg-white shadow-sm" : "border-[#111111]/10 bg-white hover:border-[#111111]/20 hover:shadow-sm"
+        isExpanded ? "border-[#111111]/20 bg-white shadow-sm" : "border-[#111111]/8 bg-white hover:border-[#111111]/20 hover:shadow-sm"
       }`}
     >
       {/* Header row */}
@@ -1379,7 +1379,7 @@ function LegAccordionPanel({
                 {leg.countries.map((c) => (
                   <span
                     key={c}
-                    className="text-[11px] font-mono tracking-wide px-3 py-1 border border-[#111111]/10 text-[#111111]/50"
+                    className="text-[11px] font-mono tracking-wide px-3 py-1 border border-[#111111]/8 text-[#111111]/50"
                   >
                     {c}
                   </span>
@@ -1601,7 +1601,7 @@ function DealCard({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="border border-[#111111]/10">
+    <div className="border border-[#111111]/8">
       <button
         suppressHydrationWarning
         onClick={() => setIsOpen(!isOpen)}
@@ -1690,7 +1690,7 @@ function JourneySection() {
   return (
     <section
       ref={ref}
-      className="py-20 md:py-32 px-6 md:px-12 lg:px-20 border-t border-[#111111]/10"
+      className="py-20 md:py-32 px-6 md:px-12 lg:px-20 border-t border-[#111111]/8"
     >
       <div className="w-full max-w-[1400px] mx-auto">
         {/* Header */}
@@ -1778,7 +1778,7 @@ function JourneySection() {
                     >
                       {/* Node on the line */}
                       <div className="flex items-center justify-center mb-6 relative z-10">
-                        <div className="w-14 h-14 rounded-full border-2 border-[#111111]/10 bg-white flex items-center justify-center group-hover:border-[#FF4D00] group-hover:bg-[#FF4D00]/5 transition-all duration-300">
+                        <div className="w-14 h-14 rounded-full border-2 border-[#111111]/8 bg-white flex items-center justify-center group-hover:border-[#FF4D00] group-hover:bg-[#FF4D00]/5 transition-all duration-300">
                           <Icon className="w-5 h-5 text-[#FF4D00]" strokeWidth={1.5} />
                         </div>
                       </div>
@@ -1852,7 +1852,7 @@ function JourneySection() {
                     className="relative pl-14 pb-8 last:pb-0"
                   >
                     {/* Node on the line */}
-                    <div className="absolute left-[5px] top-0 w-7 h-7 rounded-full border-2 border-[#111111]/10 bg-white flex items-center justify-center z-10">
+                    <div className="absolute left-[5px] top-0 w-7 h-7 rounded-full border-2 border-[#111111]/8 bg-white flex items-center justify-center z-10">
                       <Icon className="w-3.5 h-3.5 text-[#FF4D00]" strokeWidth={1.5} />
                     </div>
 
@@ -1964,7 +1964,7 @@ function JourneySection() {
                           animate={{ opacity: 1, y: 0, height: "auto" }}
                           exit={{ opacity: 0, y: -10, height: 0 }}
                           transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                          className="mt-4 border border-[#111111]/10 bg-white p-5 shadow-md overflow-hidden"
+                          className="mt-4 border border-[#111111]/8 bg-white p-5 shadow-md overflow-hidden"
                         >
                           {/* Leg color bar */}
                           <div className="h-1 w-8 mb-4" style={{ backgroundColor: legColor }} />
@@ -2092,7 +2092,7 @@ function JourneySection() {
                           transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                           className="overflow-hidden"
                         >
-                          <div className="border border-[#111111]/10 bg-white p-4 mt-1">
+                          <div className="border border-[#111111]/8 bg-white p-4 mt-1">
                             {/* Leg color bar */}
                             <div className="h-1 w-8 mb-3" style={{ backgroundColor: legColor }} />
 
@@ -2242,7 +2242,7 @@ function PricingSection() {
   return (
     <section
       ref={ref}
-      className="py-20 md:py-32 px-6 md:px-12 lg:px-20 border-t border-[#111111]/10 bg-white"
+      className="py-20 md:py-32 px-6 md:px-12 lg:px-20 border-t border-[#111111]/8 bg-white"
     >
       <div className="w-full max-w-[1400px] mx-auto">
         {/* Header */}
@@ -2279,12 +2279,12 @@ function PricingSection() {
                   delay: 0.08 * i,
                   ease: "easeOut",
                 }}
-                className="border border-[#111111]/10 hover:border-[#111111]/20 transition-colors overflow-hidden"
+                className="border border-[#111111]/8 hover:border-[#111111]/20 transition-colors overflow-hidden"
                 style={{ borderLeftWidth: 4, borderLeftColor: leg.color }}
               >
                 <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-0">
                   {/* Left: Arc info */}
-                  <div className="p-5 sm:p-6 md:p-8 lg:border-r border-b lg:border-b-0 border-[#111111]/10 flex flex-col">
+                  <div className="p-5 sm:p-6 md:p-8 lg:border-r border-b lg:border-b-0 border-[#111111]/8 flex flex-col">
                     <div className="flex items-center gap-3 mb-3">
                       <div
                         className="w-3 h-3 shrink-0"
@@ -2380,7 +2380,7 @@ function PricingSection() {
                           {pricing.extras.map((extra, j) => (
                             <span
                               key={j}
-                              className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 border border-[#111111]/10 text-[#111111]/60"
+                              className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 border border-[#111111]/8 text-[#111111]/60"
                             >
                               <Check
                                 className="w-3 h-3 shrink-0"
