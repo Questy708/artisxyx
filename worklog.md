@@ -509,3 +509,34 @@ Work Log:
 
 Stage Summary:
 - ALL changes pushed to GitHub (github.com/Questy708/artisxyx.git, branch main). Capital2/Routes2 removed; Capital page first two sections restored to original centered layout. Local and remote in sync at fee2a57. Token used one-shot, not persisted.
+
+---
+Task ID: netlify-admin-signin-fix
+Agent: main
+Task: Fix "Server configuration error" on admin sign-in when deployed to Netlify.
+
+Work Log:
+- Diagnosed root cause: `/api/admin/auth/route.ts` returns "Server configuration error" when `ADMIN_PASSWORD` or `ADMIN_SECRET` env vars are missing. On Netlify, these runtime env vars were not configured.
+- Found compounding code bug: `next.config.ts` had `env: { ADMIN_PASSWORD: "Cornerstone$001" }` which (a) leaked the admin password into the client bundle (Next.js inlines `env` values at build time — security leak), and (b) hardcoded the value at build time, preventing the Netlify runtime env var from being used.
+- Found secondary local issue: `.env` used single quotes `ADMIN_PASSWORD='Cornerstone$001'` but `@next/env` (unlike standard dotenv) still expands `$` variables inside single quotes — so the value loaded as just "Cornerstone" (11 chars), not "Cornerstone$001" (15 chars). This was previously masked by the next.config.ts hardcode.
+- Fixes applied:
+  1. `next.config.ts`: Removed the `env: { ADMIN_PASSWORD: ... }` block. Secrets must only be read at runtime via `process.env` from the deployment environment. Added explanatory comment.
+  2. `src/app/api/admin/auth/route.ts`: Added upfront check for BOTH `ADMIN_PASSWORD` and `ADMIN_SECRET` before any work. Returns the same generic "Server configuration error" to the client (no info leak) but logs exactly which variable is missing, so Netlify function logs are debuggable.
+  3. `netlify.toml` (new): Documents the 3 required env vars (ADMIN_PASSWORD, ADMIN_SECRET, DATABASE_URL) and notes that SQLite (file:./) won't work on Netlify's ephemeral serverless functions — PostgreSQL (Neon/Supabase/Railway) is required for data persistence.
+  4. `.env` (local, gitignored): Escaped `$` as `\$` so @next/env loads `Cornerstone$001` correctly (15 chars).
+
+VERIFICATION (local, after fix):
+- API POST /api/admin/auth with correct password → HTTP 200 + valid token
+- API POST /api/admin/auth with wrong password → HTTP 401 "Invalid password"
+- API GET /api/admin/auth with Bearer token → HTTP 200 {"valid":true}
+- Lint: 0 errors. dev.log: zero runtime errors.
+
+NETLIFY DEPLOYMENT INSTRUCTIONS (user action required):
+- In Netlify > Site settings > Environment variables, set:
+  - ADMIN_PASSWORD = (16+ chars, upper+lower+number+special)
+  - ADMIN_SECRET = (32+ char random string)
+  - DATABASE_URL = (PostgreSQL connection string — SQLite will NOT persist on serverless)
+- Redeploy. Admin sign-in at /#/admin will then work.
+
+Stage Summary:
+- Code fixes committed and pushed. The "Server configuration error" on Netlify is resolved once the 3 env vars are set in Netlify's UI. Security leak (hardcoded password in client bundle) also fixed. Local dev verified working.

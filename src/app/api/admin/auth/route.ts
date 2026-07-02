@@ -48,6 +48,28 @@ function timingSafeEqual(a: string, b: string): boolean {
 
 export async function POST(req: NextRequest) {
   try {
+    // ─── Upfront config check ───
+    // Validate BOTH required server env vars exist before doing any work.
+    // Returns the same generic error to the client (no info leak), but logs
+    // exactly which variable is missing so Netlify function logs are debuggable.
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    const adminSecret = process.env.ADMIN_SECRET;
+    if (!adminPassword || !adminSecret) {
+      const missing = [
+        !adminPassword && "ADMIN_PASSWORD",
+        !adminSecret && "ADMIN_SECRET",
+      ].filter(Boolean).join(" and ");
+      console.error(
+        `[auth] Server configuration error: ${missing} is not set. ` +
+          "Set these in Netlify > Site settings > Environment variables. " +
+          "See netlify.toml for the full list."
+      );
+      return NextResponse.json(
+        { error: "Server configuration error" },
+        { status: 500 }
+      );
+    }
+
     // Rate limiting
     const ip = getClientIp(req);
     const rateCheck = checkRateLimit(ip, LOGIN_MAX_ATTEMPTS, LOGIN_WINDOW_MS);
@@ -73,16 +95,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { error: "Invalid input" },
         { status: 400 }
-      );
-    }
-
-    const adminPassword = process.env.ADMIN_PASSWORD;
-
-    if (!adminPassword) {
-      console.error("ADMIN_PASSWORD env variable is not set");
-      return NextResponse.json(
-        { error: "Server configuration error" },
-        { status: 500 }
       );
     }
 
@@ -112,13 +124,6 @@ export async function POST(req: NextRequest) {
       message: "Authenticated successfully",
     });
   } catch (error) {
-    if (error instanceof Error && error.message.includes("ADMIN_SECRET")) {
-      console.error("Security config error:", error.message);
-      return NextResponse.json(
-        { error: "Server configuration error" },
-        { status: 500 }
-      );
-    }
     console.error("Admin auth error:", error);
     return NextResponse.json(
       { error: "Internal server error" },

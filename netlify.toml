@@ -1,0 +1,24 @@
+# Netlify deployment configuration for xCelero Labs (Next.js 16)
+#
+# REQUIRED ENVIRONMENT VARIABLES (set in Netlify UI):
+#   Site settings → Environment variables → Production (and Preview if desired)
+#
+#   ADMIN_PASSWORD  — admin login password (16+ chars, upper+lower+number+special)
+#   ADMIN_SECRET    — random string, 32+ chars, used to sign admin session tokens
+#   DATABASE_URL    — PostgreSQL connection string (e.g. postgresql://...)
+#                     NOTE: SQLite (file:./...) will NOT work on Netlify —
+#                     serverless functions are ephemeral and have no persistent
+#                     filesystem. Use Neon, Supabase, Railway, or similar.
+#
+# Do NOT put secrets in this file. This file is committed to git.
+# Netlify reads env vars from its UI at build AND runtime.
+
+[build]
+  command = "bun run build"
+  publish = ".next"
+
+# Next.js is auto-detected by Netlify — the @netlify/plugin-nextjs runtime
+# is automatically installed and applied. No plugin declaration needed here.
+
+[build.environment]
+  NODE_VERSION = "20"
