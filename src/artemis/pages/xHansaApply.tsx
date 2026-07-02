@@ -144,24 +144,24 @@ export function XHansaApply() {
           className="max-w-xl text-center"
         >
           <div className="w-20 h-20 mx-auto mb-8 rounded-full bg-[#FF4D00] flex items-center justify-center">
-            <Check className="w-10 h-10 text-white" strokeWidth={3} />
+            <Check className="w-10 h-10 text-[#111111]" strokeWidth={3} />
           </div>
           <h1 className="font-display text-4xl md:text-5xl font-medium tracking-tight mb-4">
             Application received.
           </h1>
-          <p className="text-white/50 text-lg leading-relaxed mb-8">
+          <p className="text-[#111111]/50 text-lg leading-relaxed mb-8">
             Your application to the xHansa Fellowship, Cohort 1, 2026 has been submitted.
             We read every application. You'll hear from us within 21 days, regardless of outcome.
           </p>
-          <div className="space-y-3 text-left bg-white/5 border border-white/10 rounded-xl p-6 mb-8">
-            <p className="text-sm text-white/60">While you wait:</p>
-            <p className="text-sm text-white/70">• Read the Applicant FAQ on the program page</p>
-            <p className="text-sm text-white/70">• Join TownSquare — current Xcitizens and alumni are there</p>
-            <p className="text-sm text-white/70">• Keep building. We notice people who keep operating while they wait</p>
+          <div className="space-y-3 text-left bg-[#111111]/5 border border-[#111111]/10 rounded-xl p-6 mb-8">
+            <p className="text-sm text-[#111111]/60">While you wait:</p>
+            <p className="text-sm text-[#111111]/70">• Read the Applicant FAQ on the program page</p>
+            <p className="text-sm text-[#111111]/70">• Join TownSquare — current Xcitizens and alumni are there</p>
+            <p className="text-sm text-[#111111]/70">• Keep building. We notice people who keep operating while they wait</p>
           </div>
           <button
             onClick={() => navigate("/")}
-            className="px-8 py-3 bg-[#FF4D00] text-white text-sm font-bold tracking-wider rounded-full hover:bg-[#FF6A28] transition-colors inline-flex items-center gap-2"
+            className="px-8 py-3 bg-[#FF4D00] text-[#111111] text-sm font-bold tracking-wider rounded-full hover:bg-[#FF6A28] transition-colors inline-flex items-center gap-2"
           >
             Return Home <ArrowRight className="w-4 h-4" />
           </button>
@@ -177,7 +177,7 @@ export function XHansaApply() {
         <div className="text-center mb-10">
           <div className="flex items-center justify-center gap-2.5 mb-6">
             <div className="w-9 h-9 bg-[#FF4D00] flex items-center justify-center rounded-lg">
-              <span className="text-white font-bold text-sm">X</span>
+              <span className="text-[#111111] font-bold text-sm">X</span>
             </div>
             <span className="text-[13px] font-bold tracking-tight uppercase">
               xCelero<span className="text-[#FF4D00]"> Labs</span>
@@ -186,7 +186,7 @@ export function XHansaApply() {
           <h1 className="font-display text-3xl md:text-5xl font-medium tracking-tight mb-3">
             xHansa Fellowship <span className="text-[#FF4D00]">Application</span>
           </h1>
-          <p className="text-white/40 text-sm md:text-base">Cohort 1, 2026 · Applications close May 15, 2026</p>
+          <p className="text-[#111111]/40 text-sm md:text-base">Cohort 1, 2026 · Applications close May 15, 2026</p>
         </div>
 
         {/* Progress bar */}
@@ -195,7 +195,7 @@ export function XHansaApply() {
             <div
               key={i}
               className={`h-1 flex-1 rounded-full transition-colors duration-300 ${
-                i <= step ? "bg-[#FF4D00]" : "bg-white/10"
+                i <= step ? "bg-[#FF4D00]" : "bg-[#111111]/10"
               }`}
             />
           ))}
@@ -206,7 +206,7 @@ export function XHansaApply() {
           <span className="text-[10px] font-mono font-bold tracking-[0.25em] uppercase text-[#FF4D00]">
             Step {step + 1} of {STEPS.length}
           </span>
-          <span className="text-[10px] font-mono tracking-[0.15em] uppercase text-white/30">
+          <span className="text-[10px] font-mono tracking-[0.15em] uppercase text-[#111111]/30">
             {STEPS[step]}
           </span>
         </div>
@@ -303,22 +303,22 @@ export function XHansaApply() {
                         className={`flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all ${
                           selected
                             ? "border-[#FF4D00] bg-[#FF4D00]/10"
-                            : "border-white/10 bg-white/[0.02] hover:border-white/25"
+                            : "border-[#111111]/10 bg-[#111111]/[0.02] hover:border-[#111111]/25"
                         }`}
                       >
                         <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 ${
-                          selected ? "border-[#FF4D00] bg-[#FF4D00]" : "border-white/25"
+                          selected ? "border-[#FF4D00] bg-[#FF4D00]" : "border-[#111111]/25"
                         }`}>
-                          {selected && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+                          {selected && <Check className="w-3 h-3 text-[#111111]" strokeWidth={3} />}
                         </div>
-                        <span className={`text-sm font-medium ${selected ? "text-white" : "text-white/60"}`}>
+                        <span className={`text-sm font-medium ${selected ? "text-[#111111]" : "text-[#111111]/60"}`}>
                           {field}
                         </span>
                       </button>
                     );
                   })}
                 </div>
-                <p className="text-xs text-white/30 mb-4">{form.fieldPreferences.length}/3 selected</p>
+                <p className="text-xs text-[#111111]/30 mb-4">{form.fieldPreferences.length}/3 selected</p>
                 <TextArea
                   label="Why those fields? *"
                   hint="100–200 words"
@@ -347,17 +347,17 @@ export function XHansaApply() {
                         key={arch.name}
                         onClick={() => update("archetypeSelf", arch.name)}
                         className={`flex items-start gap-3 p-4 rounded-xl border text-left transition-all w-full ${
-                          selected ? "border-[#FF4D00] bg-[#FF4D00]/10" : "border-white/10 bg-white/[0.02] hover:border-white/25"
+                          selected ? "border-[#FF4D00] bg-[#FF4D00]/10" : "border-[#111111]/10 bg-[#111111]/[0.02] hover:border-[#111111]/25"
                         }`}
                       >
                         <div className={`w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5 ${
-                          selected ? "border-[#FF4D00] bg-[#FF4D00]" : "border-white/25"
+                          selected ? "border-[#FF4D00] bg-[#FF4D00]" : "border-[#111111]/25"
                         }`}>
                           {selected && <div className="w-2 h-2 bg-white rounded-full m-auto mt-[3px]" />}
                         </div>
                         <div>
-                          <p className={`text-sm font-semibold ${selected ? "text-white" : "text-white/70"}`}>{arch.name}</p>
-                          <p className="text-xs text-white/40 mt-0.5">{arch.desc}</p>
+                          <p className={`text-sm font-semibold ${selected ? "text-[#111111]" : "text-[#111111]/70"}`}>{arch.name}</p>
+                          <p className="text-xs text-[#111111]/40 mt-0.5">{arch.desc}</p>
                         </div>
                       </button>
                     );
@@ -449,7 +449,7 @@ export function XHansaApply() {
                 )}
 
                 <div className="bg-[#FF4D00]/5 border border-[#FF4D00]/20 rounded-xl p-5 mb-6">
-                  <p className="text-xs text-white/50 leading-relaxed">
+                  <p className="text-xs text-[#111111]/50 leading-relaxed">
                     By submitting, you confirm that your answers are honest and your own.
                     You understand this is a deployment, not employment; that the stipend is needs-based;
                     that IP belongs to the League Commons; that the Gates are binary; and that the cliff at Month 24 is final.
@@ -459,7 +459,7 @@ export function XHansaApply() {
                 <button
                   onClick={handleSubmit}
                   disabled={submitting}
-                  className="w-full py-4 bg-[#FF4D00] text-white text-sm font-bold tracking-wider rounded-xl hover:bg-[#FF6A28] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-[#FF4D00] text-[#111111] text-sm font-bold tracking-wider rounded-xl hover:bg-[#FF6A28] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {submitting ? (
                     <><Loader2 className="w-5 h-5 animate-spin" /> Submitting...</>
@@ -477,14 +477,14 @@ export function XHansaApply() {
           {step > 0 ? (
             <button
               onClick={back}
-              className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white/50 hover:text-white transition-colors"
+              className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-[#111111]/50 hover:text-[#111111] transition-colors"
             >
               <ArrowLeft className="w-4 h-4" /> Back
             </button>
           ) : (
             <button
               onClick={() => navigate("/")}
-              className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white/50 hover:text-white transition-colors"
+              className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-[#111111]/50 hover:text-[#111111] transition-colors"
             >
               <ArrowLeft className="w-4 h-4" /> Cancel
             </button>
@@ -494,7 +494,7 @@ export function XHansaApply() {
             <button
               onClick={next}
               disabled={!canProceed()}
-              className="flex items-center gap-2 px-6 py-2.5 bg-white/10 text-white text-sm font-bold rounded-full hover:bg-white/15 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-6 py-2.5 bg-[#111111]/10 text-[#111111] text-sm font-bold rounded-full hover:bg-[#111111]/15 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
               Continue <ArrowRight className="w-4 h-4" />
             </button>
@@ -511,7 +511,7 @@ function StepWrapper({ title, desc, children }: { title: string; desc: string; c
   return (
     <div>
       <h2 className="font-display text-2xl font-medium tracking-tight mb-2">{title}</h2>
-      <p className="text-sm text-white/40 leading-relaxed mb-6">{desc}</p>
+      <p className="text-sm text-[#111111]/40 leading-relaxed mb-6">{desc}</p>
       <div className="space-y-5">{children}</div>
     </div>
   );
@@ -522,13 +522,13 @@ function Input({ label, value, onChange, type = "text", placeholder }: {
 }) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-white/60 mb-1.5">{label}</label>
+      <label className="block text-xs font-semibold text-[#111111]/60 mb-1.5">{label}</label>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-[#FF4D00]/40 focus:ring-1 focus:ring-[#FF4D00]/20 transition-all"
+        className="w-full bg-[#111111]/[0.03] border border-[#111111]/10 rounded-lg px-4 py-2.5 text-sm text-[#111111] placeholder-[#111111]/20 outline-none focus:border-[#FF4D00]/40 focus:ring-1 focus:ring-[#FF4D00]/20 transition-all"
       />
     </div>
   );
@@ -539,13 +539,13 @@ function TextArea({ label, hint, value, onChange, rows = 4 }: {
 }) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-white/60 mb-1.5">{label}</label>
-      {hint && <p className="text-[10px] text-white/30 mb-1.5">{hint}</p>}
+      <label className="block text-xs font-semibold text-[#111111]/60 mb-1.5">{label}</label>
+      {hint && <p className="text-[10px] text-[#111111]/30 mb-1.5">{hint}</p>}
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={rows}
-        className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-[#FF4D00]/40 focus:ring-1 focus:ring-[#FF4D00]/20 transition-all resize-y"
+        className="w-full bg-[#111111]/[0.03] border border-[#111111]/10 rounded-lg px-4 py-2.5 text-sm text-[#111111] placeholder-[#111111]/20 outline-none focus:border-[#FF4D00]/40 focus:ring-1 focus:ring-[#FF4D00]/20 transition-all resize-y"
       />
     </div>
   );
@@ -561,7 +561,7 @@ function CommitmentQuestion({ label, value, onChange }: {
   ];
   return (
     <div>
-      <p className="text-sm text-white/70 leading-relaxed mb-2.5">{label}</p>
+      <p className="text-sm text-[#111111]/70 leading-relaxed mb-2.5">{label}</p>
       <div className="flex gap-2">
         {options.map((opt) => (
           <button
@@ -570,9 +570,9 @@ function CommitmentQuestion({ label, value, onChange }: {
             className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
               value === opt.val
                 ? opt.accent
-                  ? "bg-[#FF4D00] text-white"
-                  : "bg-white/15 text-white"
-                : "bg-white/5 text-white/40 hover:bg-white/10"
+                  ? "bg-[#FF4D00] text-[#111111]"
+                  : "bg-[#111111]/15 text-[#111111]"
+                : "bg-[#111111]/5 text-[#111111]/40 hover:bg-[#111111]/10"
             }`}
           >
             {opt.label}
@@ -585,9 +585,9 @@ function CommitmentQuestion({ label, value, onChange }: {
 
 function ReviewItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between items-start gap-4 py-2 border-b border-white/5">
-      <span className="text-xs font-mono font-bold tracking-wider uppercase text-white/30 flex-shrink-0">{label}</span>
-      <span className="text-sm text-white/70 text-right">{value || "—"}</span>
+    <div className="flex justify-between items-start gap-4 py-2 border-b border-[#111111]/5">
+      <span className="text-xs font-mono font-bold tracking-wider uppercase text-[#111111]/30 flex-shrink-0">{label}</span>
+      <span className="text-sm text-[#111111]/70 text-right">{value || "—"}</span>
     </div>
   );
 }

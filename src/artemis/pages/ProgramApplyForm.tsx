@@ -116,24 +116,24 @@ export function ProgramApplyForm({ config }: { config: ProgramFormConfig }) {
           className="max-w-xl text-center"
         >
           <div className="w-20 h-20 mx-auto mb-8 rounded-full bg-[#FF4D00] flex items-center justify-center">
-            <Check className="w-10 h-10 text-white" strokeWidth={3} />
+            <Check className="w-10 h-10 text-[#111111]" strokeWidth={3} />
           </div>
           <h1 className="font-display text-4xl md:text-5xl font-medium tracking-tight mb-4">
             Application received.
           </h1>
-          <p className="text-white/50 text-lg leading-relaxed mb-8">
+          <p className="text-[#111111]/50 text-lg leading-relaxed mb-8">
             Your application to {config.programName}, {config.submitCohort} has been submitted.
             We read every application. You'll hear from us within 21 days.
           </p>
-          <div className="space-y-3 text-left bg-white/5 border border-white/10 rounded-xl p-6 mb-8">
-            <p className="text-sm text-white/60">While you wait:</p>
-            <p className="text-sm text-white/70">• Review the program page for FAQ and details</p>
-            <p className="text-sm text-white/70">• Join TownSquare to connect with the community</p>
-            <p className="text-sm text-white/70">• Keep building. We notice people who keep operating.</p>
+          <div className="space-y-3 text-left bg-[#111111]/5 border border-[#111111]/10 rounded-xl p-6 mb-8">
+            <p className="text-sm text-[#111111]/60">While you wait:</p>
+            <p className="text-sm text-[#111111]/70">• Review the program page for FAQ and details</p>
+            <p className="text-sm text-[#111111]/70">• Join TownSquare to connect with the community</p>
+            <p className="text-sm text-[#111111]/70">• Keep building. We notice people who keep operating.</p>
           </div>
           <button
             onClick={() => navigate("/")}
-            className="px-8 py-3 bg-[#FF4D00] text-white text-sm font-bold tracking-wider rounded-full hover:bg-[#FF6A28] transition-colors inline-flex items-center gap-2"
+            className="px-8 py-3 bg-[#FF4D00] text-[#111111] text-sm font-bold tracking-wider rounded-full hover:bg-[#FF6A28] transition-colors inline-flex items-center gap-2"
           >
             Return Home <ArrowRight className="w-4 h-4" />
           </button>
@@ -149,7 +149,7 @@ export function ProgramApplyForm({ config }: { config: ProgramFormConfig }) {
         <div className="text-center mb-10">
           <div className="flex items-center justify-center gap-2.5 mb-6">
             <div className="w-9 h-9 bg-[#FF4D00] flex items-center justify-center rounded-lg">
-              <span className="text-white font-bold text-sm">X</span>
+              <span className="text-[#111111] font-bold text-sm">X</span>
             </div>
             <span className="text-[13px] font-bold tracking-tight uppercase">
               xCelero<span className="text-[#FF4D00]"> Labs</span>
@@ -158,7 +158,7 @@ export function ProgramApplyForm({ config }: { config: ProgramFormConfig }) {
           <h1 className="font-display text-3xl md:text-5xl font-medium tracking-tight mb-3">
             {config.programName} <span className="text-[#FF4D00]">Application</span>
           </h1>
-          <p className="text-white/40 text-sm md:text-base">{config.cohort} · Applications close {config.applyDeadline}</p>
+          <p className="text-[#111111]/40 text-sm md:text-base">{config.cohort} · Applications close {config.applyDeadline}</p>
         </div>
 
         {/* Progress bar */}
@@ -167,7 +167,7 @@ export function ProgramApplyForm({ config }: { config: ProgramFormConfig }) {
             <div
               key={i}
               className={`h-1 flex-1 rounded-full transition-colors duration-300 ${
-                i <= step ? "bg-[#FF4D00]" : "bg-white/10"
+                i <= step ? "bg-[#FF4D00]" : "bg-[#111111]/10"
               }`}
             />
           ))}
@@ -178,7 +178,7 @@ export function ProgramApplyForm({ config }: { config: ProgramFormConfig }) {
           <span className="text-[10px] font-mono font-bold tracking-[0.25em] uppercase text-[#FF4D00]">
             Step {step + 1} of {config.steps.length}
           </span>
-          <span className="text-[10px] font-mono tracking-[0.15em] uppercase text-white/30">
+          <span className="text-[10px] font-mono tracking-[0.15em] uppercase text-[#111111]/30">
             {config.steps[step]}
           </span>
         </div>
@@ -244,19 +244,19 @@ export function ProgramApplyForm({ config }: { config: ProgramFormConfig }) {
                   <div className="space-y-2">
                     {config.dealTerms.map((term, i) => (
                       <div key={i} className="flex justify-between items-start gap-4 text-sm">
-                        <span className="text-white/50 font-medium">{term.label}</span>
-                        <span className="text-white/80 text-right">{term.detail}</span>
+                        <span className="text-[#111111]/50 font-medium">{term.label}</span>
+                        <span className="text-[#111111]/80 text-right">{term.detail}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Is this for you */}
-                <div className="bg-white/[0.02] border border-white/10 rounded-xl p-5 mb-5">
-                  <p className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-white/40 mb-3">This Program Is For You If:</p>
+                <div className="bg-[#111111]/[0.02] border border-[#111111]/10 rounded-xl p-5 mb-5">
+                  <p className="text-[10px] font-mono font-bold tracking-[0.2em] uppercase text-[#111111]/40 mb-3">This Program Is For You If:</p>
                   <ul className="space-y-1.5">
                     {config.isForYouIf.map((item, i) => (
-                      <li key={i} className="text-xs text-white/50 flex items-start gap-2">
+                      <li key={i} className="text-xs text-[#111111]/50 flex items-start gap-2">
                         <span className="text-[#FF4D00] mt-0.5">→</span>
                         <span>{item}</span>
                       </li>
@@ -282,7 +282,7 @@ export function ProgramApplyForm({ config }: { config: ProgramFormConfig }) {
                 <button
                   onClick={handleSubmit}
                   disabled={submitting}
-                  className="w-full py-4 bg-[#FF4D00] text-white text-sm font-bold tracking-wider rounded-xl hover:bg-[#FF6A28] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-[#FF4D00] text-[#111111] text-sm font-bold tracking-wider rounded-xl hover:bg-[#FF6A28] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {submitting ? (
                     <><Loader2 className="w-5 h-5 animate-spin" /> Submitting...</>
@@ -298,11 +298,11 @@ export function ProgramApplyForm({ config }: { config: ProgramFormConfig }) {
         {/* Navigation */}
         <div className="flex items-center justify-between mt-8">
           {step > 0 ? (
-            <button onClick={back} className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white/50 hover:text-white transition-colors">
+            <button onClick={back} className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-[#111111]/50 hover:text-[#111111] transition-colors">
               <ArrowLeft className="w-4 h-4" /> Back
             </button>
           ) : (
-            <button onClick={() => navigate("/")} className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white/50 hover:text-white transition-colors">
+            <button onClick={() => navigate("/")} className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-[#111111]/50 hover:text-[#111111] transition-colors">
               <ArrowLeft className="w-4 h-4" /> Cancel
             </button>
           )}
@@ -310,7 +310,7 @@ export function ProgramApplyForm({ config }: { config: ProgramFormConfig }) {
             <button
               onClick={next}
               disabled={!canProceed()}
-              className="flex items-center gap-2 px-6 py-2.5 bg-white/10 text-white text-sm font-bold rounded-full hover:bg-white/15 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-6 py-2.5 bg-[#111111]/10 text-[#111111] text-sm font-bold rounded-full hover:bg-[#111111]/15 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
               Continue <ArrowRight className="w-4 h-4" />
             </button>
@@ -327,7 +327,7 @@ function StepWrap({ title, desc, children }: { title: string; desc: string; chil
   return (
     <div>
       <h2 className="font-display text-2xl font-medium tracking-tight mb-2">{title}</h2>
-      <p className="text-sm text-white/40 leading-relaxed mb-6">{desc}</p>
+      <p className="text-sm text-[#111111]/40 leading-relaxed mb-6">{desc}</p>
       <div className="space-y-5">{children}</div>
     </div>
   );
@@ -338,12 +338,12 @@ function InputField({ label, value, onChange, type = "text" }: {
 }) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-white/60 mb-1.5">{label}</label>
+      <label className="block text-xs font-semibold text-[#111111]/60 mb-1.5">{label}</label>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-[#FF4D00]/40 focus:ring-1 focus:ring-[#FF4D00]/20 transition-all"
+        className="w-full bg-[#111111]/[0.03] border border-[#111111]/10 rounded-lg px-4 py-2.5 text-sm text-[#111111] placeholder-[#111111]/20 outline-none focus:border-[#FF4D00]/40 focus:ring-1 focus:ring-[#FF4D00]/20 transition-all"
       />
     </div>
   );
@@ -354,13 +354,13 @@ function TextAreaField({ label, hint, value, onChange, rows = 5 }: {
 }) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-white/60 mb-1.5">{label}</label>
-      {hint && <p className="text-[10px] text-white/30 mb-1.5">{hint}</p>}
+      <label className="block text-xs font-semibold text-[#111111]/60 mb-1.5">{label}</label>
+      {hint && <p className="text-[10px] text-[#111111]/30 mb-1.5">{hint}</p>}
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={rows}
-        className="w-full bg-white/[0.03] border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-[#FF4D00]/40 focus:ring-1 focus:ring-[#FF4D00]/20 transition-all resize-y"
+        className="w-full bg-[#111111]/[0.03] border border-[#111111]/10 rounded-lg px-4 py-2.5 text-sm text-[#111111] placeholder-[#111111]/20 outline-none focus:border-[#FF4D00]/40 focus:ring-1 focus:ring-[#FF4D00]/20 transition-all resize-y"
       />
     </div>
   );
@@ -368,9 +368,9 @@ function TextAreaField({ label, hint, value, onChange, rows = 5 }: {
 
 function ReviewRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between items-start gap-4 py-2 border-b border-white/5">
-      <span className="text-xs font-mono font-bold tracking-wider uppercase text-white/30 flex-shrink-0">{label}</span>
-      <span className="text-sm text-white/70 text-right">{value || "—"}</span>
+    <div className="flex justify-between items-start gap-4 py-2 border-b border-[#111111]/5">
+      <span className="text-xs font-mono font-bold tracking-wider uppercase text-[#111111]/30 flex-shrink-0">{label}</span>
+      <span className="text-sm text-[#111111]/70 text-right">{value || "—"}</span>
     </div>
   );
 }
